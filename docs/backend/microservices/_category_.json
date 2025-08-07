@@ -1,8 +1,0 @@
-{
-  "label": "微服务架构",
-  "position": 9,
-  "link": {
-    "type": "generated-index",
-    "description": "微服务架构详解，包括服务注册与发现、服务网关、服务熔断与降级、配置中心、链路追踪等"
-  }
-} 

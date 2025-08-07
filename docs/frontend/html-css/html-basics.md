@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: "HTML基础"
+description: "HTML核心概念与最佳实践"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # HTML基础

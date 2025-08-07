@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: "JavaScript基础"
+description: "JavaScript核心概念与特性"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # JavaScript基础

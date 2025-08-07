@@ -1,8 +1,14 @@
 ---
 sidebar_position: 1
+title: "面向对象编程"
+description: "Java面向对象编程详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 1.1 面向对象编程
+# 面向对象编程
 
 面向对象编程（Object-Oriented Programming，OOP）是一种以对象为中心的编程思想，它将数据和行为封装成独立的软件单元。Java是一种纯面向对象的编程语言，它的所有代码都必须位于类中，所有操作都必须使用对象来执行。
 

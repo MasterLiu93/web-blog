@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 代码质量与设计模式
+description: 设计模式应用与代码质量提升实践
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 代码质量与设计模式

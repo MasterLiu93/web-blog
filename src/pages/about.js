@@ -109,7 +109,7 @@ export default function About() {
   return (
     <Layout
       title="关于我"
-      description="刘佳兴 - 全栈开发工程师的个人简介、技能、经历和联系方式">
+      description="Laby - 全栈开发工程师的个人简介、技能、经历和联系方式">
       <header className={styles.aboutHeader}>
         <div className="container">
           <div className={styles.aboutHeaderContent}>
@@ -122,7 +122,7 @@ export default function About() {
             </div>
             <div className={styles.introContainer}>
               <Heading as="h1" className={styles.aboutTitle}>
-                刘佳兴
+                Laby
               </Heading>
               <p className={styles.aboutSubtitle}>
                 全栈开发工程师

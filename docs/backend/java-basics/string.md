@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "String相关"
+description: "Java String类详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 1.3 String相关
+# String相关
 
 String是Java中使用最广泛的类之一，用于表示字符串。虽然字符串在Java中作为对象处理，但Java提供了特殊的语法支持，使其用起来像基本数据类型一样方便。
 

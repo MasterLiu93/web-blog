@@ -1,8 +1,14 @@
 ---
 sidebar_position: 2
+title: "结构型模式"
+description: "结构型设计模式详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 12.2 结构型模式
+# 结构型模式
 
 ## 适配器模式
 
@@ -12,4 +18,4 @@ sidebar_position: 2
 
 ## 外观模式
 
-## 面试题 
+## 面试题

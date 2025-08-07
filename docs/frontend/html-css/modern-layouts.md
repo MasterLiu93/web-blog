@@ -1,5 +1,11 @@
 ---
 sidebar_position: 3
+title: "现代布局技术"
+description: "Flexbox与Grid布局详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 现代布局技术

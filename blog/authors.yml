@@ -24,6 +24,12 @@ slorber:
     github: slorber
     newsletter: https://thisweekinreact.com
 
+Laby:
+  name: Laby
+  title: 全栈开发工程师
+  url: https://github.com/MasterLiu93
+  image_url: /img/head.jpg
+
 default:
   name: 全栈开发者
   title: 高级全栈开发工程师

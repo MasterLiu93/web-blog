@@ -1,8 +1,14 @@
 ---
 sidebar_position: 2
+title: "MyBatis"
+description: "MyBatis ORM框架详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 6.2 MyBatis
+# MyBatis
 
 ## 核心原理
 

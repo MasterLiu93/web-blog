@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 移动应用开发介绍
+description: 跨平台移动应用开发技术与最佳实践
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 移动应用开发介绍

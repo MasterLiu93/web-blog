@@ -1,8 +1,14 @@
 ---
 sidebar_position: 5
+title: "Spring Boot"
+description: "Spring Boot框架与自动配置原理"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.5 Spring Boot
+# Spring Boot
 
 ## 自动配置原理
 

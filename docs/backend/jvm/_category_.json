@@ -1,8 +1,0 @@
-{
-  "label": "JVM虚拟机",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "Java虚拟机详解，包括内存模型、类加载机制、垃圾回收、JVM调优、字节码技术等"
-  }
-} 

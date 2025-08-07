@@ -1,5 +1,11 @@
 ---
 sidebar_position: 3
+title: "ES6+特性"
+description: "ES6及更高版本JavaScript特性详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # ES6+特性

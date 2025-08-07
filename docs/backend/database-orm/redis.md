@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "Redis"
+description: "Redis缓存数据库应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 6.3 Redis
+# Redis
 
 ## 数据类型
 

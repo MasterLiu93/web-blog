@@ -1,5 +1,10 @@
 ---
 sidebar_position: 6
+
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 数据库与ORM

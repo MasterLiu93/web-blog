@@ -1,8 +1,14 @@
 ---
 sidebar_position: 1
+title: "MySQL"
+description: "MySQL数据库基础与优化"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 6.1 MySQL
+# MySQL
 
 ## 索引原理
 
@@ -16,4 +22,4 @@ sidebar_position: 1
 
 ## MySQL搜索引擎
 
-## 面试题 
+## 面试题

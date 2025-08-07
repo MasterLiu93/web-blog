@@ -1,8 +1,14 @@
 ---
 sidebar_position: 9
+title: "CompletableFuture"
+description: "Java异步编程与CompletableFuture"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 3.9 CompletableFuture
+# CompletableFuture
 
 ## 异步编程基础
 
@@ -10,4 +16,4 @@ sidebar_position: 9
 
 ## 实际应用场景
 
-## 面试题 
+## 面试题

@@ -1,8 +1,14 @@
 ---
 sidebar_position: 5
+title: "降级"
+description: "服务降级策略与实现"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 10.5 降级
+# 降级
 
 ## 降级策略
 

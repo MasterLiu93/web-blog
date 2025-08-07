@@ -1,5 +1,11 @@
 ---
 sidebar_position: 2
+title: "基本数据类型"
+description: "Java基本数据类型详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 1.2 基本数据类型

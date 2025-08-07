@@ -180,37 +180,37 @@ function Features() {
       title: '前端开发',
       icon: 'frontend',
       description: '使用现代框架和库构建响应式、交互式的用户界面。',
-      link: '/docs/category/前端开发',
+      link: '/docs/frontend/frontend-intro',
     },
     {
       title: '后端解决方案',
       icon: 'backend',
       description: '创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。',
-      link: '/docs/category/后端开发',
+      link: '/docs/backend/backend-intro',
     },
     {
       title: '数据库设计',
       icon: 'database',
       description: '设计高效的数据库架构和查询优化，提升应用性能。',
-      link: '/docs/category/数据库与orm',
+      link: '/docs/backend/database-orm',
     },
     {
       title: '移动应用开发',
       icon: 'mobile',
       description: '开发跨平台移动应用，在iOS和Android上无缝运行。',
-      link: '/docs/category/移动应用开发',
+      link: '/docs/frontend/mobile-dev/mobile-intro',
     },
     {
       title: 'DevOps实践',
       icon: 'devops',
       description: '实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。',
-      link: '/docs/category/系统设计',
+      link: '/docs/backend/system-design/devops-intro',
     },
     {
       title: '代码质量',
       icon: 'code',
       description: '编写可维护、可测试的代码，遵循最佳实践和现代设计模式。',
-      link: '/docs/category/设计模式',
+      link: '/docs/backend/design-patterns/code-quality-intro',
     },
   ];
 

@@ -1,8 +1,14 @@
 ---
 sidebar_position: 2
+title: "高可用"
+description: "高可用系统设计与实践"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 10.2 高可用
+# 高可用
 
 ## 负载均衡
 

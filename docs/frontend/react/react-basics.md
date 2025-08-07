@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: "React基础"
+description: "React核心概念与组件开发"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # React基础

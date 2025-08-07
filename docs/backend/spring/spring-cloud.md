@@ -1,8 +1,14 @@
 ---
 sidebar_position: 6
+title: "Spring Cloud"
+description: "Spring Cloud微服务框架详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.6 Spring Cloud
+# Spring Cloud
 
 ## 服务注册与发现
 

@@ -1,8 +1,14 @@
 ---
 sidebar_position: 4
+title: "配置中心"
+description: "微服务配置中心解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 9.4 配置中心
+# 配置中心
 
 ## Config
 
@@ -12,4 +18,4 @@ sidebar_position: 4
 
 ## 配置刷新
 
-## 面试题 
+## 面试题

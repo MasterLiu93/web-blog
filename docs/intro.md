@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 知识库导航
+description: 全栈开发技术知识体系指南
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 知识库导航
@@ -10,7 +16,7 @@ sidebar_position: 1
 
 知识库分为以下两大部分：
 
-### [前端开发](/docs/category/前端开发)
+### [前端开发](/docs/frontend)
 包含现代前端开发的各种技术、框架和最佳实践：
 - JavaScript/TypeScript 核心概念
 - React、Vue等框架的使用技巧
@@ -18,7 +24,7 @@ sidebar_position: 1
 - UI/UX设计原则
 - 前端工程化与自动化
 
-### [后端开发](/docs/category/后端开发) 
+### [后端开发](/docs/backend) 
 涵盖后端开发的关键技术和架构设计：
 - 服务器端编程语言与框架
 - 数据库设计与优化

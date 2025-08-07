@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "服务熔断与降级"
+description: "微服务熔断降级解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 9.3 服务熔断与降级
+# 服务熔断与降级
 
 ## Hystrix
 

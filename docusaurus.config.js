@@ -9,7 +9,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '全栈开发者博客',
+  title: 'Laby的博客',
   tagline: '探索现代Web开发的全部领域',
   favicon: 'img/logo.jpg',
 
@@ -37,7 +37,14 @@ const config = {
   },
 
   plugins: [
-    // 移除 @docusaurus/plugin-ideal-image 插件
+    [
+      'docusaurus-plugin-module-alias',
+      {
+        alias: {
+          '@site/blog/authors': './blog/authors',
+        },
+      },
+    ],
   ],
 
   presets: [
@@ -50,6 +57,11 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/MasterLiu93/blog-web/tree/main/',
+          routeBasePath: 'docs',
+          path: 'docs',
+          showLastUpdateAuthor: true,
+          showLastUpdateTime: true,
+          // 使用默认日期格式
         },
         blog: {
           showReadingTime: true,
@@ -61,9 +73,10 @@ const config = {
           blogSidebarTitle: '全部博客文章',
           feedOptions: {
             type: ['rss', 'atom'],
-            copyright: `Copyright © ${new Date().getFullYear()} 刘佳兴的博客`,
+            copyright: `Copyright © ${new Date().getFullYear()} Laby的博客`,
           },
           sortPosts: 'descending',
+          authorsMapPath: 'authors.yml',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -83,9 +96,9 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: '刘佳兴的博客',
+        title: 'Laby的博客',
         logo: {
-          alt: '刘佳兴的博客Logo',
+          alt: 'Laby的博客Logo',
           src: 'img/logo.jpg',
         },
         items: [
@@ -148,7 +161,7 @@ const config = {
             items: [
               {
                 label: 'RSS订阅',
-                to: '/blog/rss.xml',
+                to: '/blog',
               },
               {
                 label: '关于我',
@@ -157,7 +170,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} 刘佳兴的博客. 基于 Docusaurus 构建.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Laby的博客. 基于 Docusaurus 构建.`,
       },
       prism: {
         theme: prismThemes.vsDark,
@@ -175,6 +188,12 @@ const config = {
       tableOfContents: {
         minHeadingLevel: 2,
         maxHeadingLevel: 4,
+      },
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
       },
     }),
 };

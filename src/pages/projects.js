@@ -5,6 +5,12 @@ import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import styles from './projects.module.css';
 
+// 导入项目图片
+import project1Image from '@site/static/img/projects/project.png';
+import project2Image from '@site/static/img/projects/project2.png';
+import project3Image from '@site/static/img/projects/project3.png';
+import project4Image from '@site/static/img/projects/project4.png';
+
 // 气泡提示组件
 function Tooltip({ message, isVisible, position }) {
   if (!isVisible) return null;
@@ -90,7 +96,7 @@ export default function Projects() {
     {
       title: '智慧城市安全监控系统',
       description: '基于微服务架构的城市安全监控系统，实现了视频监控、报警处理和AI识别分析等功能。',
-      imageUrl: 'img/projects/project.png',
+      imageUrl: project1Image,
       demoUrl: 'http://120.48.86.168/screen/city',
       codeUrl: '#',
       techStack: ['React', 'Node.js', '微服务', 'AI视觉分析', 'MongoDB'],
@@ -99,7 +105,7 @@ export default function Projects() {
     {
       title: '智慧仓储大屏',
       description: '实时监控仓储状态的数据可视化系统，包含人员调度、车辆管理和任务分配功能。',
-      imageUrl: 'img/projects/project2.png',
+      imageUrl: project2Image,
       demoUrl: 'http://120.48.86.168/screen/city2',
       codeUrl: '#',
       techStack: ['Vue.js', 'ECharts', 'WebSocket', 'Express', 'PostgreSQL'],
@@ -108,7 +114,7 @@ export default function Projects() {
     {
       title: '光纤线路安防预警监测平台',
       description: '对光纤线路进行实时监测和预警，支持区域管理和异常情况快速响应。',
-      imageUrl: 'img/projects/project3.png',
+      imageUrl: project3Image,
       demoUrl: 'http://120.48.86.168/screen/city3',
       codeUrl: '#',
       techStack: ['React', 'Redux', 'GIS地图', 'Python', 'Redis'],
@@ -117,7 +123,7 @@ export default function Projects() {
     {
       title: '智慧营地管理系统',
       description: '营地人员、设备和资源的智能管理平台，提供实时状态监控和数据统计。',
-      imageUrl: 'img/projects/project4.png',
+      imageUrl: project4Image,
       demoUrl: 'http://120.48.86.168/big-screen',
       codeUrl: '#',
       techStack: ['Angular', 'D3.js', 'Flask', 'MySQL', '人脸识别'],

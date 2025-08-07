@@ -1,5 +1,11 @@
 ---
 sidebar_position: 2
+title: "异步JavaScript"
+description: "JavaScript异步编程详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 异步JavaScript

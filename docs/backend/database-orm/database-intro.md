@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 数据库设计与优化
+description: 数据库设计的最佳实践和优化技术
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 数据库设计与优化

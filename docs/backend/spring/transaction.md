@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "事务管理"
+description: "Spring事务管理机制与原理"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.3 事务管理
+# 事务管理
 
 ## 事务特性
 

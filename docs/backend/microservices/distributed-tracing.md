@@ -1,8 +1,14 @@
 ---
 sidebar_position: 5
+title: "链路追踪"
+description: "微服务分布式链路追踪"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 9.5 链路追踪
+# 链路追踪
 
 ## Sleuth
 
@@ -12,4 +18,4 @@ sidebar_position: 5
 
 ## 性能监控
 
-## 面试题 
+## 面试题

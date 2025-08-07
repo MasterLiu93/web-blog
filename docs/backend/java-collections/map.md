@@ -1,8 +1,14 @@
 ---
 sidebar_position: 4
+title: "Map实现类"
+description: "Java Map集合类详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 2.4 Map实现类
+# Map实现类
 
 ## HashMap
 

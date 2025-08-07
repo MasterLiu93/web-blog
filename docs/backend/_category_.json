@@ -1,8 +1,0 @@
-{
-  "label": "后端开发",
-  "position": 3,
-  "link": {
-    "type": "generated-index",
-    "description": "Java 后端开发完全指南，包括Java基础、集合框架、并发编程、JVM、Spring框架等"
-  }
-} 

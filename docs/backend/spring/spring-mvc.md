@@ -1,8 +1,14 @@
 ---
 sidebar_position: 4
+title: "Spring MVC"
+description: "Spring MVC框架原理与应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.4 Spring MVC
+# Spring MVC
 
 ## MVC架构
 

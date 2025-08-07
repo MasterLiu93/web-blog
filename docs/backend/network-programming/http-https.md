@@ -1,8 +1,14 @@
 ---
 sidebar_position: 2
+title: "HTTP/HTTPS"
+description: "HTTP和HTTPS协议详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 11.2 HTTP/HTTPS
+# HTTP/HTTPS
 
 ## HTTP协议
 
@@ -12,4 +18,4 @@ sidebar_position: 2
 
 ## HTTP方法
 
-## 面试题 
+## 面试题

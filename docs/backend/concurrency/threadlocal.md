@@ -1,8 +1,14 @@
 ---
 sidebar_position: 8
+title: "ThreadLocal"
+description: "Java ThreadLocal原理与应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 3.8 ThreadLocal
+# ThreadLocal
 
 ## ThreadLocal原理
 
@@ -10,4 +16,4 @@ sidebar_position: 8
 
 ## ThreadLocal内存泄漏
 
-## 面试题 
+## 面试题

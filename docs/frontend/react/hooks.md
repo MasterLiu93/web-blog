@@ -1,5 +1,11 @@
 ---
 sidebar_position: 2
+title: "React Hooks"
+description: "React Hooks详解与最佳实践"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # React Hooks

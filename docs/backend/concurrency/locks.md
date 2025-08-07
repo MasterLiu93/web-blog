@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "锁机制"
+description: "Java锁机制详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 3.3 锁机制
+# 锁机制
 
 ## synchronized关键字
 
@@ -12,4 +18,4 @@ sidebar_position: 3
 
 ## 锁优化
 
-## 面试题 
+## 面试题

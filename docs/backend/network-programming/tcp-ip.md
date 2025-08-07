@@ -1,8 +1,14 @@
 ---
 sidebar_position: 1
+title: "TCP/IP"
+description: "TCP/IP协议栈详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 11.1 TCP/IP
+# TCP/IP
 
 ## TCP协议
 

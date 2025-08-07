@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "Set实现类"
+description: "Java Set集合类详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 2.3 Set实现类
+# Set实现类
 
 ## HashSet
 

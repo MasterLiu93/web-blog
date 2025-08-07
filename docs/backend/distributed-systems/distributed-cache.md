@@ -1,8 +1,14 @@
 ---
 sidebar_position: 4
+title: "分布式缓存"
+description: "分布式缓存架构与策略"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 7.4 分布式缓存
+# 分布式缓存
 
 ## 缓存架构
 
@@ -12,4 +18,4 @@ sidebar_position: 4
 
 ## 缓存穿透
 
-## 面试题 
+## 面试题

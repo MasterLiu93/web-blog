@@ -1,8 +1,0 @@
-{
-  "label": "Vue",
-  "position": 4,
-  "link": {
-    "type": "generated-index",
-    "description": "Vue框架相关知识，包括组件、Composition API、状态管理和生态系统"
-  }
-} 

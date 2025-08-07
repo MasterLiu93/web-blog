@@ -1,5 +1,11 @@
 ---
 sidebar_position: 3
+title: "状态管理"
+description: "React状态管理解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 状态管理

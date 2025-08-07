@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: DevOps实践介绍
+description: DevOps文化、工具链与最佳实践
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # DevOps实践介绍

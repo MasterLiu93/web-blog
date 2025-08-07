@@ -1,8 +1,14 @@
 ---
 sidebar_position: 3
+title: "高性能"
+description: "高性能系统设计与调优"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 10.3 高性能
+# 高性能
 
 ## 性能优化
 

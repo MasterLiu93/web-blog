@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 后端开发介绍
+description: Java后端开发完全指南与最佳实践
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 后端开发介绍

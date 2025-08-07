@@ -1,5 +1,11 @@
 ---
 sidebar_position: 2
+title: "CSS基础"
+description: "CSS核心概念与布局技术"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # CSS基础

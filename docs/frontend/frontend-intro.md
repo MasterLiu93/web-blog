@@ -1,5 +1,11 @@
 ---
 sidebar_position: 1
+title: 前端开发介绍
+description: 现代前端开发技术概览
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
 # 前端开发介绍

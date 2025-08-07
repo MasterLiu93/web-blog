@@ -1,8 +1,14 @@
 ---
 sidebar_position: 4
+title: "Netty"
+description: "Netty网络编程框架"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 11.4 Netty
+# Netty
 
 ## Netty架构
 
@@ -12,4 +18,4 @@ sidebar_position: 4
 
 ## Netty应用
 
-## 面试题 
+## 面试题

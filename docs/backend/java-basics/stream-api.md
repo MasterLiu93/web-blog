@@ -1,7 +1,13 @@
 ---
 sidebar_position: 9
+title: "Stream API"
+description: "Java Stream API使用详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 1.9 Stream API
+# Stream API
 
 ## 面试题 

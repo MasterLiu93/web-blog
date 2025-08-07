@@ -1,8 +1,14 @@
 ---
 sidebar_position: 1
+title: "IoC容器"
+description: "Spring IoC控制反转原理"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.1 IoC容器
+# IoC容器
 
 ## IoC原理
 

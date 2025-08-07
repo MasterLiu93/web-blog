@@ -1,8 +1,14 @@
 ---
 sidebar_position: 2
+title: "AOP"
+description: "Spring面向切面编程原理"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 5.2 AOP
+# AOP
 
 ## AOP原理
 

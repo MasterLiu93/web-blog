@@ -1,8 +1,0 @@
-{
-  "label": "Java集合框架",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "Java集合框架详解，包括Collection接口、List实现类、Set实现类、Map实现类、Queue实现类等"
-  }
-} 

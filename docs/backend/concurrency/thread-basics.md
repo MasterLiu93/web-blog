@@ -1,8 +1,14 @@
 ---
 sidebar_position: 1
+title: "线程基础"
+description: "Java线程基础知识"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
 ---
 
-# 3.1 线程基础
+# 线程基础
 
 ## 线程创建和启动
 
@@ -12,4 +18,4 @@ sidebar_position: 1
 
 ## 实际应用场景
 
-## 面试题 
+## 面试题
