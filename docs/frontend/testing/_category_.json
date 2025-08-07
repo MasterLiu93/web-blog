@@ -1,0 +1,8 @@
+{
+  "label": "测试",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "前端测试策略、单元测试、集成测试和端到端测试"
+  }
+} 

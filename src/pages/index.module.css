@@ -125,16 +125,24 @@
 
 /* Features section */
 .features {
-  padding: 4rem 0;
+  padding: 5rem 0;
 }
 
 .featureCard {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 0 15px;
 }
 
 .card {
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--custom-border-color);
+  box-shadow: var(--custom-shadow-lw);
 }
 
 .card:hover {
@@ -143,13 +151,13 @@
 
 .cardIcon {
   background-color: var(--ifm-color-primary-lightest);
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: var(--ifm-color-primary-darkest);
 }
 
@@ -159,8 +167,20 @@
 }
 
 .featureIcon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
+}
+
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.cardLink:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Section headers */

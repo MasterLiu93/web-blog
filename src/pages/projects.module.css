@@ -129,6 +129,55 @@
   border-top: 1px solid var(--custom-border-color);
 }
 
+/* 工具提示容器 */
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+/* 工具提示气泡 */
+.tooltip {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  z-index: 10;
+  width: max-content;
+  max-width: 250px;
+  font-size: 14px;
+  line-height: 1.4;
+  animation: fadeIn 0.3s ease;
+}
+
+/* 顶部提示 */
+.tooltipTop {
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltipTop::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* 项目区域样式 */
 .featuredProjects, .regularProjects {
   padding: 4rem 0;

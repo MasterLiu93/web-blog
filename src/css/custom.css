@@ -123,16 +123,36 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Cards and features */
+/* Card global styles */
 .card {
   border: 1px solid var(--custom-border-color);
   box-shadow: var(--custom-shadow-lw);
   transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
 }
 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: var(--custom-shadow-md);
+}
+
+/* Cards and features */
+.features {
+  padding: 5rem 0;
+}
+
+.features .container {
+  max-width: 1200px;
+  padding: 0 30px;
+}
+
+/* 专长图标样式 */
+.cardIcon {
+  margin-bottom: 1.5rem !important;
+  width: 70px !important;
+  height: 70px !important;
 }
 
 /* Blog styles */
@@ -215,14 +235,16 @@ div[class^='codeBlockContainer'] {
   box-shadow: var(--custom-shadow-md);
 }
 
-.button--secondary {
+.button--outline {
   color: var(--ifm-color-primary);
   border-color: var(--ifm-color-primary);
+  background-color: transparent;
 }
 
-.button--secondary:hover {
+.button--outline:hover {
   color: white;
   background-color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
   transform: translateY(-2px);
   box-shadow: var(--custom-shadow-md);
 }
@@ -232,12 +254,35 @@ div[class^='codeBlockContainer'] {
 }
 
 /* 卡片样式优化 */
+.card__header {
+  padding: 1.25rem 1.5rem 0;
+  border-bottom: none;
+}
+
 .card__body {
-  padding: 1.5rem;
+  padding: 1rem 1.5rem 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .card__footer {
   padding: 1rem 1.5rem;
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* 调整专长部分布局 */
+.features .row {
+  margin: 0 -20px;
+}
+
+.features .col {
+  padding: 0 20px;
+  margin-bottom: 40px;
 }
 
 /* Add responsive design */

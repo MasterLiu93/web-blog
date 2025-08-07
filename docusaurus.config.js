@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: '全栈开发者博客',
   tagline: '探索现代Web开发的全部领域',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.jpg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -19,14 +19,14 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-site-url.com',
+  url: 'https://masterliu93.github.io',
   baseUrl: '/',
 
   // GitHub pages deployment config.
-  organizationName: 'your-github-username', // GitHub org/user name.
+  organizationName: 'MasterLiu93', // GitHub org/user name.
   projectName: 'blog-web', // repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
@@ -49,19 +49,19 @@ const config = {
           sidebarPath: './sidebars.js',
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/your-github-username/blog-web/tree/main/',
+            'https://github.com/MasterLiu93/blog-web/tree/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/your-github-username/blog-web/tree/main/',
+            'https://github.com/MasterLiu93/blog-web/tree/main/',
           postsPerPage: 5,
           blogSidebarCount: 'ALL',
           blogSidebarTitle: '全部博客文章',
           feedOptions: {
             type: ['rss', 'atom'],
-            copyright: `Copyright © ${new Date().getFullYear()} 全栈开发者博客`,
+            copyright: `Copyright © ${new Date().getFullYear()} 刘佳兴的博客`,
           },
           sortPosts: 'descending',
         },
@@ -83,10 +83,10 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: '全栈开发者',
+        title: '刘佳兴的博客',
         logo: {
-          alt: '全栈开发者Logo',
-          src: 'img/logo.svg',
+          alt: '刘佳兴的博客Logo',
+          src: 'img/logo.jpg',
         },
         items: [
           {to: '/blog', label: '博客', position: 'left'},
@@ -94,7 +94,8 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: '知识库',
+            label: '知识库导航',
+            to: '/docs/intro',
           },
           {
             label: '项目',
@@ -107,7 +108,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/your-github-username',
+            href: 'https://github.com/MasterLiu93',
             label: 'GitHub',
             position: 'right',
           },
@@ -124,7 +125,7 @@ const config = {
                 to: '/blog',
               },
               {
-                label: '知识库',
+                label: '知识库导航',
                 to: '/docs/intro',
               },
               {
@@ -138,16 +139,8 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/your-github-username',
-              },
-              {
-                label: '领英',
-                href: 'https://linkedin.com/in/your-linkedin',
-              },
-              {
-                label: '推特',
-                href: 'https://twitter.com/your-twitter',
-              },
+                href: 'https://github.com/MasterLiu93',
+              }
             ],
           },
           {
@@ -164,7 +157,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} 全栈开发者博客. 基于 Docusaurus 构建.`,
+        copyright: `Copyright © ${new Date().getFullYear()} 刘佳兴的博客. 基于 Docusaurus 构建.`,
       },
       prism: {
         theme: prismThemes.vsDark,

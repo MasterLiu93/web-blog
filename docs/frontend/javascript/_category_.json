@@ -1,0 +1,8 @@
+{
+  "label": "JavaScript",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "JavaScript语言核心概念、DOM操作、异步编程和ES6+特性"
+  }
+} 

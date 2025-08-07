@@ -1,0 +1,8 @@
+{
+  "label": "移动应用开发",
+  "position": 9,
+  "link": {
+    "type": "generated-index",
+    "description": "跨平台移动应用开发技术，包括React Native、Flutter和渐进式Web应用"
+  }
+} 

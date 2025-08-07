@@ -105,9 +105,9 @@ function HeroHeader() {
 }
 
 // Feature cards
-function FeatureCard({icon, title, description}) {
+function FeatureCard({icon, title, description, link}) {
   return (
-    <div className={clsx('col col--4', styles.featureCard)}>
+    <Link to={link || '#'} className={styles.cardLink}>
       <div className={clsx('card', styles.card)}>
         <div className={styles.cardIcon}>
           <Icon icon={icon} className={styles.featureIcon} />
@@ -119,7 +119,7 @@ function FeatureCard({icon, title, description}) {
           <p>{description}</p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -131,13 +131,13 @@ function BlogPreview() {
       title: '构建现代Web应用',
       date: '2023年8月25日',
       excerpt: '探索使用React创建高性能Web应用的最新技术和最佳实践。',
-      url: '/blog/building-modern-web-applications',
+      url: '/blog/modern-react-patterns',
     },
     {
       title: '可扩展的后端架构',
       date: '2023年7月12日',
       excerpt: '如何使用微服务设计能够高效处理增长和扩展的后端系统。',
-      url: '/blog/backend-architecture-for-scale',
+      url: '/blog/long-blog-post',
     },
   ];
 
@@ -180,31 +180,37 @@ function Features() {
       title: '前端开发',
       icon: 'frontend',
       description: '使用现代框架和库构建响应式、交互式的用户界面。',
+      link: '/docs/category/前端开发',
     },
     {
       title: '后端解决方案',
       icon: 'backend',
       description: '创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。',
+      link: '/docs/category/后端开发',
     },
     {
       title: '数据库设计',
       icon: 'database',
       description: '设计高效的数据库架构和查询优化，提升应用性能。',
+      link: '/docs/category/数据库与orm',
     },
     {
       title: '移动应用开发',
       icon: 'mobile',
       description: '开发跨平台移动应用，在iOS和Android上无缝运行。',
+      link: '/docs/category/移动应用开发',
     },
     {
       title: 'DevOps实践',
       icon: 'devops',
       description: '实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。',
+      link: '/docs/category/系统设计',
     },
     {
       title: '代码质量',
       icon: 'code',
       description: '编写可维护、可测试的代码，遵循最佳实践和现代设计模式。',
+      link: '/docs/category/设计模式',
     },
   ];
 
@@ -216,14 +222,16 @@ function Features() {
             我的专长
           </Heading>
         </div>
-        <div className="row">
+        <div className="row" style={{margin: '0 -20px'}}>
           {features.map((feature, idx) => (
-            <FeatureCard 
-              key={idx}
-              icon={feature.icon}
-              title={feature.title}
-              description={feature.description}
-            />
+            <div key={idx} className="col col--4" style={{padding: '0 20px', marginBottom: '40px'}}>
+              <FeatureCard 
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                link={feature.link}
+              />
+            </div>
           ))}
         </div>
       </div>
