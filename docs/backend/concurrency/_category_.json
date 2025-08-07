@@ -1,0 +1,8 @@
+{
+  "label": "多线程与并发编程",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Java多线程与并发编程详解，包括线程基础、线程池、锁机制、并发工具类、原子类、并发容器等"
+  }
+} 

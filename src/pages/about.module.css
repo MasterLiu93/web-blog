@@ -1,0 +1,364 @@
+/* 页面头部样式 */
+.aboutHeader {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, var(--ifm-color-primary-darkest) 0%, var(--ifm-color-primary) 100%);
+  color: white;
+}
+
+.aboutHeaderContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.avatarContainer {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--custom-shadow-lg);
+}
+
+.introContainer {
+  max-width: 600px;
+}
+
+.aboutTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aboutSubtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.aboutSocial {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+  transform: translateY(-3px);
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* 主体内容部分样式 */
+.aboutSection {
+  padding: 5rem 0;
+}
+
+.aboutSection:nth-child(even) {
+  background-color: var(--ifm-background-surface-color);
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 3rem;
+  height: 0.25rem;
+  background-color: var(--ifm-color-primary);
+  border-radius: 0.125rem;
+}
+
+.aboutText {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.aboutText p {
+  margin-bottom: 1.5rem;
+}
+
+/* 技能部分样式 */
+.skillsSection {
+  background: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.05));
+}
+
+[data-theme='dark'] .skillsSection {
+  background: linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.05));
+}
+
+.skillCategory {
+  margin-bottom: 2rem;
+}
+
+.skillCategoryTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--ifm-color-primary);
+}
+
+.skillBar {
+  margin-bottom: 1.5rem;
+}
+
+.skillInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.skillName {
+  font-weight: 500;
+}
+
+.skillLevel {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.skillProgress {
+  height: 8px;
+  background-color: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skillProgressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ifm-color-primary-dark) 0%, var(--ifm-color-primary) 100%);
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* 工作经历部分样式 */
+.experienceContainer {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.experienceContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 120px;
+  width: 2px;
+  background-color: var(--custom-border-color);
+}
+
+.experienceItem {
+  position: relative;
+  margin-bottom: 3rem;
+  display: flex;
+}
+
+.experienceItem:last-child {
+  margin-bottom: 0;
+}
+
+.experiencePeriod {
+  flex: 0 0 100px;
+  margin-right: 40px;
+  padding-top: 0.25rem;
+  text-align: right;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.experienceContent {
+  flex: 1;
+  position: relative;
+}
+
+.experienceContent::before {
+  content: '';
+  position: absolute;
+  left: -29px;
+  top: 5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 4px var(--ifm-background-surface-color);
+}
+
+.experienceTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.experienceCompany {
+  font-weight: 400;
+  color: var(--ifm-color-primary);
+}
+
+.experienceDescription {
+  margin-bottom: 0;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
+}
+
+/* 联系部分样式 */
+.contactSection {
+  padding-bottom: 6rem;
+}
+
+.contactCard {
+  padding: 3rem;
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--ifm-background-color);
+  box-shadow: var(--custom-shadow-md);
+}
+
+.contactTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.contactIntro {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+}
+
+.contactIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-right: 1rem;
+  border-radius: 50%;
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .contactIcon {
+  background-color: var(--ifm-color-primary-darkest);
+  color: var(--ifm-color-primary-lightest);
+}
+
+.contactLabel {
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.contactValue {
+  font-weight: 500;
+}
+
+/* 响应式样式 */
+@media (max-width: 996px) {
+  .aboutHeaderContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .aboutTitle {
+    font-size: 2.5rem;
+  }
+  
+  .aboutSubtitle {
+    font-size: 1.25rem;
+  }
+  
+  .aboutSocial {
+    justify-content: center;
+  }
+  
+  .experienceContainer::before {
+    left: 20px;
+  }
+  
+  .experienceItem {
+    flex-direction: column;
+  }
+  
+  .experiencePeriod {
+    text-align: left;
+    margin-bottom: 1rem;
+    margin-left: 45px;
+    padding-top: 0;
+  }
+  
+  .experienceContent::before {
+    left: -25px;
+    top: -40px;
+  }
+  
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutHeader {
+    padding: 4rem 0;
+  }
+  
+  .avatar {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .aboutTitle {
+    font-size: 2rem;
+  }
+  
+  .aboutSection {
+    padding: 3rem 0;
+  }
+  
+  .skillCategory {
+    margin-bottom: 3rem;
+  }
+  
+  .contactCard {
+    padding: 2rem;
+  }
+} 

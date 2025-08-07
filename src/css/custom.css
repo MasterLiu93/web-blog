@@ -6,25 +6,290 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #3182ce;
+  --ifm-color-primary-dark: #2b6cb0;
+  --ifm-color-primary-darker: #2c5282;
+  --ifm-color-primary-darkest: #2a4365;
+  --ifm-color-primary-light: #4299e1;
+  --ifm-color-primary-lighter: #63b3ed;
+  --ifm-color-primary-lightest: #90cdf4;
+  
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --ifm-font-family-monospace: 'Fira Code', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.95);
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ifm-footer-background-color: #f7fafc;
+  
+  --ifm-global-radius: 0.5rem;
+  --ifm-button-border-radius: 0.375rem;
+  
+  /* Custom variables */
+  --custom-border-color: #e2e8f0;
+  --custom-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --custom-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --custom-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #38b2ac;
+  --ifm-color-primary-dark: #319795;
+  --ifm-color-primary-darker: #2c7a7b;
+  --ifm-color-primary-darkest: #285e61;
+  --ifm-color-primary-light: #4fd1c5;
+  --ifm-color-primary-lighter: #81e6d9;
+  --ifm-color-primary-lightest: #b2f5ea;
+  
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  
+  --ifm-navbar-background-color: rgba(26, 32, 44, 0.95);
+  --ifm-footer-background-color: #1a202c;
+  
+  /* Custom variables in dark mode */
+  --custom-border-color: #2d3748;
+  --custom-shadow-lw: 0 1px 3px 0 rgba(0, 0, 0, 0.25), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --custom-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --custom-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Global styles */
+body {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Navbar styles */
+.navbar {
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+}
+
+.navbar__brand {
+  font-weight: 600;
+}
+
+.navbar__item {
+  font-weight: 500;
+}
+
+/* Hero section */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ifm-color-primary-lightest) 0%, transparent 70%);
+  opacity: 0.2;
+  z-index: -1;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -5%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ifm-color-primary-lightest) 0%, transparent 70%);
+  opacity: 0.15;
+  z-index: -1;
+}
+
+.hero__title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  background: linear-gradient(90deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero__subtitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards and features */
+.card {
+  border: 1px solid var(--custom-border-color);
+  box-shadow: var(--custom-shadow-lw);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--custom-shadow-md);
+}
+
+/* Blog styles */
+.blog-list-item {
+  border-bottom: 1px solid var(--custom-border-color);
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+}
+
+.blog-list-item:last-child {
+  border-bottom: none;
+}
+
+/* Code blocks */
+div[class^='codeBlockContainer'] {
+  box-shadow: var(--custom-shadow-lw);
+  border-radius: var(--ifm-global-radius);
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Custom components */
+.tech-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  margin: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.5;
+  border-radius: 9999px;
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .tech-badge {
+  background-color: var(--ifm-color-primary-darkest);
+  color: var(--ifm-color-primary-lightest);
+}
+
+/* 按钮样式优化 */
+.button {
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.button--sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+.button--lg {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+}
+
+.button--primary {
+  background-color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+}
+
+.button--primary:hover {
+  background-color: var(--ifm-color-primary-dark);
+  border-color: var(--ifm-color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--custom-shadow-md);
+}
+
+.button--secondary {
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+}
+
+.button--secondary:hover {
+  color: white;
+  background-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--custom-shadow-md);
+}
+
+.button + .button {
+  margin-left: 0.75rem;
+}
+
+/* 卡片样式优化 */
+.card__body {
+  padding: 1.5rem;
+}
+
+.card__footer {
+  padding: 1rem 1.5rem;
+}
+
+/* Add responsive design */
+@media (max-width: 996px) {
+  .hero__title {
+    font-size: 2.5rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
+  
+  .newsletterForm {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroBanner {
+    padding: 3rem 0;
+  }
+  
+  .heroContent {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .buttons {
+    justify-content: center;
+  }
+  
+  .codeSnippet {
+    transform: none;
+  }
+  
+  .hero__title {
+    font-size: 2.25rem;
+  }
+  
+  .aboutSection {
+    padding: 3rem 0;
+  }
+  
+  .skillCategory {
+    margin-bottom: 3rem;
+  }
+  
+  .contactCard {
+    padding: 2rem;
+  }
 }

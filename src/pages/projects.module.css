@@ -1,0 +1,224 @@
+/* 项目页面标题区域 */
+.projectsHeader {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--ifm-color-primary-darkest) 0%, var(--ifm-color-primary) 100%);
+  color: white;
+  text-align: center;
+}
+
+.projectsTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.projectsSubtitle {
+  font-size: 1.25rem;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+/* 项目卡片样式 */
+.projectCardWrapper {
+  margin-bottom: 2rem;
+}
+
+.projectCard {
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.projectCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--custom-shadow-lg);
+}
+
+.featuredCard {
+  border-top: 4px solid var(--ifm-color-primary);
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.projectImageContainer {
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+
+.projectImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.projectCard:hover .projectImage {
+  transform: scale(1.05);
+}
+
+.projectTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.projectDescription {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  min-height: 4.8rem;
+}
+
+/* 技术栈容器样式，增加顶部和底部的间距 */
+.techStackContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.5rem 0 1rem;
+}
+
+/* 修改技术标签的间距和样式 */
+.techTag {
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  margin: 0;
+  background-color: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darkest);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.techTag:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--custom-shadow-lw);
+}
+
+[data-theme='dark'] .techTag {
+  background-color: var(--ifm-color-primary-darkest);
+  color: var(--ifm-color-primary-lightest);
+}
+
+/* 项目卡片底部按钮区域样式 */
+.projectFooter {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  margin-top: auto;
+  border-top: 1px solid var(--custom-border-color);
+}
+
+/* 项目区域样式 */
+.featuredProjects, .regularProjects {
+  padding: 4rem 0;
+}
+
+.featuredProjects {
+  background-color: var(--ifm-background-surface-color);
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 3rem;
+  height: 0.25rem;
+  background-color: var(--ifm-color-primary);
+  border-radius: 0.125rem;
+}
+
+/* 联系部分样式 */
+.contactSection {
+  padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.contactCard {
+  background: linear-gradient(135deg, var(--ifm-color-primary-darker) 0%, var(--ifm-color-primary) 100%);
+  border-radius: var(--ifm-global-radius);
+  padding: 3rem;
+  color: white;
+  text-align: center;
+  box-shadow: var(--custom-shadow-md);
+}
+
+.contactTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.contactText {
+  font-size: 1.125rem;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 996px) {
+  .projectsTitle {
+    font-size: 2.5rem;
+  }
+  
+  .projectsSubtitle {
+    font-size: 1.125rem;
+  }
+  
+  .contactCard {
+    padding: 2rem;
+  }
+
+  .techTag {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .techStackContainer {
+    gap: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .projectsTitle {
+    font-size: 2rem;
+  }
+  
+  .projectsHeader {
+    padding: 3rem 0;
+  }
+  
+  .projectImageContainer {
+    height: 180px;
+  }
+} 

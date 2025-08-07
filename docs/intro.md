@@ -2,46 +2,38 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# 知识库导航
 
-Let's discover **Docusaurus in less than 5 minutes**.
+欢迎来到我的技术知识库！这里收集了我作为全栈开发工程师多年来的技术积累和经验总结。无论您是前端开发者、后端工程师，还是对全栈开发感兴趣的学习者，都能在这里找到有用的内容。
 
-## Getting Started
+## 内容组织
 
-Get started by **creating a new site**.
+知识库分为以下两大部分：
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+### [前端开发](/docs/frontend)
+包含现代前端开发的各种技术、框架和最佳实践：
+- JavaScript/TypeScript 核心概念
+- React、Vue等框架的使用技巧
+- 前端性能优化
+- UI/UX设计原则
+- 前端工程化与自动化
 
-### What you'll need
+### [后端开发](/docs/backend) 
+涵盖后端开发的关键技术和架构设计：
+- 服务器端编程语言与框架
+- 数据库设计与优化
+- 微服务架构
+- API设计规范
+- 服务器部署与运维
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## 如何使用本知识库
 
-## Generate a new site
+1. **浏览学习**：按照目录结构系统学习全栈开发知识
+2. **问题解决**：使用搜索功能查找特定技术问题的解决方案
+3. **技术提升**：通过最佳实践和架构设计案例提升技术能力
 
-Generate a new Docusaurus site using the **classic template**.
+## 持续更新
 
-The classic template will automatically be added to your project after you run the command:
+本知识库将不断更新，添加新的技术文章和最佳实践。如果您有任何问题或建议，欢迎与我联系。
 
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+祝您学习愉快！

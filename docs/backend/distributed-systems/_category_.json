@@ -1,0 +1,8 @@
+{
+  "label": "分布式系统",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "分布式系统详解，包括分布式理论、分布式事务、分布式锁、分布式缓存、分布式搜索等"
+  }
+} 

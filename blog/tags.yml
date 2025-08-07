@@ -17,3 +17,123 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+frontend:
+  label: '前端开发'
+  permalink: '/tags/frontend'
+  description: '前端开发相关技术、框架和工具'
+
+react:
+  label: 'React'
+  permalink: '/tags/react'
+  description: 'React框架及其生态系统'
+
+vue:
+  label: 'Vue.js'
+  permalink: '/tags/vue'
+  description: 'Vue.js框架及其生态系统'
+
+javascript:
+  label: 'JavaScript'
+  permalink: '/tags/javascript'
+  description: 'JavaScript语言、特性和最佳实践'
+
+typescript:
+  label: 'TypeScript'
+  permalink: '/tags/typescript'
+  description: 'TypeScript语言、类型系统和工具'
+
+backend:
+  label: '后端开发'
+  permalink: '/tags/backend'
+  description: '后端开发相关技术、框架和架构'
+
+nodejs:
+  label: 'Node.js'
+  permalink: '/tags/nodejs'
+  description: 'Node.js运行时及其应用'
+
+python:
+  label: 'Python'
+  permalink: '/tags/python'
+  description: 'Python语言及其生态系统'
+
+java:
+  label: 'Java'
+  permalink: '/tags/java'
+  description: 'Java语言、框架和工具'
+
+database:
+  label: '数据库'
+  permalink: '/tags/database'
+  description: '数据库设计、优化和管理'
+
+sql:
+  label: 'SQL'
+  permalink: '/tags/sql'
+  description: 'SQL语言和关系型数据库'
+
+nosql:
+  label: 'NoSQL'
+  permalink: '/tags/nosql'
+  description: 'NoSQL数据库技术和应用'
+
+devops:
+  label: 'DevOps'
+  permalink: '/tags/devops'
+  description: 'DevOps实践、工具和流程'
+
+docker:
+  label: 'Docker'
+  permalink: '/tags/docker'
+  description: 'Docker容器和相关技术'
+
+kubernetes:
+  label: 'Kubernetes'
+  permalink: '/tags/kubernetes'
+  description: 'Kubernetes容器编排平台'
+
+cloud:
+  label: '云计算'
+  permalink: '/tags/cloud'
+  description: '云计算、云服务和云原生应用'
+
+architecture:
+  label: '架构'
+  permalink: '/tags/architecture'
+  description: '软件架构、设计模式和最佳实践'
+
+testing:
+  label: '测试'
+  permalink: '/tags/testing'
+  description: '软件测试方法、工具和实践'
+
+security:
+  label: '安全'
+  permalink: '/tags/security'
+  description: '应用安全、网络安全和最佳实践'
+
+performance:
+  label: '性能优化'
+  permalink: '/tags/performance'
+  description: '性能优化技术和工具'
+
+mobile:
+  label: '移动开发'
+  permalink: '/tags/mobile'
+  description: '移动开发技术和框架'
+
+ai:
+  label: '人工智能'
+  permalink: '/tags/ai'
+  description: '人工智能、机器学习和深度学习'
+
+career:
+  label: '职业发展'
+  permalink: '/tags/career'
+  description: '职业发展、技能提升和行业洞察'
+
+tutorial:
+  label: '教程'
+  permalink: '/tags/tutorial'
+  description: '教程和指南'

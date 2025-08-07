@@ -23,3 +23,13 @@ slorber:
     linkedin: sebastienlorber
     github: slorber
     newsletter: https://thisweekinreact.com
+
+default:
+  name: 全栈开发者
+  title: 高级全栈开发工程师
+  url: https://github.com/yourusername
+  image_url: /img/avatar.svg
+  email: your.email@example.com
+  description: |
+    8年Web开发经验，热衷于前端技术、后端架构和DevOps实践。
+    喜欢分享技术见解和最佳实践，致力于构建高效、可扩展的应用程序。

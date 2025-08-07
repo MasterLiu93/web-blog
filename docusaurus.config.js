@@ -1,7 +1,6 @@
 // @ts-check
 // `@type` JSDoc annotations allow editor autocompletion and type checking
 // (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
@@ -10,8 +9,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: '全栈开发者博客',
+  tagline: '探索现代Web开发的全部领域',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -20,26 +19,26 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
+  url: 'https://your-site-url.com',
   baseUrl: '/',
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'your-github-username', // GitHub org/user name.
+  projectName: 'blog-web', // repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+  // useful metadata like html lang.
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans'],
   },
+
+  plugins: [
+    // 移除 @docusaurus/plugin-ideal-image 插件
+  ],
 
   presets: [
     [
@@ -48,25 +47,23 @@ const config = {
       ({
         docs: {
           sidebarPath: './sidebars.js',
-          // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/your-github-username/blog-web/tree/main/',
         },
         blog: {
           showReadingTime: true,
+          // Please change this to your repo.
+          editUrl:
+            'https://github.com/your-github-username/blog-web/tree/main/',
+          postsPerPage: 5,
+          blogSidebarCount: 'ALL',
+          blogSidebarTitle: '全部博客文章',
           feedOptions: {
             type: ['rss', 'atom'],
-            xslt: true,
+            copyright: `Copyright © ${new Date().getFullYear()} 全栈开发者博客`,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+          sortPosts: 'descending',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -79,23 +76,38 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/social-card.jpg',
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
+      },
       navbar: {
-        title: 'My Site',
+        title: '全栈开发者',
         logo: {
-          alt: 'My Site Logo',
+          alt: '全栈开发者Logo',
           src: 'img/logo.svg',
         },
         items: [
+          {to: '/blog', label: '博客', position: 'left'},
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: '知识库',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            label: '项目',
+            to: '/projects',
+            position: 'left',
+          },
+          {
+            label: '关于我',
+            to: '/about',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/your-github-username',
             label: 'GitHub',
             position: 'right',
           },
@@ -105,50 +117,71 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: '内容',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'X',
-                href: 'https://x.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'Blog',
+                label: '博客',
                 to: '/blog',
               },
               {
+                label: '知识库',
+                to: '/docs/intro',
+              },
+              {
+                label: '项目',
+                to: '/projects',
+              },
+            ],
+          },
+          {
+            title: '社交账号',
+            items: [
+              {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/your-github-username',
+              },
+              {
+                label: '领英',
+                href: 'https://linkedin.com/in/your-linkedin',
+              },
+              {
+                label: '推特',
+                href: 'https://twitter.com/your-twitter',
+              },
+            ],
+          },
+          {
+            title: '更多',
+            items: [
+              {
+                label: 'RSS订阅',
+                to: '/blog/rss.xml',
+              },
+              {
+                label: '关于我',
+                to: '/about',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} 全栈开发者博客. 基于 Docusaurus 构建.`,
       },
       prism: {
-        theme: prismThemes.github,
+        theme: prismThemes.vsDark,
         darkTheme: prismThemes.dracula,
+        additionalLanguages: ['bash', 'diff', 'json', 'java', 'python', 'csharp', 'jsx', 'typescript', 'tsx'],
+      },
+      // Add algolia DocSearch if you want
+      // algolia: {
+      //   // Replace with your own values
+      //   appId: 'YOUR_APP_ID',
+      //   apiKey: 'YOUR_SEARCH_API_KEY',
+      //   indexName: 'YOUR_INDEX_NAME',
+      //   contextualSearch: true,
+      // },
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 4,
       },
     }),
 };

@@ -1,0 +1,8 @@
+{
+  "label": "设计模式",
+  "position": 12,
+  "link": {
+    "type": "generated-index",
+    "description": "设计模式详解，包括创建型模式、结构型模式、行为型模式等"
+  }
+} 
