@@ -159,16 +159,25 @@
   justify-content: center;
   margin-bottom: 1.5rem;
   color: var(--ifm-color-primary-darkest);
+  box-shadow: 0 10px 15px -3px rgba(var(--ifm-color-primary-rgb), 0.2);
+  transition: all 0.3s ease;
 }
 
 [data-theme='dark'] .cardIcon {
   background-color: var(--ifm-color-primary-darkest);
   color: var(--ifm-color-primary-lightest);
+  box-shadow: 0 10px 15px -3px rgba(var(--ifm-color-primary-rgb), 0.4);
+}
+
+.card:hover .cardIcon {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 15px 20px -3px rgba(var(--ifm-color-primary-rgb), 0.3);
 }
 
 .featureIcon {
   width: 32px;
   height: 32px;
+  color: var(--ifm-color-primary);
 }
 
 .cardLink {

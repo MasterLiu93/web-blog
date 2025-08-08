@@ -1,0 +1,86 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.前端开发": {
+    "message": "前端开发",
+    "description": "The label for category 前端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.前端开发.link.generated-index.description": {
+    "message": "前端开发相关的技术文档、框架使用和最佳实践",
+    "description": "The generated-index page description for category 前端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.HTML和CSS": {
+    "message": "HTML和CSS",
+    "description": "The label for category HTML和CSS in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.JavaScript": {
+    "message": "JavaScript",
+    "description": "The label for category JavaScript in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.React": {
+    "message": "React",
+    "description": "The label for category React in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.移动应用开发": {
+    "message": "移动应用开发",
+    "description": "The label for category 移动应用开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.后端开发": {
+    "message": "后端开发",
+    "description": "The label for category 后端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.后端开发.link.generated-index.description": {
+    "message": "Java 后端开发完全指南，包括Java基础、集合框架、并发编程、JVM、Spring框架等",
+    "description": "The generated-index page description for category 后端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Java基础": {
+    "message": "Java基础",
+    "description": "The label for category Java基础 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Java集合框架": {
+    "message": "Java集合框架",
+    "description": "The label for category Java集合框架 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.并发编程": {
+    "message": "并发编程",
+    "description": "The label for category 并发编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.JVM": {
+    "message": "JVM",
+    "description": "The label for category JVM in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Spring框架": {
+    "message": "Spring框架",
+    "description": "The label for category Spring框架 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.数据库与ORM": {
+    "message": "数据库与ORM",
+    "description": "The label for category 数据库与ORM in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.微服务": {
+    "message": "微服务",
+    "description": "The label for category 微服务 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.分布式系统": {
+    "message": "分布式系统",
+    "description": "The label for category 分布式系统 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.消息队列": {
+    "message": "消息队列",
+    "description": "The label for category 消息队列 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.网络编程": {
+    "message": "网络编程",
+    "description": "The label for category 网络编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.设计模式": {
+    "message": "设计模式",
+    "description": "The label for category 设计模式 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.系统设计": {
+    "message": "系统设计",
+    "description": "The label for category 系统设计 in sidebar tutorialSidebar"
+  }
+}

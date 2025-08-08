@@ -151,8 +151,8 @@ export default function Projects() {
   const regularProjects = projects.filter(project => !project.featured);
 
   return (
-    <Layout
-      title={translate({id: "projects.meta.title", message: "项目作品"})}
+    <Layout 
+      title={translate({id: "projects.meta.title", message: "项目作品"})} 
       description={translate({
         id: "projects.meta.description",
         message: "全栈开发工程师的项目作品展示，包括Web应用、移动应用和DevOps工具等"

@@ -1,0 +1,825 @@
+{
+  "about.technologies": {
+    "message": "技术栈："
+  },
+  "about.meta.title": {
+    "message": "关于我"
+  },
+  "about.meta.description": {
+    "message": "全栈开发工程师的个人简介、技能、经历和联系方式"
+  },
+  "about.title": {
+    "message": "关于我"
+  },
+  "about.fullstackDeveloper": {
+    "message": "全栈开发工程师"
+  },
+  "about.description": {
+    "message": "9年工作经验，专注于企业级应用开发与架构设计。擅长全栈开发，热衷于学习新技术，有丰富的项目管理经验。"
+  },
+  "about.stats.experience": {
+    "message": "年经验"
+  },
+  "about.stats.projects": {
+    "message": "项目"
+  },
+  "about.stats.skills": {
+    "message": "技能"
+  },
+  "about.avatar": {
+    "message": "个人头像"
+  },
+  "about.experience": {
+    "message": "工作经历"
+  },
+  "about.experience.period1": {
+    "message": "2025.01 - 至今"
+  },
+  "about.experience.company1": {
+    "message": "中联智航（北京）科技有限公司"
+  },
+  "about.experience.position1": {
+    "message": "全栈工程师"
+  },
+  "about.experience.description1": {
+    "message": "负责智慧营地/智慧仓储和智慧完工项目的开发维护。独立完成若依架构项目改造，实现多租户、多营地、引入Redis分布式锁、统一编码及ID生成规则。统一国际化和前端页面样式，提高代码可读性和可扩展性。"
+  },
+  "about.experience.tech1": {
+    "message": "若依3.8.9、Redission、Vue3、Element-UI Plus、Echarts、DeepSeek"
+  },
+  "about.experience.period2": {
+    "message": "2023.07 - 2024.12"
+  },
+  "about.experience.company2": {
+    "message": "北京君周科技有限公司"
+  },
+  "about.experience.position2": {
+    "message": "工业大数据平台 软件开发工程师"
+  },
+  "about.experience.description2": {
+    "message": "负责需求分析与设计，数据库表结构设计，开发服务端代码，对接内外部系统。为新老系统提供解决方案和技术支持，跟进项目进度，进行风险评估，组织评审和验收会议。"
+  },
+  "about.experience.tech2": {
+    "message": "SpringCloud、SpringBoot、MyBatis-Plus、MySQL、Swagger、Maven、Vue、ElementUI、ECharts"
+  },
+  "about.experience.period3": {
+    "message": "2021.09 - 2023.06"
+  },
+  "about.experience.company3": {
+    "message": "北京奇木科技有限公司"
+  },
+  "about.experience.position3": {
+    "message": "国网四级安全接入网关 全栈开发工程师"
+  },
+  "about.experience.description3": {
+    "message": "负责技术选型、整体架构、仪表盘页面开发和数据集成。独立完成项目架构、仪表盘页面开发设计、ETL数据集成、数据可视化，以及与安全设备的对接和数据采集。"
+  },
+  "about.experience.tech3": {
+    "message": "Spring Boot、MyBatis、MySQL、Redis、Vue2、ElementUI、ECharts、Prometheus、Loki、Grafana"
+  },
+  "about.experience.period4": {
+    "message": "2019.09 - 2021.08"
+  },
+  "about.experience.company4": {
+    "message": "北京博思廷科技有限公司"
+  },
+  "about.experience.position4": {
+    "message": "服务供应链(SSC)-LVR门户 高级开发工程师"
+  },
+  "about.experience.description4": {
+    "message": "为LVR提供独立服务，包括菜单管理、角色管理、人员管理、订单生成、订单查询、订单跟进、订单维护、反馈、邮件提醒、物流同步、订单延期、费用结算等功能，满足国际业务需求。"
+  },
+  "about.experience.tech4": {
+    "message": "Spring Boot、MyBatis、MySQL、Redis、Vue2、ElementUI、ECharts、Quartz"
+  },
+  "about.projects": {
+    "message": "项目经验"
+  },
+  "about.project1.title": {
+    "message": "智慧仓储系统"
+  },
+  "about.project1.description": {
+    "message": "以物联网三维建模与AI决策为核心的企业级解决方案，系统集成核心业务包括仓库管理、库位管理、物料分类、物料管理、供应商管理、客户管理、入库管理、出库管理、库存管理。通过RFID自动识别（准确率99.6%）与数字孪生技术，实现入库效率提升50%、库存周转周期缩短22%的精细化运营。"
+  },
+  "about.project2.title": {
+    "message": "智慧营地系统"
+  },
+  "about.project2.description": {
+    "message": "为大型企业提供营地管理解决方案，包括营地人员管理、房间管理、车辆管理、访客管理、考勤管理、餐饮管理等功能。系统通过多租户架构设计，支持多营地并行管理，实现营地资源利用率提升35%，管理效率提升60%。"
+  },
+  "about.project3.title": {
+    "message": "国网四级安全接入网关"
+  },
+  "about.project3.description": {
+    "message": "为国家电网提供安全接入网关解决方案，包括设备管理、安全策略管理、日志审计、报表统计等功能。系统通过集中管理和策略下发，实现对网络边界安全的精细化管控，提升安全事件响应速度80%，降低安全风险90%。"
+  },
+  "about.project4.title": {
+    "message": "服务供应链(SSC)-LVR门户"
+  },
+  "about.project4.description": {
+    "message": "为LVR提供独立服务，包括菜单管理、角色管理、人员管理、订单生成、订单查询、订单跟进、订单维护、反馈、邮件提醒、物流同步、订单延期、费用结算等功能，满足国际业务需求。"
+  },
+  "about.skills": {
+    "message": "技能专长"
+  },
+  "about.frontendDevelopment": {
+    "message": "前端开发"
+  },
+  "about.backendDevelopment": {
+    "message": "后端开发"
+  },
+  "about.devOps": {
+    "message": "DevOps"
+  },
+  "about.aiTools": {
+    "message": "AI工具"
+  },
+  "about.databases": {
+    "message": "数据库"
+  },
+  "about.architecture": {
+    "message": "架构设计"
+  },
+  "about.education": {
+    "message": "教育背景"
+  },
+  "about.education.degree": {
+    "message": "本科"
+  },
+  "about.education.school": {
+    "message": "天津工业大学"
+  },
+  "about.education.major": {
+    "message": "软件工程"
+  },
+  "about.contact": {
+    "message": "联系方式"
+  },
+  "about.contact.email": {
+    "message": "邮箱"
+  },
+  "about.contact.wechat": {
+    "message": "微信"
+  },
+  "about.contact.wechatScan": {
+    "message": "扫描下方二维码添加"
+  },
+  "about.contact.wechatQR": {
+    "message": "微信二维码"
+  },
+  "hero.title": {
+    "message": "Laby的博客"
+  },
+  "hero.tagline": {
+    "message": "探索现代Web开发的全部领域"
+  },
+  "hero.badge.frontend": {
+    "message": "前端"
+  },
+  "hero.badge.backend": {
+    "message": "后端"
+  },
+  "hero.badge.architecture": {
+    "message": "架构"
+  },
+  "hero.badge.mobile": {
+    "message": "移动开发"
+  },
+  "hero.button.readBlog": {
+    "message": "阅读博客"
+  },
+  "hero.button.viewProjects": {
+    "message": "查看项目"
+  },
+  "code.developer.name": {
+    "message": "全栈开发者"
+  },
+  "code.developer.return": {
+    "message": "构建出色的Web体验"
+  },
+  "blog.post1.title": {
+    "message": "构建现代Web应用"
+  },
+  "blog.post1.date": {
+    "message": "2023年8月25日"
+  },
+  "blog.post1.excerpt": {
+    "message": "探索使用React创建高性能Web应用的最新技术和最佳实践。"
+  },
+  "blog.post2.title": {
+    "message": "可扩展的后端架构"
+  },
+  "blog.post2.date": {
+    "message": "2023年7月12日"
+  },
+  "blog.post2.excerpt": {
+    "message": "如何使用微服务设计能够高效处理增长和扩展的后端系统。"
+  },
+  "section.latestArticles": {
+    "message": "最新文章"
+  },
+  "section.viewAll": {
+    "message": "查看全部"
+  },
+  "blog.readMore": {
+    "message": "阅读更多"
+  },
+  "feature.frontend.title": {
+    "message": "前端开发"
+  },
+  "feature.frontend.desc": {
+    "message": "使用现代框架和库构建响应式、交互式的用户界面。"
+  },
+  "feature.backend.title": {
+    "message": "后端解决方案"
+  },
+  "feature.backend.desc": {
+    "message": "创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。"
+  },
+  "feature.database.title": {
+    "message": "数据库设计"
+  },
+  "feature.database.desc": {
+    "message": "设计高效的数据库架构和查询优化，提升应用性能。"
+  },
+  "feature.mobile.title": {
+    "message": "移动应用开发"
+  },
+  "feature.mobile.desc": {
+    "message": "开发跨平台移动应用，在iOS和Android上无缝运行。"
+  },
+  "feature.devops.title": {
+    "message": "DevOps实践"
+  },
+  "feature.devops.desc": {
+    "message": "实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。"
+  },
+  "feature.code.title": {
+    "message": "代码质量"
+  },
+  "feature.code.desc": {
+    "message": "编写可维护、可测试的代码，遵循最佳实践和现代设计模式。"
+  },
+  "section.myExpertise": {
+    "message": "我的专长"
+  },
+  "newsletter.title": {
+    "message": "保持联系"
+  },
+  "newsletter.description": {
+    "message": "订阅我的通讯，获取最新文章、教程和技术见解。"
+  },
+  "newsletter.email.placeholder": {
+    "message": "您的邮箱地址"
+  },
+  "newsletter.subscribe": {
+    "message": "订阅"
+  },
+  "stats.projects": {
+    "message": "完成的项目"
+  },
+  "stats.experience": {
+    "message": "年行业经验"
+  },
+  "stats.support": {
+    "message": "技术支持"
+  },
+  "flip.frontend.title": {
+    "message": "前端开发"
+  },
+  "flip.frontend.subtitle": {
+    "message": "悬停查看详情"
+  },
+  "flip.frontend.details.title": {
+    "message": "技术栈"
+  },
+  "flip.frontend.details.content": {
+    "message": "React, Vue, Angular, Next.js, 响应式设计"
+  },
+  "flip.learn": {
+    "message": "了解更多"
+  },
+  "flip.backend.title": {
+    "message": "后端开发"
+  },
+  "flip.backend.subtitle": {
+    "message": "悬停查看详情"
+  },
+  "flip.backend.details.title": {
+    "message": "技术栈"
+  },
+  "flip.backend.details.content": {
+    "message": "Node.js, Spring Boot, Express, 微服务架构"
+  },
+  "flip.devops.title": {
+    "message": "DevOps"
+  },
+  "flip.devops.subtitle": {
+    "message": "悬停查看详情"
+  },
+  "flip.devops.details.title": {
+    "message": "技术栈"
+  },
+  "flip.devops.details.content": {
+    "message": "Docker, Kubernetes, CI/CD, AWS, Azure"
+  },
+  "info.card.title": {
+    "message": "我的优势"
+  },
+  "info.feature.1": {
+    "message": "9年全栈开发经验，精通前后端技术栈，能独立完成系统架构设计与开发"
+  },
+  "info.feature.2": {
+    "message": "丰富的企业级应用开发经验，专注于高并发、高可用系统设计"
+  },
+  "info.feature.3": {
+    "message": "优秀的项目管理能力，主导过多个大型项目，确保高质量交付"
+  },
+  "info.feature.4": {
+    "message": "持续学习AI、云原生等前沿技术，将创新方案应用到实际项目中"
+  },
+  "timeline.present": {
+    "message": "至今"
+  },
+  "timeline.title.1": {
+    "message": "全栈开发"
+  },
+  "timeline.content.1": {
+    "message": "负责企业级Web应用的前后端开发，专注于微服务架构和现代化前端框架。"
+  },
+  "timeline.title.2": {
+    "message": "前端开发"
+  },
+  "timeline.content.2": {
+    "message": "专注于响应式UI设计和前端性能优化，使用React和Vue框架开发复杂应用。"
+  },
+  "timeline.title.3": {
+    "message": "后端开发"
+  },
+  "timeline.content.3": {
+    "message": "开发和维护服务器端应用，设计数据库结构，构建RESTful API。"
+  },
+  "glow.text": {
+    "message": "探索、创新、实现"
+  },
+  "meta.description": {
+    "message": "全栈开发工程师的博客，分享Web开发见解、教程和最佳实践"
+  },
+  "section.stats": {
+    "message": "关键数据"
+  },
+  "section.services": {
+    "message": "我们的服务"
+  },
+  "section.experience": {
+    "message": "职业经历"
+  },
+  "projects.featured": {
+    "message": "精选项目"
+  },
+  "projects.viewDemo": {
+    "message": "查看演示"
+  },
+  "projects.sourceCode": {
+    "message": "源代码"
+  },
+  "projects.openSource.tooltip": {
+    "message": "项目开源中, 请持续关注。"
+  },
+  "project1.title": {
+    "message": "智慧城市安全监控系统"
+  },
+  "project1.description": {
+    "message": "基于AI视觉分析的智慧城市监控系统，实现人流量统计、异常行为检测和安全预警。系统采用微服务架构，支持高并发视频流处理和实时报警。"
+  },
+  "tech.microservices": {
+    "message": "微服务"
+  },
+  "tech.vision": {
+    "message": "视觉分析"
+  },
+  "project2.title": {
+    "message": "企业级数据可视化平台"
+  },
+  "project2.description": {
+    "message": "为大型企业定制的数据可视化平台，整合多源数据，提供实时监控、趋势分析和预测功能。支持自定义仪表盘和报表导出。"
+  },
+  "tech.realtime": {
+    "message": "实时数据"
+  },
+  "project3.title": {
+    "message": "跨平台移动电商应用"
+  },
+  "project3.description": {
+    "message": "基于React Native的跨平台电商应用，支持商品浏览、购物车、支付和订单管理。整合了多种支付方式和物流跟踪功能。"
+  },
+  "tech.payment": {
+    "message": "支付集成"
+  },
+  "project4.title": {
+    "message": "DevOps自动化部署平台"
+  },
+  "project4.description": {
+    "message": "企业级DevOps平台，实现代码集成、测试、构建和部署的全流程自动化。支持多环境管理、版本控制和回滚机制。"
+  },
+  "tech.automation": {
+    "message": "自动化工作流"
+  },
+  "projects.meta.title": {
+    "message": "项目作品"
+  },
+  "projects.meta.description": {
+    "message": "全栈开发工程师的项目作品展示，包括Web应用、移动应用和DevOps工具等"
+  },
+  "projects.title": {
+    "message": "项目作品"
+  },
+  "projects.description": {
+    "message": "这里展示了我作为全栈开发工程师的一些代表性项目。每个项目都融合了前端、后端和数据可视化的技术栈。"
+  },
+  "projects.haveIdea": {
+    "message": "有项目想法？"
+  },
+  "projects.collaboration": {
+    "message": "我对新的项目合作和机会持开放态度。如果您有项目想法或技术问题需要帮助，请随时联系我。"
+  },
+  "projects.contactMe": {
+    "message": "联系我"
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "页面已崩溃。",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "回到顶部",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.archive.title": {
+    "message": "历史博文",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "历史博文",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "博文列表分页导航",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "较新的博文",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "较旧的博文",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "博文分页导航",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "较新一篇",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "较旧一篇",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "查看所有标签",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.colorToggle.ariaLabel.mode.system": {
+    "message": "system mode",
+    "description": "The name for the system color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "浅色模式",
+    "description": "The name for the light color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "暗黑模式",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "切换浅色/暗黑模式（当前为{mode}）",
+    "description": "The ARIA label for the color mode toggle"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "页面路径",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.DocCard.categoryDescription.plurals": {
+    "message": "{count} 个项目",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "文件选项卡",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "上一页",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "下一页",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "{count} 篇文档带有标签",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "{nDocsTagged}「{tagName}」",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "版本：{versionLabel}"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "此为 {siteTitle} {versionLabel} 版尚未发行的文档。",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "此为 {siteTitle} {versionLabel} 版的文档，现已不再积极维护。",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "最新的文档请参阅 {latestVersionLink} ({versionLabel})。",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "最新版本",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "编辑此页",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "{heading}的直接链接",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": "于 {date} ",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": "由 {user} ",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "最后{byUser}{atDate}更新",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "选择版本",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.NotFound.title": {
+    "message": "找不到页面",
+    "description": "The title of the 404 page"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "标签：",
+    "description": "The label alongside a tag list"
+  },
+  "theme.admonition.caution": {
+    "message": "警告",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.admonition.danger": {
+    "message": "危险",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "信息",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.note": {
+    "message": "备注",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "提示",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.warning": {
+    "message": "注意",
+    "description": "The default label used for the Warning admonition (:::warning)"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "关闭",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "最近博文导航",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.DocSidebarItem.expandCategoryAriaLabel": {
+    "message": "展开侧边栏分类 '{label}'",
+    "description": "The ARIA label to expand the sidebar category"
+  },
+  "theme.DocSidebarItem.collapseCategoryAriaLabel": {
+    "message": "折叠侧边栏分类 '{label}'",
+    "description": "The ARIA label to collapse the sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "主导航",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "选择语言",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.NotFound.p1": {
+    "message": "我们找不到您要找的页面。",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "请联系原始链接来源网站的所有者，并告知他们链接已损坏。",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "本页总览",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.blog.post.readMore": {
+    "message": "阅读更多",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "阅读 {title} 的全文",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "阅读需 {readingTime} 分钟",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "复制",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "复制成功",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "复制代码到剪贴板",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "切换自动换行",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "主页面",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "收起侧边栏",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "收起侧边栏",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "文档侧边栏",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "关闭导航栏",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← 回到主菜单",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "切换导航栏",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
+    "message": "Expand the dropdown",
+    "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
+    "message": "Collapse the dropdown",
+    "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "展开侧边栏",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "展开侧边栏",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "没有找到任何文档"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "查看“{context}”以外的全部结果"
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "查看“{context}”以内的全部结果"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "查看全部结果"
+  },
+  "theme.SearchBar.label": {
+    "message": "搜索",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "“{query}”的搜索结果",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "搜索文档",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "所有"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "共找到 {count} 篇文档",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "没有找到任何文档",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.blog.post.plurals": {
+    "message": "{count} 篇博文",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} 含有标签「{tagName}」",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.blog.author.pageTitle": {
+    "message": "{authorName} - {nPosts}",
+    "description": "The title of the page for a blog author"
+  },
+  "theme.blog.authorsList.pageTitle": {
+    "message": "作者",
+    "description": "The title of the authors page"
+  },
+  "theme.blog.authorsList.viewAll": {
+    "message": "查看所有作者",
+    "description": "The label of the link targeting the blog authors page"
+  },
+  "theme.blog.author.noPosts": {
+    "message": "该作者尚未撰写任何文章。",
+    "description": "The text for authors with 0 blog post"
+  },
+  "theme.contentVisibility.unlistedBanner.title": {
+    "message": "未列出页",
+    "description": "The unlisted content banner title"
+  },
+  "theme.contentVisibility.unlistedBanner.message": {
+    "message": "此页面未列出。搜索引擎不会对其索引，只有拥有直接链接的用户才能访问。",
+    "description": "The unlisted content banner message"
+  },
+  "theme.contentVisibility.draftBanner.title": {
+    "message": "草稿页",
+    "description": "The draft content banner title"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "此页面是草稿，仅在开发环境中可见，不会包含在正式版本中。",
+    "description": "The draft content banner message"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "重试",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "跳到主要内容",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "标签",
+    "description": "The title of the tag list page"
+  },
+  "tech.map": {
+    "message": "地图"
+  },
+  "tech.facial": {
+    "message": "人脸识别"
+  },
+  "projects.subtitle": {
+    "message": "这里展示了我作为全栈开发工程师的一些代表性项目。每个项目都融合了前端、后端和数据可视化的技术栈。"
+  },
+  "projects.featuredProjects": {
+    "message": "精选项目"
+  },
+  "projects.moreProjects": {
+    "message": "更多项目"
+  },
+  "projects.contactText": {
+    "message": "我对新的项目合作和机会持开放态度。如果您有项目想法或技术问题需要帮助，请随时联系我。"
+  }
+}

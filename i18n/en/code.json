@@ -689,7 +689,7 @@
     "message": "Contact Me"
   },
   "about.experience.period1": {
-    "message": "2020 - Present"
+    "message": "2025.01 - Present"
   },
   "about.experience.title1": {
     "message": "Full Stack Developer"
@@ -701,7 +701,7 @@
     "message": "Responsible for front-end and back-end development of the company's core products, including microservice architecture design, front-end UI/UX optimization, and DevOps process construction. Led the technology selection and implementation of several key projects."
   },
   "about.experience.period2": {
-    "message": "2017 - 2020"
+    "message": "2023.07 - 2024.12"
   },
   "about.experience.title2": {
     "message": "Full Stack Developer"
@@ -710,10 +710,10 @@
     "message": "Data Innovation"
   },
   "about.experience.desc2": {
-    "message": "Participated in the development of a big data analysis platform, built front-end interfaces using React and Node.js, developed RESTful APIs, and was responsible for data visualization modules and automated deployment processes."
+    "message": "Responsible for requirement analysis and design, database table structure design, server-side code development, and integration with internal and external systems. Providing solutions and technical support for new and existing systems, tracking project progress, conducting risk assessments, organizing review and acceptance meetings."
   },
   "about.experience.period3": {
-    "message": "2015 - 2017"
+    "message": "2023.03 - 2023.07"
   },
   "about.experience.title3": {
     "message": "Frontend Developer"
@@ -728,7 +728,7 @@
     "message": "About Me"
   },
   "about.meta.description": {
-    "message": "Laby - Personal profile, skills, experience and contact information of a full-stack developer"
+    "message": "Personal profile, skills, experience and contact information of a full-stack developer"
   },
   "about.avatar.alt": {
     "message": "Personal avatar"
@@ -869,7 +869,7 @@
     "message": "Smart City Security Monitoring System"
   },
   "project1.description": {
-    "message": "A city security monitoring system based on microservice architecture, which implements functions such as video surveillance, alarm processing, and AI recognition analysis."
+    "message": "Smart city monitoring system based on AI visual analysis, implementing people flow statistics, abnormal behavior detection, and security alerts. The system adopts a microservice architecture, supporting high-concurrency video stream processing and real-time alarms."
   },
   "tech.microservices": {
     "message": "Microservices"
@@ -881,13 +881,13 @@
     "message": "Smart Warehouse Dashboard"
   },
   "project2.description": {
-    "message": "A data visualization system for real-time monitoring of warehouse status, including personnel scheduling, vehicle management, and task assignment functions."
+    "message": "A customized data visualization platform for large enterprises, integrating multi-source data, providing real-time monitoring, trend analysis, and prediction functions. Supports custom dashboards and report exports."
   },
   "project3.title": {
     "message": "Fiber Optic Line Security Early Warning System"
   },
   "project3.description": {
-    "message": "Real-time monitoring and early warning of fiber optic lines, supporting area management and rapid response to abnormal situations."
+    "message": "Cross-platform e-commerce application based on React Native, supporting product browsing, shopping cart, payment, and order management. Integrates multiple payment methods and logistics tracking functions."
   },
   "tech.map": {
     "message": "GIS Mapping"
@@ -896,7 +896,7 @@
     "message": "Smart Camp Management System"
   },
   "project4.description": {
-    "message": "An intelligent management platform for camp personnel, equipment, and resources, providing real-time status monitoring and data statistics."
+    "message": "Enterprise-level DevOps platform, implementing automation of the entire process of code integration, testing, building, and deployment. Supports multi-environment management, version control, and rollback mechanisms."
   },
   "tech.facial": {
     "message": "Facial Recognition"
@@ -906,5 +906,260 @@
   },
   "projects.meta.description": {
     "message": "Projects showcase of a full-stack developer, including web applications, mobile apps, and DevOps tools"
+  },
+  "stats.projects": {
+    "message": "Completed Projects"
+  },
+  "stats.experience": {
+    "message": "Years of Experience"
+  },
+  "stats.support": {
+    "message": "Technical Support"
+  },
+  "flip.frontend.title": {
+    "message": "Frontend Development"
+  },
+  "flip.frontend.subtitle": {
+    "message": "Hover for details"
+  },
+  "flip.frontend.details.title": {
+    "message": "Tech Stack"
+  },
+  "flip.frontend.details.content": {
+    "message": "React, Vue, Angular, Next.js, Responsive Design"
+  },
+  "flip.learn": {
+    "message": "Learn More"
+  },
+  "flip.backend.title": {
+    "message": "Backend Development"
+  },
+  "flip.backend.subtitle": {
+    "message": "Hover for details"
+  },
+  "flip.backend.details.title": {
+    "message": "Tech Stack"
+  },
+  "flip.backend.details.content": {
+    "message": "Node.js, Spring Boot, Express, Microservices"
+  },
+  "flip.devops.title": {
+    "message": "DevOps"
+  },
+  "flip.devops.subtitle": {
+    "message": "Hover for details"
+  },
+  "flip.devops.details.title": {
+    "message": "Tech Stack"
+  },
+  "flip.devops.details.content": {
+    "message": "Docker, Kubernetes, CI/CD, AWS, Azure"
+  },
+  "info.card.title": {
+    "message": "My Strengths"
+  },
+  "info.feature.1": {
+    "message": "9 years of full-stack development experience, proficient in front-end and back-end technology stacks, capable of independently completing system architecture design and development"
+  },
+  "info.feature.2": {
+    "message": "Rich enterprise application development experience, focusing on high-concurrency and high-availability system design"
+  },
+  "info.feature.3": {
+    "message": "Excellent project management skills, led multiple large-scale projects, ensuring high-quality delivery"
+  },
+  "info.feature.4": {
+    "message": "Continuously learning cutting-edge technologies such as AI and cloud-native, applying innovative solutions to practical projects"
+  },
+  "timeline.present": {
+    "message": "Present"
+  },
+  "timeline.title.1": {
+    "message": "Full Stack Development"
+  },
+  "timeline.content.1": {
+    "message": "Responsible for enterprise-level web application development, focusing on microservice architecture and modern frontend frameworks."
+  },
+  "timeline.title.2": {
+    "message": "Frontend Development"
+  },
+  "timeline.content.2": {
+    "message": "Focused on responsive UI design and frontend performance optimization using React and Vue frameworks for complex applications."
+  },
+  "timeline.title.3": {
+    "message": "Backend Development"
+  },
+  "timeline.content.3": {
+    "message": "Developed and maintained server-side applications, designed database structures, and built RESTful APIs."
+  },
+  "glow.text": {
+    "message": "Explore, Innovate, Implement"
+  },
+  "section.stats": {
+    "message": "Key Statistics"
+  },
+  "section.services": {
+    "message": "Our Services"
+  },
+  "section.experience": {
+    "message": "Career History"
+  },
+  "about.technologies": {
+    "message": "Tech Stack:"
+  },
+  "about.title": {
+    "message": "About Me"
+  },
+  "about.description": {
+    "message": "9 years of work experience, focusing on enterprise application development and architecture design. Proficient in full-stack development, passionate about learning new technologies, with extensive project management experience."
+  },
+  "about.avatar": {
+    "message": "Personal Avatar"
+  },
+  "about.experience": {
+    "message": "工作经历"
+  },
+  "about.experience.company1": {
+    "message": "Zhonglian Zhihang (Beijing) Technology Co., Ltd."
+  },
+  "about.experience.position1": {
+    "message": "Full Stack Engineer"
+  },
+  "about.experience.description1": {
+    "message": "Responsible for the development and maintenance of Smart Camp/Smart Warehouse and Smart Completion projects. Independently completed the transformation of the RuoYi architecture project, implementing multi-tenant, multi-camp, introducing Redis distributed locks, unified coding and ID generation rules. Unified internationalization and front-end page styles, improved code readability and scalability."
+  },
+  "about.experience.tech1": {
+    "message": "RuoYi 3.8.9, Redission, Vue3, Element-UI Plus, ECharts, DeepSeek"
+  },
+  "about.experience.company2": {
+    "message": "Beijing Junzhou Technology Co., Ltd."
+  },
+  "about.experience.position2": {
+    "message": "Industrial Big Data Platform Software Engineer"
+  },
+  "about.experience.description2": {
+    "message": "Responsible for requirement analysis and design, database table structure design, server-side code development, and integration with internal and external systems. Providing solutions and technical support for new and existing systems, tracking project progress, conducting risk assessments, organizing review and acceptance meetings."
+  },
+  "about.experience.company3": {
+    "message": "Beijing Qimu Technology Co., Ltd."
+  },
+  "about.experience.position3": {
+    "message": "State Grid Siji Security Access Gateway Full Stack Developer"
+  },
+  "about.experience.description3": {
+    "message": "Responsible for technology selection, overall architecture, dashboard page development, and data integration. Independently completed project architecture, dashboard page development and design, ETL data integration, and distributed task scheduling platform construction."
+  },
+  "about.experience.tech3": {
+    "message": "SpringBoot, MyBatis-Plus, JNI, MySQL, EasyPoi, Swagger, Maven, LayUI, ECharts, Nginx"
+  },
+  "about.experience.period4": {
+    "message": "2020.01 - 2023.03"
+  },
+  "about.experience.company4": {
+    "message": "Beijing Kerui International Human Resources Co., Ltd."
+  },
+  "about.experience.position4": {
+    "message": "Service Supply Chain (SSC) -LVR Portal Team Leader"
+  },
+  "about.experience.description4": {
+    "message": "Responsible for overall project progress control, designing solutions based on business requirements, and participating in code writing. Independently completed project design, service module construction and related configuration, page development and design."
+  },
+  "about.experience.tech4": {
+    "message": "SpringCloud, JDK11, Gradle, MyBatis-Plus, MySQL, Swagger, xxl-job, Redis, Vue, ElementUI"
+  },
+  "about.experience.period5": {
+    "message": "2017.07 - 2020.01"
+  },
+  "about.experience.company5": {
+    "message": "Henan Yuanbo Software Co., Ltd."
+  },
+  "about.experience.position5": {
+    "message": "HC Big Data Visualization Platform Project Manager"
+  },
+  "about.experience.description5": {
+    "message": "Responsible for technology selection, overall project architecture, development and testing environment construction, code management platform construction, visualization module development and design, operation platform data integration. Independently completed server-side and client-side architecture, built distributed task scheduling platform, code management platform, and monitoring management platform."
+  },
+  "about.experience.tech5": {
+    "message": "SpringBoot, MyBatis-Plus, MySQL, Swagger, Maven, Vue, ElementUI, ECharts, Data V, Nginx"
+  },
+  "about.projects": {
+    "message": "Project Experience"
+  },
+  "about.project1.title": {
+    "message": "Smart Warehouse System"
+  },
+  "about.project1.description": {
+    "message": "An enterprise-level solution based on IoT 3D modeling and AI decision-making, integrating core business modules including warehouse management, location management, material classification, material management, supplier management, customer management, inbound management, outbound management, and inventory management. Through RFID automatic identification (99.6% accuracy) and digital twin technology, it achieves a 50% increase in warehousing efficiency and a 22% reduction in inventory turnover cycle."
+  },
+  "about.project2.title": {
+    "message": "Intelligent Manufacturing Big Data Training Platform"
+  },
+  "about.project2.description": {
+    "message": "An intelligent manufacturing training platform based on industrial internet, divided into SaaS application layer, PaaS platform layer, edge layer, and device layer. The platform layer includes industrial data visualization analysis, industrial APP registration and management, platform management, big data storage and computation, device data management, stream data computation, and multi-tenant management. Responsible for dashboard page development and design, integrating with IoT platforms."
+  },
+  "about.project3.title": {
+    "message": "State Grid Siji Security Access Gateway"
+  },
+  "about.project3.description": {
+    "message": "A security access gateway system that implements settings for access IP addresses, storage resources, user blacklists/whitelists, and user resource access control lists, providing secure access control, user authentication, security auditing capabilities, and transparent storage encryption/decryption capabilities."
+  },
+  "about.skills": {
+    "message": "Technical Skills"
+  },
+  "about.devOps": {
+    "message": "DevOps"
+  },
+  "about.aiTools": {
+    "message": "AI Tools"
+  },
+  "about.education": {
+    "message": "Education"
+  },
+  "about.education.degree": {
+    "message": "Bachelor's Degree"
+  },
+  "about.education.school": {
+    "message": "Tianjin Polytechnic University"
+  },
+  "about.education.major": {
+    "message": "Software Engineering"
+  },
+  "about.contact": {
+    "message": "Contact Information"
+  },
+  "about.contact.wechatScan": {
+    "message": "Scan the QR code below to add"
+  },
+  "about.contact.wechatQR": {
+    "message": "WeChat QR Code"
+  },
+  "about.experience.tech2": {
+    "message": "SpringCloud, SpringBoot, MyBatis-Plus, MySQL, Swagger, Maven, Vue, ElementUI, ECharts"
+  },
+  "about.databases": {
+    "message": "Databases"
+  },
+  "about.architecture": {
+    "message": "Architecture Design"
+  },
+  "about.project4.title": {
+    "message": "Service Supply Chain (SSC)-LVR Portal"
+  },
+  "about.project4.description": {
+    "message": "Provides independent services for LVR, including menu management, role management, personnel management, order generation, order query, order follow-up, order maintenance, feedback, email reminders, logistics synchronization, order delay, and cost settlement functions to meet international business requirements."
+  },
+  "projects.description": {
+    "message": "Here are some representative projects I've worked on as a full-stack developer. Each project integrates front-end, back-end, and data visualization technology stacks."
+  },
+  "projects.collaboration": {
+    "message": "I am open to new project collaborations and opportunities. If you have a project idea or need technical assistance, please feel free to contact me."
+  },
+  "tech.realtime": {
+    "message": "Real-time Data"
+  },
+  "tech.payment": {
+    "message": "Payment Integration"
+  },
+  "tech.automation": {
+    "message": "Automated Workflow"
   }
 }
