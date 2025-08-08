@@ -99,22 +99,22 @@ function ContactItem({label, value, link, icon}) {
         {icon}
         {label}:
       </span>
-      {link ? (
+        {link ? (
         <a href={link} className={styles.contactValue} target="_blank" rel="noopener noreferrer">
-          {value}
+            {value}
         </a>
-      ) : (
+        ) : (
         <span className={styles.contactValue}>
           {value}
         </span>
-      )}
+        )}
     </div>
   );
 }
 
 export default function About() {
   return (
-    <Layout 
+    <Layout
       title={translate({id: "about.meta.title", message: '关于我'})} 
       description={translate({id: "about.meta.description", message: '全栈开发工程师的个人简介、技能、经历和联系方式'})}
     >
@@ -136,7 +136,7 @@ export default function About() {
               <div className={styles.statItem}>
                 <div className={styles.statNumber}>30+</div>
                 <div className={styles.statLabel}><Translate id="about.stats.projects">项目</Translate></div>
-              </div>
+            </div>
               <div className={styles.statItem}>
                 <div className={styles.statNumber}>20+</div>
                 <div className={styles.statLabel}><Translate id="about.stats.skills">技能</Translate></div>
@@ -179,7 +179,7 @@ export default function About() {
                 description={translate({id: "about.experience.description3", message: '负责技术选型、整体架构、仪表盘页面开发和数据集成。独立完成项目架构、仪表盘页面开发设计、ETL数据集成、数据可视化，以及与安全设备的对接和数据采集。'})}
                 technologies={translate({id: "about.experience.tech3", message: 'Spring Boot、MyBatis、MySQL、Redis、Vue2、ElementUI、ECharts、Prometheus、Loki、Grafana'})}
               />
-              
+                  
               <Experience 
                 period={translate({id: "about.experience.period4", message: '2019.09 - 2021.08'})}
                 company={translate({id: "about.experience.company4", message: '北京博思廷科技有限公司'})}
@@ -188,8 +188,8 @@ export default function About() {
                 technologies={translate({id: "about.experience.tech4", message: 'Spring Boot、MyBatis、MySQL、Redis、Vue2、ElementUI、ECharts、Quartz'})}
               />
             </div>
-          </div>
-        </div>
+                </div>
+              </div>
 
         <div className={clsx('row', styles.aboutSection)}>
           <div className="col col--12">
@@ -215,9 +215,9 @@ export default function About() {
                 description={translate({id: "about.project4.description", message: '为LVR提供独立服务，包括菜单管理、角色管理、人员管理、订单生成、订单查询、订单跟进、订单维护、反馈、邮件提醒、物流同步、订单延期、费用结算等功能，满足国际业务需求。'})}
               />
             </div>
-          </div>
-        </div>
-
+                </div>
+              </div>
+              
         <div className={clsx('row', styles.aboutSection)}>
           <div className="col col--12">
             <h2 className={styles.sectionTitle}>
@@ -256,9 +256,9 @@ export default function About() {
                 skills={['微服务', '分布式系统', 'DDD', '高并发', '高可用', '负载均衡', '服务网格', 'API网关', '多租户']}
               />
             </div>
-          </div>
-        </div>
-
+                </div>
+              </div>
+              
         <div className={clsx('row', styles.aboutSection)}>
           <div className="col col--12">
             <h2 className={styles.sectionTitle}>
@@ -274,8 +274,8 @@ export default function About() {
                 <div className={styles.educationMajor}><Translate id="about.education.major">软件工程</Translate></div>
               </div>
             </div>
+            </div>
           </div>
-        </div>
 
         <div className={clsx('row', styles.aboutSection)}>
           <div className="col col--12">
@@ -284,12 +284,12 @@ export default function About() {
               <Translate id="about.contact">联系方式</Translate>
             </h2>
             <div className={styles.contactList}>
-              <ContactItem
+                    <ContactItem 
                 icon={<MdEmail className={styles.contactIcon} />}
                 label={translate({id: "about.contact.email", message: '邮箱'})}
-                value="1521170425@qq.com"
-                link="mailto:1521170425@qq.com"
-              />
+                      value="1521170425@qq.com" 
+                      link="mailto:1521170425@qq.com"
+                    />
               <div className={styles.contactItem}>
                 <span className={styles.contactLabel}>
                   <BsWechat className={styles.contactIcon} />

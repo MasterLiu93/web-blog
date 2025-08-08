@@ -151,7 +151,7 @@ export default function Projects() {
   const regularProjects = projects.filter(project => !project.featured);
 
   return (
-    <Layout 
+    <Layout
       title={translate({id: "projects.meta.title", message: "项目作品"})} 
       description={translate({
         id: "projects.meta.description",
@@ -164,7 +164,7 @@ export default function Projects() {
           </Heading>
           <p className={styles.projectsSubtitle}>
             <Translate id="projects.subtitle">
-              这里展示了我作为全栈开发工程师的一些代表性项目。每个项目都融合了前端、后端和数据可视化的技术栈。
+            这里展示了我作为全栈开发工程师的一些代表性项目。每个项目都融合了前端、后端和数据可视化的技术栈。
             </Translate>
           </p>
         </div>
@@ -208,7 +208,7 @@ export default function Projects() {
               </Heading>
               <p className={styles.contactText}>
                 <Translate id="projects.contactText">
-                  我对新的项目合作和机会持开放态度。如果您有项目想法或技术问题需要帮助，请随时联系我。
+                我对新的项目合作和机会持开放态度。如果您有项目想法或技术问题需要帮助，请随时联系我。
                 </Translate>
               </p>
               <Link to="/about" className="button button--primary button--lg">

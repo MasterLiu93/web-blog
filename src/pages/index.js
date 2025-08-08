@@ -294,7 +294,7 @@ function NewsletterSection() {
               </Heading>
               <p className={styles.newsletterDescription}>
                 <Translate id="newsletter.description">
-                  订阅我的通讯，获取最新文章、教程和技术见解。
+                订阅我的通讯，获取最新文章、教程和技术见解。
                 </Translate>
               </p>
             </div>

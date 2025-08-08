@@ -874,7 +874,7 @@ a:not(.navbar__link):not(.button):not(.card__link):hover::after {
 /* 悬浮信息卡片 */
 .info-card {
   position: relative;
-  padding: 2rem;
+    padding: 2rem;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 16px;
   backdrop-filter: blur(10px);
@@ -1211,4 +1211,181 @@ a:not(.navbar__link):not(.button):not(.card__link):hover::after {
   color: var(--ifm-color-primary);
   margin-right: 0.5rem;
   font-weight: bold;
+}
+
+/* 修复"跳到主要内容"链接 */
+a[href="#main"], /* 通用选择器 */
+.skipToContent_fXgn, 
+.skip-to-content, 
+[class*="skipToContent"] {
+  display: none !important; /* 完全隐藏 */
+}
+
+/* 或者修复它的位置，不让它影响布局 */
+/*
+.skipToContent_fXgn {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+*/
+
+/* 优化表格样式 */
+.markdown table,
+.theme-doc-markdown table,
+article table,
+.mdx-page table,
+.docusaurus-mdx-content table,
+main table {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown thead tr,
+.theme-doc-markdown thead tr,
+article thead tr,
+.mdx-page thead tr,
+.docusaurus-mdx-content thead tr,
+main thead tr {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown th,
+.theme-doc-markdown th,
+article th,
+.mdx-page th,
+.docusaurus-mdx-content th,
+main th {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown td,
+.theme-doc-markdown td,
+article td,
+.mdx-page td,
+.docusaurus-mdx-content td,
+main td {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown tr:last-child td,
+.theme-doc-markdown tr:last-child td,
+article tr:last-child td,
+.mdx-page tr:last-child td,
+.docusaurus-mdx-content tr:last-child td,
+main tr:last-child td {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown tbody tr:nth-child(odd),
+.theme-doc-markdown tbody tr:nth-child(odd),
+article tbody tr:nth-child(odd),
+.mdx-page tbody tr:nth-child(odd),
+.docusaurus-mdx-content tbody tr:nth-child(odd),
+main tbody tr:nth-child(odd) {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown tbody tr:nth-child(even),
+.theme-doc-markdown tbody tr:nth-child(even),
+article tbody tr:nth-child(even),
+.mdx-page tbody tr:nth-child(even),
+.docusaurus-mdx-content tbody tr:nth-child(even),
+main tbody tr:nth-child(even) {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+.markdown tbody tr:hover,
+.theme-doc-markdown tbody tr:hover,
+article tbody tr:hover,
+.mdx-page tbody tr:hover,
+.docusaurus-mdx-content tbody tr:hover,
+main tbody tr:hover {
+  /* 这些样式已被全局表格样式替代 */
+}
+
+/* 全局表格样式 - 优化和修复圆角 */
+table {
+  width: auto; /* 改为自适应宽度 */
+  max-width: 100%; /* 最大宽度100% */
+  margin: 1.5rem 0; /* 左对齐，去掉auto */
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+/* 包含表格的容器样式 */
+.markdown table, 
+.theme-doc-markdown table,
+article table,
+.mdx-page table,
+.docusaurus-mdx-content table,
+main table {
+  display: table;
+  margin-left: 0; /* 改为左对齐 */
+  margin-right: auto;
+}
+
+/* 表格单元格样式 */
+th, td {
+  white-space: nowrap; /* 防止内容换行 */
+  padding: 12px 20px; /* 增加水平内边距 */
+  text-align: left; /* 文本左对齐 */
+}
+
+th {
+  font-weight: 600; /* 表头字体加粗 */
+}
+
+td {
+  font-weight: normal; /* 表格内容正常字重 */
+  border-bottom: 1px solid var(--ifm-table-border-color);
+}
+
+/* 表格头部样式 */
+thead tr {
+  background-color: var(--ifm-color-primary);
+  color: white;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: var(--ifm-table-stripe-background);
+}
+
+tbody tr:nth-child(even) {
+  background-color: var(--ifm-background-color);
+}
+
+tbody tr:hover {
+  background-color: var(--ifm-hover-overlay);
+}
+
+/* 确保表格的第一行第一个和最后一个单元格有圆角 */
+table tr:first-child th:first-child {
+  border-top-left-radius: 8px;
+}
+
+table tr:first-child th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* 确保表格的最后一行第一个和最后一个单元格有圆角 */
+table tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
 }
