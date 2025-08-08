@@ -33,7 +33,19 @@ const config = {
   // useful metadata like html lang.
   i18n: {
     defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans'],
+    locales: ['zh-Hans', 'en'],
+    localeConfigs: {
+      'zh-Hans': {
+        label: '简体中文',
+        direction: 'ltr',
+        htmlLang: 'zh-Hans',
+      },
+      'en': {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en',
+      },
+    },
   },
 
   plugins: [
@@ -43,6 +55,22 @@ const config = {
         alias: {
           '@site/blog/authors': './blog/authors',
         },
+      },
+    ],
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        // 配置选项
+        hashed: true, // 为了加快构建速度，推荐启用哈希
+        language: ["en", "zh"], // 支持的语言
+        indexDocs: true,
+        indexBlog: true,
+        docsRouteBasePath: "/docs",
+        blogRouteBasePath: "/blog",
+        docsDir: "docs",
+        blogDir: "blog",
+        highlightSearchTermsOnTargetPage: true,
+        searchBarShortcutHint: false
       },
     ],
   ],
@@ -71,12 +99,14 @@ const config = {
           postsPerPage: 5,
           blogSidebarCount: 'ALL',
           blogSidebarTitle: '全部博客文章',
+          blogDescription: '关注前后端开发、DevOps和系统架构设计的技术博客',
           feedOptions: {
-            type: ['rss', 'atom'],
+            type: 'all',
+            title: 'Laby的博客',
+            description: '关注前后端开发、DevOps和系统架构设计的技术博客',
             copyright: `Copyright © ${new Date().getFullYear()} Laby的博客`,
+            language: 'zh-CN',
           },
-          sortPosts: 'descending',
-          authorsMapPath: 'authors.yml',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -88,13 +118,14 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/social-card.jpg',
+      // 设置图片亮暗模式
       colorMode: {
-        defaultMode: 'dark',
+        defaultMode: 'light',
         disableSwitch: false,
         respectPrefersColorScheme: true,
       },
+      // Replace with your project's social card
+      image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: 'Laby的博客',
         logo: {
@@ -102,22 +133,18 @@ const config = {
           src: 'img/logo.jpg',
         },
         items: [
-          {to: '/blog', label: '博客', position: 'left'},
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: '知识库导航',
-            to: '/docs/intro',
           },
+          {to: '/blog', label: '博客', position: 'left'},
+          {to: '/projects', label: '项目', position: 'left'},
+          {to: '/about', label: '关于我', position: 'right'},
+          // 添加语言切换菜单
           {
-            label: '项目',
-            to: '/projects',
-            position: 'left',
-          },
-          {
-            label: '关于我',
-            to: '/about',
+            type: 'localeDropdown',
             position: 'right',
           },
           {
@@ -139,11 +166,7 @@ const config = {
               },
               {
                 label: '知识库导航',
-                to: '/docs/intro',
-              },
-              {
-                label: '项目',
-                to: '/projects',
+                to: '/docs',
               },
             ],
           },
@@ -151,9 +174,13 @@ const config = {
             title: '社交账号',
             items: [
               {
+                label: '项目',
+                to: '/projects',
+              },
+              {
                 label: 'GitHub',
                 href: 'https://github.com/MasterLiu93',
-              }
+              },
             ],
           },
           {
@@ -161,7 +188,7 @@ const config = {
             items: [
               {
                 label: 'RSS订阅',
-                to: '/blog',
+                to: '/blog/rss.xml',
               },
               {
                 label: '关于我',
@@ -170,32 +197,15 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Laby的博客. 基于 Docusaurus 构建.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Laby的博客. Built with Docusaurus.`,
       },
       prism: {
-        theme: prismThemes.vsDark,
+        theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
-        additionalLanguages: ['bash', 'diff', 'json', 'java', 'python', 'csharp', 'jsx', 'typescript', 'tsx'],
-      },
-      // Add algolia DocSearch if you want
-      // algolia: {
-      //   // Replace with your own values
-      //   appId: 'YOUR_APP_ID',
-      //   apiKey: 'YOUR_SEARCH_API_KEY',
-      //   indexName: 'YOUR_INDEX_NAME',
-      //   contextualSearch: true,
-      // },
-      tableOfContents: {
-        minHeadingLevel: 2,
-        maxHeadingLevel: 4,
-      },
-      docs: {
-        sidebar: {
-          hideable: true,
-          autoCollapseCategories: true,
-        },
+        additionalLanguages: ['java', 'scala', 'go', 'rust', 'swift'],
       },
     }),
 };
 
-export default config;
+// 直接导出配置对象
+module.exports = config;

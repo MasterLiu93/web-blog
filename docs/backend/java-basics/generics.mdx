@@ -1,0 +1,627 @@
+---
+sidebar_position: 5
+title: "泛型"
+description: "Java泛型机制详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 泛型
+
+泛型是Java 5引入的重要特性，它提供了编译时类型安全检测机制，使得我们可以在编译时检测到非法的类型。泛型的本质是参数化类型，也就是说，在不创建新类型的情况下，通过泛型可以让类或方法在多种类型上操作。
+
+## 泛型基础
+
+### 为什么需要泛型？
+
+在Java 5引入泛型之前，我们通常使用Object类型来实现"通用"代码：
+
+```java
+List list = new ArrayList();
+list.add("hello");
+String s = (String) list.get(0); // 需要显式类型转换
+```
+
+这种方式的缺点：
+1. 需要显式类型转换，繁琐且容易出错
+2. 编译器无法在编译时检查类型安全
+3. 运行时可能抛出ClassCastException异常
+
+泛型解决了这些问题：
+
+```java
+List<String> list = new ArrayList<String>();
+list.add("hello");
+String s = list.get(0); // 无需类型转换
+// list.add(10); // 编译错误，类型安全
+```
+
+### 泛型的好处
+
+1. **类型安全**：在编译时捕获类型错误，而不是运行时
+2. **消除类型转换**：不需要显式类型转换
+3. **代码复用**：允许编写可重用的算法和数据结构
+4. **实现通用算法**：能够对多种类型实现相同的算法
+
+## 泛型类
+
+泛型类的定义语法：
+
+```java
+public class Box<T> {
+    private T t;
+    
+    public void set(T t) {
+        this.t = t;
+    }
+    
+    public T get() {
+        return t;
+    }
+}
+```
+
+使用泛型类：
+
+```java
+Box<Integer> integerBox = new Box<Integer>();
+integerBox.set(10);
+Integer i = integerBox.get(); // 无需类型转换
+
+Box<String> stringBox = new Box<String>();
+stringBox.set("Hello World");
+String s = stringBox.get();
+```
+
+### 多个类型参数
+
+泛型类可以有多个类型参数：
+
+```java
+public class Pair<K, V> {
+    private K key;
+    private V value;
+    
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+    
+    public K getKey() { return key; }
+    public V getValue() { return value; }
+}
+```
+
+使用多个类型参数：
+
+```java
+Pair<Integer, String> pair = new Pair<>(1, "Apple");
+Integer key = pair.getKey();
+String value = pair.getValue();
+```
+
+### 类型参数命名约定
+
+泛型代码中常用的类型参数名称：
+- `E` - 元素（多用于集合类，如`List<E>`）
+- `K` - 键（如`Map<K,V>`中的键）
+- `V` - 值（如`Map<K,V>`中的值）
+- `N` - 数字
+- `T` - 类型（第一个类型参数）
+- `S`、`U`、`V` 等 - 第2、3、4个类型参数
+
+## 泛型方法
+
+泛型方法的定义语法：
+
+```java
+public class Util {
+    public static <T> T getMiddle(T... a) {
+        return a[a.length/2];
+    }
+}
+```
+
+调用泛型方法：
+
+```java
+String middle = Util.<String>getMiddle("apple", "banana", "cherry");
+// 或者让编译器推断类型（更常用）
+String middle = Util.getMiddle("apple", "banana", "cherry");
+```
+
+### 泛型方法与泛型类的区别
+
+- 泛型类：类上声明的类型参数对整个类可见
+- 泛型方法：方法上声明的类型参数仅在该方法中可见
+
+```java
+public class Box<T> { // T对整个类可见
+    private T t;
+    
+    public <U> void inspect(U u) { // U仅在inspect方法中可见
+        System.out.println("T: " + t.getClass().getName());
+        System.out.println("U: " + u.getClass().getName());
+    }
+}
+```
+
+## 类型边界
+
+### 上界通配符
+
+使用extends关键字指定类型参数的上界：
+
+```java
+public <T extends Number> double sum(List<T> list) {
+    double sum = 0;
+    for (T item : list) {
+        sum += item.doubleValue(); // 可以调用Number的方法
+    }
+    return sum;
+}
+```
+
+多重边界：
+
+```java
+public <T extends Number & Comparable<T>> T findMax(List<T> list) {
+    // ...
+}
+```
+
+### 通配符
+
+泛型类型的通配符表示法：
+
+```java
+List<?> list; // 无界通配符
+List<? extends Number> numbers; // 上界通配符
+List<? super Integer> integers; // 下界通配符
+```
+
+#### 无界通配符（?）
+
+当你只关心集合能做什么，而不关心它包含什么具体类型时使用：
+
+```java
+public void printList(List<?> list) {
+    for (Object elem : list) {
+        System.out.println(elem);
+    }
+}
+```
+
+#### 上界通配符（? extends T）
+
+当你想从集合中读取元素，并且知道元素是T或T的子类时使用：
+
+```java
+public double sumOfList(List<? extends Number> list) {
+    double sum = 0.0;
+    for (Number n : list) {
+        sum += n.doubleValue();
+    }
+    return sum;
+}
+```
+
+限制：不能向使用上界通配符的集合添加元素（除了null）。
+
+#### 下界通配符（? super T）
+
+当你想向集合中写入元素，并且知道集合元素类型是T或T的超类时使用：
+
+```java
+public void addNumbers(List<? super Integer> list) {
+    list.add(1);
+    list.add(2);
+    // 可以添加Integer或其子类的实例
+}
+```
+
+限制：从使用下界通配符的集合中读取元素只能赋值给Object类型。
+
+### PECS原则
+
+**PECS**: Producer Extends, Consumer Super
+
+- 当从集合中**读取**元素时，使用`<? extends T>`（生产者使用extends）
+- 当向集合中**写入**元素时，使用`<? super T>`（消费者使用super）
+
+```java
+// 生产者 - 我们从src读取元素
+public <T> void copy(List<? extends T> src, List<? super T> dest) {
+    for (T item : src) {
+        dest.add(item); // 向dest写入元素
+    }
+}
+```
+
+## 类型擦除
+
+Java泛型是通过**类型擦除**实现的，即在编译时会移除所有泛型信息。这是为了与旧代码兼容。
+
+### 类型擦除的工作原理
+
+1. 把泛型类型参数替换为其边界或Object
+2. 必要时插入类型转换以保持类型安全
+3. 生成桥接方法以在继承时保持多态性
+
+例如：
+
+```java
+public class Box<T> {
+    private T t;
+    public void set(T t) { this.t = t; }
+    public T get() { return t; }
+}
+```
+
+经过类型擦除后，编译器将其视为：
+
+```java
+public class Box {
+    private Object t;
+    public void set(Object t) { this.t = t; }
+    public Object get() { return t; }
+}
+```
+
+当有边界时：
+
+```java
+public class Box<T extends Number> {
+    private T t;
+    public void set(T t) { this.t = t; }
+    public T get() { return t; }
+}
+```
+
+经过类型擦除后：
+
+```java
+public class Box {
+    private Number t;
+    public void set(Number t) { this.t = t; }
+    public Number get() { return t; }
+}
+```
+
+### 类型擦除的影响
+
+由于类型擦除，存在以下限制：
+
+1. 不能创建参数化类型的数组
+   ```java
+   // 错误：无法创建泛型数组
+   List<String>[] arrayOfLists = new List<String>[10];
+   ```
+
+2. 不能使用instanceof操作符检查泛型类型
+   ```java
+   // 错误：无法在运行时检查泛型类型
+   if (obj instanceof List<String>)
+   ```
+
+3. 不能创建、捕获或抛出参数化类型的异常
+   ```java
+   // 错误：泛型类不能扩展Throwable
+   class MathException<T> extends Exception { /* ... */ }
+   ```
+
+4. 不能创建泛型枚举
+   ```java
+   // 错误：枚举不能是泛型的
+   enum Rank<T> { /* ... */ }
+   ```
+
+5. 方法重载可能受限
+   ```java
+   // 这两个方法在编译后会有相同的签名
+   public void process(List<String> list) { /* ... */ }
+   public void process(List<Integer> list) { /* ... */ }
+   ```
+
+## 泛型的使用场景
+
+### 集合框架
+
+Java集合框架大量使用泛型：
+
+```java
+List<String> names = new ArrayList<>();
+Map<Integer, String> idToName = new HashMap<>();
+Set<Double> scores = new HashSet<>();
+```
+
+### 自定义数据结构
+
+实现通用数据结构：
+
+```java
+public class LinkedStack<E> {
+    private static class Node<E> {
+        private E data;
+        private Node<E> next;
+        
+        Node(E data, Node<E> next) {
+            this.data = data;
+            this.next = next;
+        }
+    }
+    
+    private Node<E> top;
+    
+    public void push(E item) {
+        top = new Node<>(item, top);
+    }
+    
+    public E pop() {
+        E result = top.data;
+        top = top.next;
+        return result;
+    }
+    
+    public boolean isEmpty() {
+        return top == null;
+    }
+}
+```
+
+### 函数式接口
+
+Java 8的函数式接口使用泛型：
+
+```java
+Function<String, Integer> stringToLength = s -> s.length();
+Predicate<Integer> isEven = n -> n % 2 == 0;
+Consumer<String> printer = s -> System.out.println(s);
+```
+
+### 工具类和算法
+
+实现通用算法：
+
+```java
+public class Algorithms {
+    public static <T extends Comparable<T>> T max(List<T> list) {
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException("List is empty");
+        }
+        
+        T max = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            T current = list.get(i);
+            if (current.compareTo(max) > 0) {
+                max = current;
+            }
+        }
+        return max;
+    }
+}
+```
+
+## 泛型最佳实践
+
+1. **优先使用泛型**：尽可能使用泛型代替原始类型
+
+2. **消除未检查的警告**：当无法避免未检查警告时，使用`@SuppressWarnings("unchecked")`注解，并添加注释说明为什么这是安全的
+
+3. **列表优于数组**：由于数组是具体化的，而泛型是通过擦除实现的，二者不能很好地混合使用
+
+4. **优先考虑泛型方法**：如果方法操作的参数和返回值可以是任意类型，应该将其实现为泛型方法
+
+5. **合理使用通配符**：按照PECS原则使用通配符
+   - 生产者使用`<? extends T>`
+   - 消费者使用`<? super T>`
+
+6. **限制泛型可能抛出的异常**：在泛型类或方法中，不能抛出参数化类型的异常
+
+7. **了解泛型的局限性**：理解并避开类型擦除带来的限制
+
+## 面试题
+
+### 1. 什么是Java泛型？为什么要使用泛型？
+
+**答**：Java泛型是JDK 5引入的一种参数化类型特性，允许在定义类、接口和方法时使用类型参数。
+
+使用泛型的原因：
+- 编译时类型安全检查，避免ClassCastException
+- 消除显式类型转换，代码更简洁
+- 实现通用算法和数据结构，增强代码复用性
+- 提高代码可读性和稳定性
+
+### 2. Java泛型和C++模板有什么区别？
+
+**答**：主要区别：
+- **实现机制**：Java泛型基于类型擦除（编译时），C++模板基于代码生成（编译时为每个类型生成不同的代码）
+- **类型参数约束**：Java泛型可以设定上下界，C++模板没有此类限制
+- **实例化**：Java中`List<String>`和`List<Integer>`在运行时是同一个类，而C++中`vector<string>`和`vector<int>`是不同的类
+- **性能**：C++模板可能产生更高效的代码，因为它针对每种类型生成专用代码
+- **运行时信息**：由于类型擦除，Java泛型在运行时不保留类型信息
+
+### 3. 什么是类型擦除？它对泛型有什么影响？
+
+**答**：类型擦除是Java实现泛型的方式，指编译器在编译时去除泛型类型信息的过程。具体来说：
+- 泛型类型参数被替换为其上界或Object
+- 必要时插入类型转换以保证类型安全
+- 生成桥接方法以保持多态性
+
+影响：
+- 不能创建泛型数组
+- 无法在运行时获取泛型类型信息
+- 不能使用instanceof检查泛型类型
+- 不能创建泛型异常类
+- 静态变量在所有参数化类型间共享
+
+### 4. `List<Object>`和`List<?>`有什么区别？
+
+**答**：
+- **`List<Object>`**：可以添加任何对象类型，但只能引用明确声明为`List<Object>`的变量
+- **`List<?>`**：表示未知类型的列表，不能添加除null以外的任何元素，但可以引用任何类型的列表（如`List<String>`, `List<Integer>`等）
+
+```java
+List<Object> objectList = new ArrayList<String>(); // 编译错误
+List<?> wildcardList = new ArrayList<String>(); // 正确
+
+objectList.add(new Object()); // 正确
+wildcardList.add("string"); // 编译错误，除了null外不能添加任何元素
+```
+
+### 5. 泛型中的extends和super关键字有什么区别？
+
+**答**：
+- **`<? extends T>`**（上界通配符）：表示类型参数是T或T的子类型
+  - 可以从集合中读取元素（作为T类型）
+  - 不能向集合中添加元素（除了null）
+  - 用于"生产者"场景
+
+```java
+List<? extends Number> list = new ArrayList<Integer>();
+Number n = list.get(0); // 可以读取
+list.add(1); // 编译错误，不能添加
+```
+
+- **`<? super T>`**（下界通配符）：表示类型参数是T或T的超类型
+  - 可以向集合中添加T或T的子类型元素
+  - 从集合中读取的元素只能作为Object类型
+  - 用于"消费者"场景
+
+```java
+List<? super Integer> list = new ArrayList<Number>();
+list.add(1); // 可以添加Integer或其子类
+Object obj = list.get(0); // 只能读取为Object
+```
+
+### 6. 什么是PECS原则？
+
+**答**：PECS是"Producer Extends, Consumer Super"的缩写，是一个帮助决定何时使用泛型通配符的原则：
+- 当您从集合中获取元素时（集合是生产者），使用`<? extends T>`
+- 当您向集合中添加元素时（集合是消费者），使用`<? super T>`
+
+例如：
+```java
+// src是生产者（我们从中读取），dest是消费者（我们向其写入）
+public <T> void copy(List<? extends T> src, List<? super T> dest) {
+    for (T item : src) {
+        dest.add(item);
+    }
+}
+```
+
+### 7. 为什么不能创建泛型数组？
+
+**答**：不能创建泛型数组主要是因为Java的类型擦除机制与数组的运行时类型检查不兼容：
+
+1. 数组在运行时会记住并检查其元素类型
+2. 泛型类型在运行时被擦除
+
+如果允许创建泛型数组，会导致类型安全问题：
+```java
+// 假设可以创建泛型数组
+List<String>[] stringLists = new List<String>[1]; // 假设合法
+Object[] objects = stringLists; // 数组是协变的，这是合法的
+objects[0] = new ArrayList<Integer>(); // 这在运行时类型擦除后也合法
+String s = stringLists[0].get(0); // 但这会导致ClassCastException
+```
+
+为避免这种情况，Java禁止直接创建泛型数组。替代方案是使用通配符或创建原始类型数组并进行类型转换。
+
+### 8. 什么是类型通配符？何时使用？
+
+**答**：类型通配符用问号（`?`）表示，表示未知类型。主要有三种形式：
+
+1. **无界通配符（`?`）**：表示任何类型
+   ```java
+   void printList(List<?> list) { /*...*/ }
+   ```
+   使用场景：当方法操作的集合与元素类型无关时
+
+2. **上界通配符（`? extends T`）**：表示T或T的子类型
+   ```java
+   double sumOfList(List<? extends Number> list) { /*...*/ }
+   ```
+   使用场景：当需要从集合中读取元素作为T类型处理时
+
+3. **下界通配符（`? super T`）**：表示T或T的超类型
+   ```java
+   void addNumbers(List<? super Integer> list) { /*...*/ }
+   ```
+   使用场景：当需要向集合中添加T类型元素时
+
+### 9. 如何在泛型中使用多个边界？
+
+**答**：Java泛型支持多重边界，使用&符号连接多个类型：
+
+```java
+public <T extends Number & Comparable<T>> T findMax(List<T> list) {
+    // T必须同时是Number的子类和Comparable<T>的实现类
+    T max = list.get(0);
+    for (int i = 1; i < list.size(); i++) {
+        if (list.get(i).compareTo(max) > 0) {
+            max = list.get(i);
+        }
+    }
+    return max;
+}
+```
+
+注意：
+- 可以有多个接口边界，但最多只能有一个类边界
+- 如果有类边界，它必须是第一个边界
+
+### 10. 泛型方法和泛型类的区别是什么？
+
+**答**：
+- **泛型类**：在类名后声明类型参数，类型参数对整个类可见
+  ```java
+  public class Box<T> {
+      private T value;
+      public T getValue() { return value; }
+      public void setValue(T value) { this.value = value; }
+  }
+  ```
+
+- **泛型方法**：在返回类型前声明类型参数，类型参数只在方法内可见
+  ```java
+  public class Util {
+      public static <T> T getMiddle(T... elements) {
+          return elements[elements.length / 2];
+      }
+  }
+  ```
+
+主要区别：
+- 泛型方法可以在非泛型类中定义
+- 泛型方法的类型参数与包含它的类的类型参数无关
+- 泛型方法可以是静态的，而类的类型参数不能用于静态方法或静态字段
+
+### 11. 如何处理泛型中的未检查类型转换警告？
+
+**答**：当编译器无法验证泛型代码的类型安全性时，会发出"unchecked"警告。处理方法：
+
+1. **修改代码消除警告**：首选方案，通过改进代码设计消除警告
+
+2. **使用@SuppressWarnings注解**：当确定代码是类型安全的，但无法重构以消除警告时
+   ```java
+   @SuppressWarnings("unchecked")
+   public <T> T[] toArray(T[] a) {
+       // 确保类型安全的代码
+   }
+   ```
+
+3. **尽量缩小@SuppressWarnings的作用域**：仅应用于必要的最小代码块或语句
+   ```java
+   public <T> T[] toArray(T[] a) {
+       // 其他代码...
+       
+       @SuppressWarnings("unchecked")
+       T[] result = (T[]) Arrays.copyOf(elements, size, a.getClass());
+       return result;
+   }
+   ```
+
+4. **添加注释**：在使用@SuppressWarnings时，添加注释说明为什么这个警告可以安全忽略

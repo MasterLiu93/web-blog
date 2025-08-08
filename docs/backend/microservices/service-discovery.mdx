@@ -1,0 +1,125 @@
+---
+sidebar_position: 1
+title: "服务注册与发现"
+description: "微服务服务注册与发现机制"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 服务注册与发现
+
+服务注册与发现用于在动态环境中自动找到服务提供者并负载均衡调用。
+
+## 模式
+
+- **客户端发现**：客户端从注册中心拉取实例列表并负载均衡（Eureka、Consul、Nacos）
+- **服务端发现**：反向代理/网关侧做发现并转发（K8s Service、NGINX+Consul）
+
+## Eureka
+
+### Server端
+
+```yaml
+# application.yml（Eureka Server）
+spring:
+  application:
+    name: eureka-server
+server:
+  port: 8761
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+```
+
+```java
+// 启动类
+@org.springframework.cloud.netflix.eureka.server.EnableEurekaServer
+@org.springframework.boot.autoconfigure.SpringBootApplication
+public class EurekaServerApplication {
+    public static void main(String[] args) {
+        org.springframework.boot.SpringApplication.run(EurekaServerApplication.class, args);
+    }
+}
+```
+
+### Client端
+
+```yaml
+# application.yml（Service）
+spring:
+  application:
+    name: user-service
+server:
+  port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+```
+
+```java
+// 启动类
+@org.springframework.cloud.client.discovery.EnableDiscoveryClient
+@org.springframework.boot.autoconfigure.SpringBootApplication
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        org.springframework.boot.SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+```
+
+## Consul
+
+特点：支持KV、健康检查、ACL，多数据中心。
+
+```yaml
+spring:
+  application:
+    name: order-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        register: true
+        heartbeat:
+          enabled: true
+```
+
+## Nacos
+
+特点：注册中心 + 配置中心，提供命名空间、分组、权重路由。
+
+```yaml
+spring:
+  application:
+    name: inventory-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: public
+        group: DEFAULT_GROUP
+```
+
+## 健康检查
+
+- HTTP检查：`/actuator/health`
+- 心跳与自我保护（Eureka）
+- 主动摘除与隔离（故障实例剔除）
+
+## 负载均衡
+
+- 客户端侧：RoundRobin、Weighted、Zone等
+- 与网关集成实现灰度发布、就近访问
+
+## 面试题
+
+1. 客户端发现与服务端发现的区别
+2. Eureka自我保护机制是什么，利弊如何
+3. Consul如何做健康检查与KV配置
+4. Nacos的命名空间/Group/权重路由
+5. 如何实现多注册中心容灾与双活

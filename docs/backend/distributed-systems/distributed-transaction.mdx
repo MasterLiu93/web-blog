@@ -1,0 +1,146 @@
+---
+sidebar_position: 2
+title: "分布式事务"
+description: "分布式事务解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 分布式事务
+
+分布式事务用于在多个服务/数据库之间保持数据一致性。核心在于一致性与可用性的权衡、失败场景的补偿与幂等。
+
+## 2PC协议
+
+流程：
+1. 准备阶段（Prepare）：协调者询问参与者是否可以提交
+2. 提交阶段（Commit/Rollback）：若全部准备成功则提交，否则回滚
+
+优点：实现简单，强一致
+缺点：
+- 协调者单点，阻塞
+- 准备阶段长期持锁，吞吐低
+- 协调者崩溃恢复复杂（需超时/重选）
+
+## 3PC协议
+
+在2PC基础上加入超时与预提交，减少阻塞范围，但工程落地仍复杂；现代系统多采用共识/补偿型方案替代。
+
+## TCC模式
+
+思想：将一次业务拆为三步 Try/Confirm/Cancel，Try预留资源，Confirm提交，Cancel回滚。
+
+适用：
+- 强业务语义，可实现精细补偿
+- 每个资源均可提供Try/Confirm/Cancel接口
+
+注意：幂等、防悬挂（Confirm前Try必须成功）、空回滚（Try未成功时的Cancel）
+
+```java
+// TCC接口示例
+public interface AccountTccService {
+    boolean tryFreeze(long userId, java.math.BigDecimal amount);
+    boolean confirm(long userId, java.math.BigDecimal amount);
+    boolean cancel(long userId, java.math.BigDecimal amount);
+}
+
+// 账户转账的应用服务（伪代码）
+public class TransferService {
+    private AccountTccService fromAccount;
+    private AccountTccService toAccount;
+
+    public boolean transfer(long from, long to, java.math.BigDecimal amt) {
+        // Try
+        boolean t1 = fromAccount.tryFreeze(from, amt);
+        boolean t2 = toAccount.tryFreeze(to, amt);
+        if (!t1 || !t2) {
+            // Cancel
+            if (t1) { fromAccount.cancel(from, amt); }
+            if (t2) { toAccount.cancel(to, amt); }
+            return false;
+        }
+        // Confirm
+        boolean c1 = fromAccount.confirm(from, amt);
+        boolean c2 = toAccount.confirm(to, amt);
+        if (!c1 || !c2) {
+            // 出现异常时执行补偿策略（根据业务定义）
+            return false;
+        }
+        return true;
+    }
+}
+```
+
+## Saga模式
+
+将长事务拆分为一系列可独立提交的本地事务，每步配备补偿动作（逆操作）。
+
+两种编排：
+- **Orchestration**：由编排器驱动流程（状态机）
+- **Choreography**：各服务通过事件驱动协作（无中心）
+
+优势：
+- 无全局锁，吞吐高，适合跨服务长链路
+劣势：
+- 仅最终一致，补偿设计复杂
+
+```yaml
+# Orchestration示意（伪配置）
+states:
+  - name: CreateOrder
+    execute: order.create
+    compensate: order.cancel
+  - name: ReserveInventory
+    execute: inventory.reserve
+    compensate: inventory.release
+  - name: Pay
+    execute: payment.pay
+    compensate: payment.refund
+```
+
+## Outbox（事务外盒）与可靠消息
+
+目标：本地数据库写入与消息发送原子化。
+
+做法：
+1. 业务数据与Outbox消息同一事务落库
+2. 后台投递器扫描Outbox表，发送到消息队列
+3. 消费方处理并幂等消费
+
+优点：实现简单、对现有系统改造成本小
+注意：去重、幂等键、重试与死信队列
+
+```sql
+-- Outbox表示例
+CREATE TABLE outbox (
+  id BIGINT PRIMARY KEY,
+  aggregate_id BIGINT,
+  topic VARCHAR(100),
+  payload TEXT,
+  status VARCHAR(20),
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
+);
+```
+
+## 幂等与防重
+
+- 业务幂等键（如订单号、请求ID）
+- 去重表/唯一索引、分布式锁
+- 消费端“至少一次”+幂等处理
+
+## 选型建议
+
+- 强一致小范围：2PC/XA；或由单一聚合根串行化
+- 跨服务长流程：Saga/TCC + Outbox
+- 对吞吐敏感：优先补偿型而非全局锁定
+
+## 面试题
+
+1. 2PC的两个阶段是什么？缺点有哪些
+2. TCC如何避免空回滚与悬挂
+3. Saga编排与编舞的差异，如何选择
+4. Outbox如何保证不丢消息与不重复消费
+5. 幂等的常用实现手段有哪些

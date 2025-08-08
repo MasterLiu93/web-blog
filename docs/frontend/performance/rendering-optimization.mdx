@@ -1,0 +1,378 @@
+---
+sidebar_position: 3
+title: "渲染优化"
+description: "前端渲染性能优化策略"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 渲染优化
+
+渲染优化主要关注DOM操作、重排重绘、以及JavaScript执行效率，目标是保持60fps的流畅体验。
+
+## DOM操作优化
+
+### 批量DOM操作
+```javascript
+// 避免频繁的DOM操作
+function badExample() {
+  const list = document.getElementById('list');
+  for (let i = 0; i < 1000; i++) {
+    const item = document.createElement('li');
+    item.textContent = `Item ${i}`;
+    list.appendChild(item); // 每次都会触发重排
+  }
+}
+
+function goodExample() {
+  const list = document.getElementById('list');
+  const fragment = document.createDocumentFragment();
+  
+  for (let i = 0; i < 1000; i++) {
+    const item = document.createElement('li');
+    item.textContent = `Item ${i}`;
+    fragment.appendChild(item);
+  }
+  
+  list.appendChild(fragment); // 只触发一次重排
+}
+```
+
+### 使用DocumentFragment
+```javascript
+// 使用DocumentFragment优化大量DOM操作
+function createElements(count) {
+  const fragment = document.createDocumentFragment();
+  
+  for (let i = 0; i < count; i++) {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.textContent = `Item ${i}`;
+    fragment.appendChild(div);
+  }
+  
+  return fragment;
+}
+
+// 一次性添加到DOM
+document.getElementById('container').appendChild(createElements(1000));
+```
+
+## 重排重绘优化
+
+### 避免强制同步布局
+```javascript
+// 避免强制同步布局
+function badExample() {
+  const elements = document.querySelectorAll('.item');
+  elements.forEach(element => {
+    const width = element.offsetWidth; // 强制同步布局
+    element.style.width = width + 100 + 'px';
+  });
+}
+
+function goodExample() {
+  const elements = document.querySelectorAll('.item');
+  const widths = [];
+  
+  // 先读取所有值
+  elements.forEach(element => {
+    widths.push(element.offsetWidth);
+  });
+  
+  // 再批量修改
+  elements.forEach((element, index) => {
+    element.style.width = widths[index] + 100 + 'px';
+  });
+}
+```
+
+### 使用transform和opacity
+```javascript
+// 使用transform代替改变位置
+function animateWithTransform() {
+  const element = document.getElementById('animated');
+  
+  // 使用transform，不会触发重排
+  element.style.transform = 'translateX(100px)';
+  
+  // 使用opacity，不会触发重排
+  element.style.opacity = '0.5';
+}
+
+// 避免使用会触发重排的属性
+function avoidLayoutThrashing() {
+  const element = document.getElementById('element');
+  
+  // 这些属性会触发重排
+  // element.style.width = '100px';
+  // element.style.height = '100px';
+  // element.style.margin = '10px';
+  
+  // 使用transform代替
+  element.style.transform = 'scale(1.1)';
+}
+```
+
+## 虚拟滚动
+
+### 实现虚拟滚动
+```javascript
+class VirtualScroller {
+  constructor(container, itemHeight, totalItems) {
+    this.container = container;
+    this.itemHeight = itemHeight;
+    this.totalItems = totalItems;
+    this.visibleItems = Math.ceil(container.clientHeight / itemHeight);
+    this.scrollTop = 0;
+    
+    this.init();
+  }
+  
+  init() {
+    this.container.style.position = 'relative';
+    this.container.style.overflow = 'auto';
+    
+    // 设置总高度
+    this.container.style.height = this.totalItems * this.itemHeight + 'px';
+    
+    this.container.addEventListener('scroll', this.handleScroll.bind(this));
+    this.render();
+  }
+  
+  handleScroll() {
+    this.scrollTop = this.container.scrollTop;
+    this.render();
+  }
+  
+  render() {
+    const startIndex = Math.floor(this.scrollTop / this.itemHeight);
+    const endIndex = Math.min(startIndex + this.visibleItems, this.totalItems);
+    
+    // 清空容器
+    this.container.innerHTML = '';
+    
+    // 渲染可见项
+    for (let i = startIndex; i < endIndex; i++) {
+      const item = this.createItem(i);
+      item.style.position = 'absolute';
+      item.style.top = i * this.itemHeight + 'px';
+      this.container.appendChild(item);
+    }
+  }
+  
+  createItem(index) {
+    const div = document.createElement('div');
+    div.textContent = `Item ${index}`;
+    div.style.height = this.itemHeight + 'px';
+    return div;
+  }
+}
+```
+
+## React渲染优化
+
+### 使用React.memo
+```javascript
+import React, { memo } from 'react';
+
+const ExpensiveComponent = memo(({ data }) => {
+  console.log('ExpensiveComponent rendered');
+  
+  return (
+    <div>
+      {data.map(item => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+    </div>
+  );
+});
+
+// 父组件
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+  const [data, setData] = useState([]);
+  
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>
+        Count: {count}
+      </button>
+      <ExpensiveComponent data={data} />
+    </div>
+  );
+}
+```
+
+### 使用useMemo和useCallback
+```javascript
+import React, { useMemo, useCallback, useState } from 'react';
+
+function OptimizedComponent({ items, onItemClick }) {
+  const [filter, setFilter] = useState('');
+  
+  // 使用useMemo缓存计算结果
+  const filteredItems = useMemo(() => {
+    return items.filter(item => 
+      item.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [items, filter]);
+  
+  // 使用useCallback缓存函数
+  const handleItemClick = useCallback((item) => {
+    onItemClick(item);
+  }, [onItemClick]);
+  
+  return (
+    <div>
+      <input 
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Filter items..."
+      />
+      <ul>
+        {filteredItems.map(item => (
+          <li key={item.id} onClick={() => handleItemClick(item)}>
+            {item.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+## 防抖和节流
+
+### 防抖实现
+```javascript
+function debounce(func, wait) {
+  let timeout;
+  
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// 使用示例
+const debouncedSearch = debounce((query) => {
+  // 执行搜索
+  console.log('Searching for:', query);
+}, 300);
+
+// 在输入框中使用
+document.getElementById('search').addEventListener('input', (e) => {
+  debouncedSearch(e.target.value);
+});
+```
+
+### 节流实现
+```javascript
+function throttle(func, limit) {
+  let inThrottle;
+  
+  return function executedFunction(...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
+// 使用示例
+const throttledScroll = throttle(() => {
+  // 处理滚动事件
+  console.log('Scroll event handled');
+}, 100);
+
+window.addEventListener('scroll', throttledScroll);
+```
+
+## 事件委托
+
+### 优化事件监听
+```javascript
+// 使用事件委托减少事件监听器数量
+function setupEventDelegation() {
+  const container = document.getElementById('list');
+  
+  container.addEventListener('click', (event) => {
+    if (event.target.matches('.item')) {
+      console.log('Item clicked:', event.target.textContent);
+    }
+    
+    if (event.target.matches('.delete-btn')) {
+      event.target.closest('.item').remove();
+    }
+  });
+}
+
+// 避免为每个元素添加事件监听器
+function badExample() {
+  const items = document.querySelectorAll('.item');
+  items.forEach(item => {
+    item.addEventListener('click', handleClick);
+  });
+}
+```
+
+## 性能监控
+
+### 监控重排重绘
+```javascript
+// 监控重排重绘
+function monitorLayoutThrashing() {
+  let layoutCount = 0;
+  
+  const observer = new PerformanceObserver((list) => {
+    list.getEntries().forEach((entry) => {
+      if (entry.entryType === 'measure') {
+        console.log(`${entry.name}: ${entry.duration}ms`);
+      }
+    });
+  });
+  
+  observer.observe({ entryTypes: ['measure'] });
+  
+  // 在关键操作前后添加标记
+  performance.mark('layout-start');
+  // 执行可能触发重排的操作
+  performance.mark('layout-end');
+  performance.measure('layout-time', 'layout-start', 'layout-end');
+}
+```
+
+### 监控帧率
+```javascript
+// 监控帧率
+function monitorFPS() {
+  let frameCount = 0;
+  let lastTime = performance.now();
+  
+  function countFrames() {
+    frameCount++;
+    const currentTime = performance.now();
+    
+    if (currentTime - lastTime >= 1000) {
+      const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+      console.log('FPS:', fps);
+      
+      frameCount = 0;
+      lastTime = currentTime;
+    }
+    
+    requestAnimationFrame(countFrames);
+  }
+  
+  requestAnimationFrame(countFrames);
+}
+``` 

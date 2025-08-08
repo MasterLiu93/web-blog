@@ -1,0 +1,713 @@
+---
+sidebar_position: 3
+title: "Set集合"
+description: "Java Set接口及其实现类"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Set集合
+
+## Set接口概述
+
+Set是Java集合框架中用于存储不重复元素的集合，它继承自Collection接口。
+
+### Set接口特点
+
+```java
+// Set接口的主要特点
+1. 元素唯一性：不允许存储重复元素
+2. 无序性：大多数实现类不保证元素的顺序
+3. 继承自Collection：具有Collection的所有方法
+4. 不允许通过索引访问：没有get(int index)方法
+```
+
+### Set接口方法
+
+```java
+// Set接口的核心方法（继承自Collection）
+public interface Set<E> extends Collection<E> {
+    // 基本操作
+    boolean add(E e);                          // 添加元素
+    boolean remove(Object o);                  // 删除元素
+    boolean contains(Object o);                // 是否包含指定元素
+    
+    // 集合操作
+    boolean addAll(Collection<? extends E> c); // 添加集合
+    boolean removeAll(Collection<?> c);        // 删除集合
+    boolean retainAll(Collection<?> c);        // 保留集合
+    void clear();                              // 清空集合
+    
+    // 查询操作
+    int size();                                // 获取元素个数
+    boolean isEmpty();                         // 判断是否为空
+    
+    // 迭代器
+    Iterator<E> iterator();                    // 获取迭代器
+}
+```
+
+## HashSet
+
+### HashSet概述
+
+HashSet是基于HashMap实现的Set，是Java中最常用的Set实现类。
+
+```java
+// HashSet的特点
+1. 基于HashMap实现
+2. 无序性：不保证元素的顺序
+3. 允许null元素
+4. 线程不安全
+5. 查找、插入、删除性能好 O(1)
+```
+
+### HashSet源码分析
+
+```java
+public class HashSet<E> extends AbstractSet<E>
+    implements Set<E>, Cloneable, java.io.Serializable {
+    
+    // 底层使用HashMap存储
+    private transient HashMap<E,Object> map;
+    
+    // 虚拟值，用于HashMap
+    private static final Object PRESENT = new Object();
+    
+    // 构造方法
+    public HashSet() {
+        map = new HashMap<>();
+    }
+    
+    public HashSet(int initialCapacity) {
+        map = new HashMap<>(initialCapacity);
+    }
+    
+    public HashSet(int initialCapacity, float loadFactor) {
+        map = new HashMap<>(initialCapacity, loadFactor);
+    }
+    
+    // 添加元素
+    public boolean add(E e) {
+        return map.put(e, PRESENT) == null;
+    }
+    
+    // 删除元素
+    public boolean remove(Object o) {
+        return map.remove(o) == PRESENT;
+    }
+    
+    // 检查元素是否存在
+    public boolean contains(Object o) {
+        return map.containsKey(o);
+    }
+}
+```
+
+### HashSet使用示例
+
+```java
+// 基本使用
+public class HashSetExample {
+    public static void main(String[] args) {
+        // 创建HashSet
+        Set<String> set = new HashSet<>();
+        
+        // 添加元素
+        set.add("Java");
+        set.add("Python");
+        set.add("C++");
+        set.add("Java"); // 重复元素，不会添加
+        
+        System.out.println("Set大小: " + set.size()); // 3
+        
+        // 检查元素是否存在
+        boolean contains = set.contains("Java");
+        System.out.println("是否包含Java: " + contains);
+        
+        // 删除元素
+        set.remove("C++");
+        
+        // 遍历
+        for (String item : set) {
+            System.out.println(item);
+        }
+        
+        // 集合操作
+        Set<String> set1 = new HashSet<>();
+        set1.add("Java");
+        set1.add("JavaScript");
+        
+        // 并集
+        Set<String> union = new HashSet<>(set);
+        union.addAll(set1);
+        System.out.println("并集: " + union);
+        
+        // 交集
+        Set<String> intersection = new HashSet<>(set);
+        intersection.retainAll(set1);
+        System.out.println("交集: " + intersection);
+        
+        // 差集
+        Set<String> difference = new HashSet<>(set);
+        difference.removeAll(set1);
+        System.out.println("差集: " + difference);
+    }
+}
+```
+
+### HashSet性能分析
+
+```java
+// 性能测试
+public class HashSetPerformance {
+    
+    // 插入性能测试
+    public void addPerformance() {
+        Set<Integer> set = new HashSet<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            set.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("插入100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // 查找性能测试
+    public void containsPerformance() {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < 100000; i++) {
+            set.add(i);
+        }
+        
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            set.contains(i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("查找100000次耗时: " + (end - start) + "ms");
+    }
+}
+```
+
+## LinkedHashSet
+
+### LinkedHashSet概述
+
+LinkedHashSet是HashSet的子类，它在HashSet的基础上维护了一个双向链表，保证了元素的插入顺序。
+
+```java
+// LinkedHashSet的特点
+1. 继承自HashSet
+2. 维护插入顺序
+3. 性能略低于HashSet
+4. 线程不安全
+5. 允许null元素
+```
+
+### LinkedHashSet源码分析
+
+```java
+public class LinkedHashSet<E> extends HashSet<E>
+    implements Set<E>, Cloneable, java.io.Serializable {
+    
+    // 构造方法
+    public LinkedHashSet() {
+        super(16, .75f, true);
+    }
+    
+    public LinkedHashSet(int initialCapacity) {
+        super(initialCapacity, .75f, true);
+    }
+    
+    public LinkedHashSet(int initialCapacity, float loadFactor) {
+        super(initialCapacity, loadFactor, true);
+    }
+    
+    public LinkedHashSet(Collection<? extends E> c) {
+        super(Math.max(2*c.size(), 11), .75f, true);
+        addAll(c);
+    }
+}
+```
+
+### LinkedHashSet使用示例
+
+```java
+// LinkedHashSet基本使用
+public class LinkedHashSetExample {
+    public static void main(String[] args) {
+        // 创建LinkedHashSet
+        Set<String> set = new LinkedHashSet<>();
+        
+        // 添加元素
+        set.add("Java");
+        set.add("Python");
+        set.add("C++");
+        set.add("JavaScript");
+        
+        System.out.println("按插入顺序:");
+        for (String item : set) {
+            System.out.println(item);
+        }
+        
+        // 与HashSet对比
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add("Java");
+        hashSet.add("Python");
+        hashSet.add("C++");
+        hashSet.add("JavaScript");
+        
+        System.out.println("HashSet顺序（可能不同）:");
+        for (String item : hashSet) {
+            System.out.println(item);
+        }
+    }
+}
+```
+
+## TreeSet
+
+### TreeSet概述
+
+TreeSet是基于TreeMap实现的Set，它保证了元素的有序性。
+
+```java
+// TreeSet的特点
+1. 基于TreeMap实现
+2. 有序性：按自然顺序或自定义顺序排序
+3. 不允许null元素
+4. 线程不安全
+5. 查找、插入、删除性能 O(log n)
+```
+
+### TreeSet源码分析
+
+```java
+public class TreeSet<E> extends AbstractSet<E>
+    implements NavigableSet<E>, Cloneable, java.io.Serializable {
+    
+    // 底层使用TreeMap存储
+    private transient NavigableMap<E,Object> m;
+    
+    // 虚拟值，用于TreeMap
+    private static final Object PRESENT = new Object();
+    
+    // 构造方法
+    public TreeSet() {
+        this(new TreeMap<E,Object>());
+    }
+    
+    public TreeSet(Comparator<? super E> comparator) {
+        this(new TreeMap<>(comparator));
+    }
+    
+    TreeSet(NavigableMap<E,Object> m) {
+        this.m = m;
+    }
+    
+    // 添加元素
+    public boolean add(E e) {
+        return m.put(e, PRESENT) == null;
+    }
+    
+    // 删除元素
+    public boolean remove(Object o) {
+        return m.remove(o) == PRESENT;
+    }
+    
+    // 检查元素是否存在
+    public boolean contains(Object o) {
+        return m.containsKey(o);
+    }
+}
+```
+
+### TreeSet使用示例
+
+```java
+// TreeSet基本使用
+public class TreeSetExample {
+    public static void main(String[] args) {
+        // 自然顺序排序
+        Set<String> naturalOrderSet = new TreeSet<>();
+        naturalOrderSet.add("Java");
+        naturalOrderSet.add("Python");
+        naturalOrderSet.add("C++");
+        naturalOrderSet.add("JavaScript");
+        
+        System.out.println("自然顺序:");
+        for (String item : naturalOrderSet) {
+            System.out.println(item);
+        }
+        
+        // 自定义比较器
+        Set<String> customOrderSet = new TreeSet<>((s1, s2) -> s2.compareTo(s1));
+        customOrderSet.add("Java");
+        customOrderSet.add("Python");
+        customOrderSet.add("C++");
+        customOrderSet.add("JavaScript");
+        
+        System.out.println("自定义顺序:");
+        for (String item : customOrderSet) {
+            System.out.println(item);
+        }
+        
+        // 导航方法
+        TreeSet<String> treeSet = new TreeSet<>(naturalOrderSet);
+        
+        // 获取第一个元素
+        String first = treeSet.first();
+        System.out.println("第一个元素: " + first);
+        
+        // 获取最后一个元素
+        String last = treeSet.last();
+        System.out.println("最后一个元素: " + last);
+        
+        // 获取小于指定元素的最大元素
+        String lower = treeSet.lower("Python");
+        System.out.println("小于Python的最大元素: " + lower);
+        
+        // 获取大于指定元素的最小元素
+        String higher = treeSet.higher("Java");
+        System.out.println("大于Java的最小元素: " + higher);
+        
+        // 获取子集
+        SortedSet<String> subSet = treeSet.subSet("C++", "Python");
+        System.out.println("子集: " + subSet);
+    }
+}
+```
+
+## 其他Set实现
+
+### CopyOnWriteArraySet
+
+```java
+// CopyOnWriteArraySet - 线程安全的Set
+public class CopyOnWriteArraySetExample {
+    public static void main(String[] args) {
+        Set<String> set = new CopyOnWriteArraySet<>();
+        
+        // 多线程安全操作
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                set.add("Thread1-" + i);
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                set.add("Thread2-" + i);
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("最终大小: " + set.size());
+    }
+}
+```
+
+### EnumSet
+
+```java
+// EnumSet - 专门用于枚举的Set
+public class EnumSetExample {
+    enum Color {
+        RED, GREEN, BLUE, YELLOW, BLACK, WHITE
+    }
+    
+    public static void main(String[] args) {
+        // 创建EnumSet
+        EnumSet<Color> colors = EnumSet.allOf(Color.class);
+        System.out.println("所有颜色: " + colors);
+        
+        // 创建空EnumSet
+        EnumSet<Color> emptyColors = EnumSet.noneOf(Color.class);
+        emptyColors.add(Color.RED);
+        emptyColors.add(Color.GREEN);
+        System.out.println("部分颜色: " + emptyColors);
+        
+        // 创建指定范围的EnumSet
+        EnumSet<Color> rangeColors = EnumSet.range(Color.RED, Color.BLUE);
+        System.out.println("范围颜色: " + rangeColors);
+        
+        // 创建指定元素的EnumSet
+        EnumSet<Color> specificColors = EnumSet.of(Color.RED, Color.BLUE, Color.WHITE);
+        System.out.println("指定颜色: " + specificColors);
+    }
+}
+```
+
+## Set使用最佳实践
+
+### 选择合适的Set实现
+
+```java
+// Set选择指南
+public class SetSelectionGuide {
+    
+    // 场景1：一般用途
+    public void generalPurposeScenario() {
+        `Set<String> set = new HashSet<>();` // 推荐
+    }
+    
+    // 场景2：需要保持插入顺序
+    public void insertionOrderScenario() {
+        `Set<String> set = new LinkedHashSet<>();` // 推荐
+    }
+    
+    // 场景3：需要排序
+    public void sortedScenario() {
+        `Set<String> set = new TreeSet<>();` // 推荐
+    }
+    
+    // 场景4：多线程环境
+    public void threadSafeScenario() {
+        `Set<String> set = new CopyOnWriteArraySet<>();` // 推荐
+    }
+    
+    // 场景5：枚举类型
+    public void enumScenario() {
+        `Set<Color> set = EnumSet.allOf(Color.class);` // 推荐
+    }
+}
+```
+
+### 性能优化技巧
+
+```java
+// Set性能优化
+public class SetOptimization {
+    
+    // 1. 预分配容量
+    public void preAllocateCapacity() {
+        `Set<String> set = new HashSet<>(1000);` // 预分配1000个容量
+    }
+    
+    // 2. 使用合适的元素类型
+    public void elementTypeOptimization() {
+        // 使用不可变对象作为元素
+        `Set<String> set = new HashSet<>();` // 推荐
+        // `Set<StringBuilder> set = new HashSet<>();` // 不推荐
+    }
+    
+    // 3. 批量操作
+    public void batchOperation() {
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
+        
+        // 批量添加
+        set1.addAll(set2);
+        
+        // 批量删除
+        set1.removeAll(set2);
+        
+        // 保留交集
+        set1.retainAll(set2);
+    }
+    
+    // 4. 去重操作
+    public void deduplication() {
+        List<String> list = Arrays.asList("a", "b", "a", "c", "b");
+        
+        // 使用HashSet去重
+        Set<String> uniqueSet = new HashSet<>(list);
+        List<String> uniqueList = new ArrayList<>(uniqueSet);
+        
+        System.out.println("去重后: " + uniqueList);
+    }
+}
+```
+
+## Set应用场景
+
+### 去重
+
+```java
+// 使用Set进行去重
+public class DeduplicationExample {
+    public static void main(String[] args) {
+        // 数组去重
+        String[] array = {"Java", "Python", "Java", "C++", "Python"};
+        Set<String> uniqueSet = new HashSet<>(Arrays.asList(array));
+        String[] uniqueArray = uniqueSet.toArray(new String[0]);
+        
+        System.out.println("去重后: " + Arrays.toString(uniqueArray));
+        
+        // 列表去重
+        List<Integer> list = Arrays.asList(1, 2, 3, 2, 4, 1, 5);
+        Set<Integer> uniqueNumbers = new LinkedHashSet<>(list); // 保持顺序
+        List<Integer> uniqueList = new ArrayList<>(uniqueNumbers);
+        
+        System.out.println("去重后: " + uniqueList);
+    }
+}
+```
+
+### 集合运算
+
+```java
+// 集合运算
+public class SetOperationsExample {
+    public static void main(String[] args) {
+        Set<Integer> set1 = new HashSet<>(Arrays.asList(1, 2, 3, 4, 5));
+        Set<Integer> set2 = new HashSet<>(Arrays.asList(4, 5, 6, 7, 8));
+        
+        // 并集
+        Set<Integer> union = new HashSet<>(set1);
+        union.addAll(set2);
+        System.out.println("并集: " + union);
+        
+        // 交集
+        Set<Integer> intersection = new HashSet<>(set1);
+        intersection.retainAll(set2);
+        System.out.println("交集: " + intersection);
+        
+        // 差集
+        Set<Integer> difference = new HashSet<>(set1);
+        difference.removeAll(set2);
+        System.out.println("差集: " + difference);
+        
+        // 对称差集
+        Set<Integer> symmetricDifference = new HashSet<>(union);
+        symmetricDifference.removeAll(intersection);
+        System.out.println("对称差集: " + symmetricDifference);
+    }
+}
+```
+
+### 缓存实现
+
+```java
+// 使用Set实现简单缓存
+public class CacheExample {
+    private Set<String> cache = new HashSet<>();
+    
+    public boolean isCached(String key) {
+        return cache.contains(key);
+    }
+    
+    public void addToCache(String key) {
+        cache.add(key);
+    }
+    
+    public void removeFromCache(String key) {
+        cache.remove(key);
+    }
+    
+    public void clearCache() {
+        cache.clear();
+    }
+    
+    public int getCacheSize() {
+        return cache.size();
+    }
+}
+```
+
+## 面试题
+
+### 1. HashSet和TreeSet的区别？
+
+**HashSet**：
+- 基于HashMap实现
+- 无序性
+- 性能 O(1)
+- 允许null元素
+
+**TreeSet**：
+- 基于TreeMap实现
+- 有序性
+- 性能 O(log n)
+- 不允许null元素
+
+### 2. HashSet如何保证元素唯一性？
+
+1. **哈希算法**：计算元素的哈希值
+2. **equals比较**：哈希值相同时使用equals方法比较
+3. **不添加重复**：如果元素已存在则不添加
+
+### 3. LinkedHashSet如何保持顺序？
+
+1. **继承HashSet**：使用HashSet的哈希表结构
+2. **双向链表**：维护一个双向链表
+3. **插入顺序**：按插入顺序维护元素
+
+### 4. TreeSet如何保证元素有序？
+
+1. **红黑树**：基于TreeMap的红黑树实现
+2. **自然顺序**：默认按自然顺序排序
+3. **自定义比较器**：可以指定自定义比较器
+
+### 5. Set的遍历方式有哪些？
+
+```java
+// 1. for-each循环
+for (String item : set) {
+    System.out.println(item);
+}
+
+// 2. 迭代器
+Iterator<String> iterator = set.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+
+// 3. forEach方法（Java 8+）
+set.forEach(System.out::println);
+
+// 4. Stream（Java 8+）
+set.stream().forEach(System.out::println);
+```
+
+### 6. 如何选择合适的Set实现？
+
+- **一般用途**：HashSet
+- **需要保持顺序**：LinkedHashSet
+- **需要排序**：TreeSet
+- **多线程环境**：CopyOnWriteArraySet
+- **枚举类型**：EnumSet
+
+### 7. Set的常见应用场景？
+
+1. **去重**：去除重复元素
+2. **集合运算**：并集、交集、差集
+3. **缓存**：简单的缓存实现
+4. **权限控制**：存储用户权限
+5. **黑名单/白名单**：存储禁止/允许的元素
+
+### 8. HashSet的性能特点？
+
+- **插入**：平均O(1)，最坏O(n)
+- **删除**：平均O(1)，最坏O(n)
+- **查找**：平均O(1)，最坏O(n)
+- **遍历**：O(n)
+
+### 9. TreeSet的性能特点？
+
+- **插入**：O(log n)
+- **删除**：O(log n)
+- **查找**：O(log n)
+- **遍历**：O(n)
+
+### 10. Set的线程安全问题？
+
+- **HashSet**：线程不安全
+- **LinkedHashSet**：线程不安全
+- **TreeSet**：线程不安全
+- **CopyOnWriteArraySet**：线程安全
+- **EnumSet**：线程不安全 

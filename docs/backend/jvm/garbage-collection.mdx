@@ -1,0 +1,429 @@
+---
+sidebar_position: 3
+title: "垃圾回收"
+description: "Java垃圾回收机制与GC算法"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 垃圾回收
+
+## 垃圾回收算法
+
+### 标记-清除算法 (Mark-Sweep)
+
+标记-清除算法是最基础的垃圾回收算法，分为两个阶段：
+
+1. **标记阶段**：从根对象开始，标记所有可达的对象
+2. **清除阶段**：清除所有未被标记的对象
+
+```java
+// 标记阶段伪代码
+void mark(Object obj) {
+    if (obj == null || obj.isMarked()) return;
+    obj.setMarked(true);
+    for (Object ref : obj.getReferences()) {
+        mark(ref);
+    }
+}
+
+// 清除阶段伪代码
+void sweep() {
+    for (Object obj : heap) {
+        if (!obj.isMarked()) {
+            free(obj);
+        } else {
+            obj.setMarked(false);
+        }
+    }
+}
+```
+
+**优点**：
+- 实现简单
+- 不需要额外的空间
+
+**缺点**：
+- 效率不高
+- 会产生大量内存碎片
+
+### 复制算法 (Copying)
+
+将内存分为两块相等的区域，每次只使用其中一块：
+
+```java
+// 复制算法伪代码
+void copy() {
+    for (Object obj : fromSpace) {
+        if (obj.isMarked()) {
+            Object newObj = copyTo(toSpace, obj);
+            updateReferences(obj, newObj);
+        }
+    }
+    swap(fromSpace, toSpace);
+}
+```
+
+**优点**：
+- 效率高
+- 没有内存碎片
+
+**缺点**：
+- 内存利用率只有50%
+- 对象存活率高时效率下降
+
+### 标记-整理算法 (Mark-Compact)
+
+结合了标记-清除和复制算法的优点：
+
+```java
+// 标记-整理算法伪代码
+void markCompact() {
+    // 标记阶段
+    mark();
+    
+    // 整理阶段
+    compact();
+}
+
+void compact() {
+    Object[] newSpace = new Object[heapSize];
+    int index = 0;
+    
+    // 移动存活对象
+    for (Object obj : heap) {
+        if (obj.isMarked()) {
+            newSpace[index] = obj;
+            updateReferences(obj, index);
+            index++;
+        }
+    }
+    
+    // 更新堆指针
+    heap = newSpace;
+}
+```
+
+**优点**：
+- 没有内存碎片
+- 内存利用率高
+
+**缺点**：
+- 效率相对较低
+
+### 分代收集算法
+
+根据对象存活周期的不同，将内存分为几块：
+
+- **新生代 (Young Generation)**：存放新创建的对象
+- **老年代 (Old Generation)**：存放存活时间较长的对象
+- **永久代/元空间 (Metaspace)**：存放类信息、常量等
+
+```java
+// 分代收集伪代码
+void generationalGC() {
+    // 新生代使用复制算法
+    youngGenGC();
+    
+    // 老年代使用标记-整理算法
+    if (needOldGenGC()) {
+        oldGenGC();
+    }
+}
+```
+
+## 垃圾收集器
+
+### Serial 收集器
+
+单线程收集器，工作时需要暂停所有用户线程：
+
+```java
+// Serial收集器特点
+- 单线程
+- 暂停所有用户线程 (Stop-The-World)
+- 适合客户端应用
+- 新生代使用复制算法
+- 老年代使用标记-整理算法
+```
+
+### ParNew 收集器
+
+Serial收集器的多线程版本：
+
+```java
+// ParNew收集器特点
+- 多线程并行收集
+- 与Serial收集器配合使用
+- 新生代使用复制算法
+- 老年代使用标记-整理算法
+```
+
+### Parallel Scavenge 收集器
+
+关注吞吐量的收集器：
+
+```java
+// Parallel Scavenge特点
+- 多线程并行收集
+- 关注吞吐量而非响应时间
+- 可调节的吞吐量参数
+- 新生代使用复制算法
+- 老年代使用标记-整理算法
+```
+
+### Serial Old 收集器
+
+Serial收集器的老年代版本：
+
+```java
+// Serial Old特点
+- 单线程
+- 标记-整理算法
+- 作为CMS收集器的后备方案
+```
+
+### Parallel Old 收集器
+
+Parallel Scavenge收集器的老年代版本：
+
+```java
+// Parallel Old特点
+- 多线程并行收集
+- 标记-整理算法
+- 与Parallel Scavenge配合使用
+```
+
+### CMS 收集器
+
+以获取最短回收停顿时间为目标的收集器：
+
+```java
+// CMS收集器特点
+- 并发收集
+- 标记-清除算法
+- 分为四个阶段：
+  1. 初始标记 (Initial Mark)
+  2. 并发标记 (Concurrent Mark)
+  3. 重新标记 (Remark)
+  4. 并发清除 (Concurrent Sweep)
+```
+
+### G1 收集器
+
+面向服务端应用的垃圾收集器：
+
+```java
+// G1收集器特点
+- 并发收集
+- 可预测的停顿时间
+- 将堆空间分为多个Region
+- 优先回收垃圾最多的Region
+- 标记-整理算法
+```
+
+### ZGC 收集器
+
+低延迟垃圾收集器：
+
+```java
+// ZGC特点
+- 并发收集
+- 停顿时间不超过10ms
+- 支持TB级别的堆内存
+- 使用读屏障技术
+```
+
+## GC调优参数
+
+### 堆内存参数
+
+```bash
+# 设置堆内存大小
+-Xms4g          # 初始堆大小
+-Xmx4g          # 最大堆大小
+
+# 设置新生代大小
+-Xmn1g          # 新生代大小
+-XX:NewRatio=3  # 老年代与新生代比例
+
+# 设置Eden与Survivor比例
+-XX:SurvivorRatio=8  # Eden与Survivor比例
+```
+
+### 收集器选择参数
+
+```bash
+# Serial收集器
+-XX:+UseSerialGC
+
+# ParNew收集器
+-XX:+UseParNewGC
+
+# Parallel Scavenge收集器
+-XX:+UseParallelGC
+
+# CMS收集器
+-XX:+UseConcMarkSweepGC
+
+# G1收集器
+-XX:+UseG1GC
+
+# ZGC收集器
+-XX:+UseZGC
+```
+
+### 调优参数
+
+```bash
+# 设置停顿时间目标
+-XX:MaxGCPauseMillis=200
+
+# 设置吞吐量目标
+-XX:GCTimeRatio=99
+
+# 设置新生代晋升阈值
+-XX:MaxTenuringThreshold=15
+
+# 设置大对象阈值
+-XX:PretenureSizeThreshold=1m
+```
+
+## GC日志分析
+
+### 开启GC日志
+
+```bash
+# 开启详细GC日志
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+-XX:+PrintGCDateStamps
+
+# 输出到文件
+-Xloggc:gc.log
+
+# 使用统一日志格式 (Java 9+)
+-Xlog:gc*:file=gc.log:time,uptime:filecount=5,filesize=100M
+```
+
+### GC日志格式
+
+```
+[GC (Allocation Failure) [PSYoungGen: 33280K->5088K(38400K)] 33280K->5096K(125952K), 0.0096000 secs] [Times: user=0.03 sys=0.00, real=0.01 secs]
+```
+
+日志解析：
+- `GC (Allocation Failure)`：触发GC的原因
+- `PSYoungGen: 33280K->5088K(38400K)`：新生代回收情况
+- `33280K->5096K(125952K)`：整个堆的回收情况
+- `0.0096000 secs`：GC耗时
+
+### 常用分析工具
+
+```bash
+# GCViewer - 可视化GC日志
+java -jar gcviewer.jar gc.log
+
+# GCPlot - 在线分析工具
+# https://gcplot.com/
+
+# 自定义脚本分析
+grep "Full GC" gc.log | awk '{print $1, $8}' > fullgc.txt
+```
+
+## 面试题
+
+### 1. 什么是垃圾回收？
+
+垃圾回收是自动内存管理机制，负责回收不再使用的对象占用的内存空间。
+
+### 2. 如何判断对象是否存活？
+
+**引用计数法**：
+- 为每个对象添加引用计数器
+- 引用时计数器+1，引用失效时-1
+- 计数器为0时回收
+
+**可达性分析**：
+- 从GC Roots开始搜索
+- 搜索不到的对象标记为垃圾
+- GC Roots包括：栈中局部变量、静态变量、常量、本地方法栈等
+
+### 3. 常见的垃圾回收算法有哪些？
+
+- **标记-清除**：标记可达对象，清除未标记对象
+- **复制算法**：将内存分为两块，复制存活对象
+- **标记-整理**：标记后移动存活对象到一端
+- **分代收集**：根据对象生命周期分代处理
+
+### 4. 新生代和老年代的区别？
+
+**新生代**：
+- 存放新创建的对象
+- 使用复制算法
+- 分为Eden、Survivor0、Survivor1三个区域
+
+**老年代**：
+- 存放存活时间长的对象
+- 使用标记-整理算法
+- 对象晋升到老年代
+
+### 5. 什么是Stop-The-World？
+
+STW是垃圾回收时暂停所有用户线程的现象，会导致应用暂停响应。
+
+### 6. CMS收集器的优缺点？
+
+**优点**：
+- 并发收集，停顿时间短
+- 适合对响应时间要求高的应用
+
+**缺点**：
+- 会产生内存碎片
+- 对CPU敏感
+- 无法处理浮动垃圾
+
+### 7. G1收集器的特点？
+
+- 可预测的停顿时间
+- 将堆分为多个Region
+- 优先回收垃圾最多的Region
+- 适合大堆内存应用
+
+### 8. 如何调优GC？
+
+1. **选择合适的收集器**
+2. **设置合理的堆大小**
+3. **调整新生代比例**
+4. **监控GC日志**
+5. **分析GC停顿时间**
+
+### 9. 什么是内存泄漏？
+
+内存泄漏是指不再使用的对象无法被垃圾回收，导致内存占用持续增长。
+
+**常见原因**：
+- 静态集合持有对象引用
+- 监听器未正确移除
+- 数据库连接未关闭
+- 内部类持有外部类引用
+
+### 10. 如何排查内存问题？
+
+1. **使用JVM参数监控**
+   ```bash
+   -XX:+PrintGCDetails
+   -XX:+PrintHeapAtGC
+   ```
+
+2. **使用工具分析**
+   - JVisualVM
+   - MAT (Memory Analyzer Tool)
+   - JProfiler
+
+3. **分析堆转储文件**
+   ```bash
+   jmap -dump:format=b,file=heap.hprof <pid>
+   ``` 

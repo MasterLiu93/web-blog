@@ -1,0 +1,35 @@
+---
+sidebar_position: 2
+---
+
+# 8.2 RabbitMQ
+
+## 交换机类型
+- direct：按routing key精确匹配
+- topic：通配符匹配（. 分隔，*/# 通配）
+- fanout：广播
+- headers：按头部匹配
+
+## 队列绑定
+- 绑定键（binding key）
+- 多路由键与多交换机
+
+## 消息确认
+- Publisher Confirm（生产端确认）
+- Consumer Ack/Nack/Requeue（消费端确认）
+- 手动ACK避免丢失
+
+## 死信队列（DLX）
+- 触发条件：被拒绝、过期、队列满
+- DLX交换机与死信队列绑定
+
+## 重试与延迟
+- 延迟交换机/队列（TTL + DLX）
+- 幂等与去重
+
+## 面试题
+1. 各交换机类型的适用场景
+2. 如何设计可靠投递与消费确认
+3. 死信队列触发条件与用途
+4. 基于TTL与DLX的延迟重试方案
+5. RabbitMQ与Kafka的差异 

@@ -4,6 +4,7 @@ import Heading from '@theme/Heading';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import styles from './about.module.css';
+import Translate, {translate} from '@docusaurus/Translate';
 
 // 技能组件
 function SkillBar({name, level}) {
@@ -50,7 +51,8 @@ function ContactItem({icon, label, value, link}) {
             {value}
           </Link>
         ) : (
-          <div className={styles.contactValue}>{value}</div>
+          <div className={styles.contactValue}>{value}
+          </div>
         )}
       </div>
     </div>
@@ -87,36 +89,48 @@ export default function About() {
   // 工作经历
   const experiences = [
     {
-      period: '2020 - 至今',
-      title: '全栈开发工程师',
-      company: 'TechForward 科技',
-      description: '负责公司核心产品的前后端开发，包括微服务架构设计、前端UI/UX优化和DevOps流程建设，主导了多个关键项目的技术选型与实施。'
+      period: translate({id: "about.experience.period1", message: '2020 - 至今'}),
+      title: translate({id: "about.experience.title1", message: '全栈开发工程师'}),
+      company: 'TechForward ' + translate({id: "about.company.tech", message: '科技'}),
+      description: translate({
+        id: "about.experience.desc1",
+        message: '负责公司核心产品的前后端开发，包括微服务架构设计、前端UI/UX优化和DevOps流程建设，主导了多个关键项目的技术选型与实施。'
+      })
     },
     {
-      period: '2017 - 2020',
-      title: '全栈开发工程师',
-      company: 'DataInnovate 数据创新',
-      description: '参与大数据分析平台的开发，使用React和Node.js构建前端界面，开发RESTful API，同时负责数据可视化模块和自动化部署流程。'
+      period: translate({id: "about.experience.period2", message: '2017 - 2020'}),
+      title: translate({id: "about.experience.title2", message: '全栈开发工程师'}),
+      company: 'DataInnovate ' + translate({id: "about.company.data", message: '数据创新'}),
+      description: translate({
+        id: "about.experience.desc2",
+        message: '参与大数据分析平台的开发，使用React和Node.js构建前端界面，开发RESTful API，同时负责数据可视化模块和自动化部署流程。'
+      })
     },
     {
-      period: '2015 - 2017',
-      title: '前端开发工程师',
-      company: 'WebPioneer 网络科技',
-      description: '负责企业网站和电子商务平台的前端开发，优化用户体验，提高网站性能，参与了多个移动端适配项目。'
+      period: translate({id: "about.experience.period3", message: '2015 - 2017'}),
+      title: translate({id: "about.experience.title3", message: '前端开发工程师'}),
+      company: 'WebPioneer ' + translate({id: "about.company.web", message: '网络科技'}),
+      description: translate({
+        id: "about.experience.desc3",
+        message: '负责企业网站和电子商务平台的前端开发，优化用户体验，提高网站性能，参与了多个移动端适配项目。'
+      })
     }
   ];
 
   return (
     <Layout
-      title="关于我"
-      description="Laby - 全栈开发工程师的个人简介、技能、经历和联系方式">
+      title={translate({id: "about.meta.title", message: '关于我'})}
+      description={translate({
+        id: "about.meta.description",
+        message: 'Laby - 全栈开发工程师的个人简介、技能、经历和联系方式'
+      })}>
       <header className={styles.aboutHeader}>
         <div className="container">
           <div className={styles.aboutHeaderContent}>
             <div className={styles.avatarContainer}>
               <img 
                 src="/img/head.jpg" 
-                alt="个人头像" 
+                alt={translate({id: "about.avatar.alt", message: '个人头像'})} 
                 className={styles.avatar}
               />
             </div>
@@ -125,7 +139,7 @@ export default function About() {
                 Laby
               </Heading>
               <p className={styles.aboutSubtitle}>
-                全栈开发工程师
+                <Translate id="about.fullstackDeveloper">全栈开发工程师</Translate>
               </p>
               <div className={styles.aboutSocial}>
                 <Link to="https://github.com/MasterLiu93" className={styles.socialIcon} target="_blank" rel="noopener noreferrer">
@@ -146,14 +160,26 @@ export default function About() {
             <div className="row">
               <div className="col col--8 col--offset-2">
                 <Heading as="h2" className={styles.sectionTitle}>
-                  关于我
+                  <Translate id="about.aboutMe">关于我</Translate>
                 </Heading>
                 <div className={styles.aboutText}>
-                  <p>我是一名拥有8年经验的全栈开发工程师，专注于构建高质量的Web应用和解决复杂的技术挑战。我具备从前端到后端，再到DevOps的全面技能，热衷于学习新技术和最佳实践。</p>
+                  <p>
+                    <Translate id="about.introduction1">
+                      我是一名拥有8年经验的全栈开发工程师，专注于构建高质量的Web应用和解决复杂的技术挑战。我具备从前端到后端，再到DevOps的全面技能，热衷于学习新技术和最佳实践。
+                    </Translate>
+                  </p>
                   
-                  <p>在我的职业生涯中，我参与开发了各种类型的项目，包括企业应用、电子商务平台、数据分析工具和实时通信系统。我特别擅长构建响应式用户界面、设计可扩展的后端架构，以及优化开发和部署流程。</p>
+                  <p>
+                    <Translate id="about.introduction2">
+                      在我的职业生涯中，我参与开发了各种类型的项目，包括企业应用、电子商务平台、数据分析工具和实时通信系统。我特别擅长构建响应式用户界面、设计可扩展的后端架构，以及优化开发和部署流程。
+                    </Translate>
+                  </p>
                   
-                  <p>我相信技术不仅是工具，更是解决问题的途径。我喜欢从用户和业务需求出发，提供优雅而实用的技术解决方案。在这个博客上，我将分享我的技术见解、项目经验和学习心得。</p>
+                  <p>
+                    <Translate id="about.introduction3">
+                      我相信技术不仅是工具，更是解决问题的途径。我喜欢从用户和业务需求出发，提供优雅而实用的技术解决方案。在这个博客上，我将分享我的技术见解、项目经验和学习心得。
+                    </Translate>
+                  </p>
                 </div>
               </div>
             </div>
@@ -164,13 +190,15 @@ export default function About() {
         <section className={clsx(styles.aboutSection, styles.skillsSection)}>
           <div className="container">
             <Heading as="h2" className={styles.sectionTitle}>
-              专业技能
+              <Translate id="about.professionalSkills">专业技能</Translate>
             </Heading>
             
             <div className="row">
               <div className="col col--4">
                 <div className={styles.skillCategory}>
-                  <h3 className={styles.skillCategoryTitle}>前端开发</h3>
+                  <h3 className={styles.skillCategoryTitle}>
+                    <Translate id="about.frontendDevelopment">前端开发</Translate>
+                  </h3>
                   {frontendSkills.map((skill, idx) => (
                     <SkillBar key={idx} name={skill.name} level={skill.level} />
                   ))}
@@ -179,7 +207,9 @@ export default function About() {
               
               <div className="col col--4">
                 <div className={styles.skillCategory}>
-                  <h3 className={styles.skillCategoryTitle}>后端开发</h3>
+                  <h3 className={styles.skillCategoryTitle}>
+                    <Translate id="about.backendDevelopment">后端开发</Translate>
+                  </h3>
                   {backendSkills.map((skill, idx) => (
                     <SkillBar key={idx} name={skill.name} level={skill.level} />
                   ))}
@@ -202,7 +232,7 @@ export default function About() {
         <section className={styles.aboutSection}>
           <div className="container">
             <Heading as="h2" className={styles.sectionTitle}>
-              工作经历
+              <Translate id="about.workExperience">工作经历</Translate>
             </Heading>
             
             <div className={styles.experienceContainer}>
@@ -226,24 +256,26 @@ export default function About() {
               <div className="col col--6 col--offset-3">
                 <div className={styles.contactCard}>
                   <Heading as="h2" className={styles.contactTitle}>
-                    联系我
+                    <Translate id="about.contactMe">联系我</Translate>
                   </Heading>
                   <p className={styles.contactIntro}>
-                    如果您有项目合作、技术交流或其他问题，欢迎通过以下方式联系我：
+                    <Translate id="about.contactIntro">
+                      如果您有项目合作、技术交流或其他问题，欢迎通过以下方式联系我：
+                    </Translate>
                   </p>
                   
                   <div className={styles.contactGrid}>
                     <ContactItem 
                       icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"></path></svg>} 
-                      label="邮箱" 
+                      label={translate({id: "about.contact.email", message: '邮箱'})} 
                       value="1521170425@qq.com" 
                       link="mailto:1521170425@qq.com"
                     />
                     
                     <ContactItem 
                       icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 5.46 4.45 9.91 9.91 9.91 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.56c-4.77 0-8.65-3.88-8.65-8.65 0-4.77 3.88-8.65 8.65-8.65 4.77 0 8.65 3.88 8.65 8.65 0 4.77-3.88 8.65-8.65 8.65z"/><path d="M13.32 7.27c.4.4.4 1.05 0 1.45l-4.3 4.3c-.2.2-.45.3-.72.3-.27 0-.53-.1-.72-.3-.4-.4-.4-1.05 0-1.45l4.3-4.3c.4-.4 1.05-.4 1.44 0z"/></svg>}
-                      label="微信" 
-                      value="扫描下方二维码添加" 
+                      label={translate({id: "about.contact.wechat", message: '微信'})} 
+                      value={translate({id: "about.wechat.scan", message: '扫描下方二维码添加'})} 
                     />
                     
                     <ContactItem 
@@ -255,8 +287,8 @@ export default function About() {
                   </div>
                   
                   <div className={styles.wechatQR}>
-                    <img src="/img/weChat.jpg" alt="微信二维码" style={{maxWidth: '200px'}} />
-                    <p>扫码添加微信好友</p>
+                    <img src="/img/weChat.jpg" alt={translate({id: "about.wechat.qr.alt", message: '微信二维码'})} style={{maxWidth: '200px'}} />
+                    <p><Translate id="about.scanQRCode">扫码添加微信好友</Translate></p>
                   </div>
                 </div>
               </div>

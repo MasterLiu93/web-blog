@@ -1,0 +1,309 @@
+---
+sidebar_position: 7
+title: "线程安全"
+description: "Java线程安全概念与实践"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 线程安全
+
+线程安全是多线程编程中的核心概念，指在多线程环境下，程序能够正确执行，不会出现数据不一致或异常结果。
+
+## 线程安全策略
+
+### 1. 不可变对象
+不可变对象是线程安全的，因为对象创建后状态不会改变。
+
+```java
+public final class ImmutablePerson {
+    private final String name;
+    private final int age;
+    
+    public ImmutablePerson(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+}
+```
+
+### 2. 同步机制
+使用synchronized关键字或Lock接口来保护共享资源。
+
+```java
+public class ThreadSafeCounter {
+    private int count = 0;
+    private final Object lock = new Object();
+    
+    // 方法级同步
+    public synchronized void increment() {
+        count++;
+    }
+    
+    // 代码块同步
+    public void incrementWithBlock() {
+        synchronized (lock) {
+            count++;
+        }
+    }
+    
+    // 使用ReentrantLock
+    private final ReentrantLock reentrantLock = new ReentrantLock();
+    
+    public void incrementWithLock() {
+        reentrantLock.lock();
+        try {
+            count++;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+}
+```
+
+### 3. 原子操作
+使用原子类来保证操作的原子性。
+
+```java
+public class AtomicCounter {
+    private AtomicInteger count = new AtomicInteger(0);
+    
+    public void increment() {
+        count.incrementAndGet();
+    }
+    
+    public int getCount() {
+        return count.get();
+    }
+}
+```
+
+### 4. 线程本地存储
+使用ThreadLocal来为每个线程提供独立的变量副本。
+
+```java
+public class ThreadLocalExample {
+    private static ThreadLocal<String> threadLocal = new ThreadLocal<>();
+    
+    public static void setValue(String value) {
+        threadLocal.set(value);
+    }
+    
+    public static String getValue() {
+        return threadLocal.get();
+    }
+    
+    public static void remove() {
+        threadLocal.remove();
+    }
+}
+```
+
+## 常见线程安全问题
+
+### 1. 竞态条件
+多个线程同时访问和修改共享数据时出现的问题。
+
+```java
+// 不安全的实现
+public class UnsafeCounter {
+    private int count = 0;
+    
+    public void increment() {
+        count++; // 非原子操作
+    }
+    
+    public int getCount() {
+        return count;
+    }
+}
+
+// 安全的实现
+public class SafeCounter {
+    private AtomicInteger count = new AtomicInteger(0);
+    
+    public void increment() {
+        count.incrementAndGet();
+    }
+    
+    public int getCount() {
+        return count.get();
+    }
+}
+```
+
+### 2. 内存可见性问题
+一个线程对共享变量的修改对其他线程不可见。
+
+```java
+public class VisibilityProblem {
+    private boolean flag = false;
+    
+    public void setFlag() {
+        flag = true;
+    }
+    
+    public boolean getFlag() {
+        return flag;
+    }
+}
+
+// 解决方案：使用volatile
+public class VisibilitySolution {
+    private volatile boolean flag = false;
+    
+    public void setFlag() {
+        flag = true;
+    }
+    
+    public boolean getFlag() {
+        return flag;
+    }
+}
+```
+
+### 3. 死锁问题
+多个线程互相等待对方释放资源。
+
+```java
+public class DeadlockExample {
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+    
+    public void method1() {
+        synchronized (lock1) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (lock2) {
+                System.out.println("Method 1");
+            }
+        }
+    }
+    
+    public void method2() {
+        synchronized (lock2) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (lock1) {
+                System.out.println("Method 2");
+            }
+        }
+    }
+}
+```
+
+## 线程安全最佳实践
+
+### 1. 优先使用不可变对象
+```java
+// 推荐：使用不可变对象
+public final class Point {
+    private final int x;
+    private final int y;
+    
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    
+    public int getX() { return x; }
+    public int getY() { return y; }
+}
+```
+
+### 2. 使用线程安全的集合
+```java
+// 推荐：使用线程安全的集合
+List<String> safeList = Collections.synchronizedList(new ArrayList<>());
+Map<String, String> safeMap = new ConcurrentHashMap<>();
+Queue<String> safeQueue = new ConcurrentLinkedQueue<>();
+```
+
+### 3. 避免在同步块中执行耗时操作
+```java
+// 不推荐
+public synchronized void badMethod() {
+    // 耗时操作
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    // 其他操作
+}
+
+// 推荐：只同步必要的部分
+public void goodMethod() {
+    // 耗时操作
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    
+    // 只同步关键部分
+    synchronized (this) {
+        // 关键操作
+    }
+}
+```
+
+### 4. 使用原子类
+```java
+public class AtomicExample {
+    private AtomicInteger counter = new AtomicInteger(0);
+    private AtomicReference<String> reference = new AtomicReference<>("initial");
+    
+    public void increment() {
+        counter.incrementAndGet();
+    }
+    
+    public void updateReference(String newValue) {
+        reference.set(newValue);
+    }
+}
+```
+
+## 面试题
+
+### 1. 什么是线程安全？
+**答案：** 线程安全是指多线程环境下，程序能够正确执行，不会出现数据不一致或异常结果。线程安全的代码在多线程并发执行时，能够保证数据的正确性和一致性。
+
+### 2. 如何实现线程安全？
+**答案：** 实现线程安全的方法包括：
+- 使用不可变对象
+- 使用同步机制（synchronized、Lock）
+- 使用原子类（AtomicInteger等）
+- 使用线程安全的集合类
+- 使用ThreadLocal为每个线程提供独立副本
+
+### 3. synchronized和volatile的区别？
+**答案：**
+- **synchronized**：保证原子性、可见性和有序性，可以修饰方法和代码块
+- **volatile**：只保证可见性和有序性，不能保证原子性，只能修饰变量
+
+### 4. 什么是死锁？如何避免？
+**答案：** 死锁是指多个线程互相等待对方释放资源，导致程序无法继续执行。避免死锁的方法：
+- 避免嵌套锁
+- 使用锁的顺序
+- 使用超时机制
+- 使用Lock接口的tryLock方法
+
+### 5. ThreadLocal的原理是什么？
+**答案：** ThreadLocal为每个线程提供独立的变量副本，每个线程都有自己独立的ThreadLocalMap，存储该线程的ThreadLocal变量。当线程结束时，ThreadLocalMap会被垃圾回收。 

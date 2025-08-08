@@ -1,0 +1,85 @@
+---
+sidebar_position: 4
+title: "配置中心"
+description: "微服务配置中心解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 配置中心
+
+集中化配置管理，支持灰度配置、动态刷新与多环境隔离。
+
+## Spring Cloud Config
+
+```yaml
+# client
+spring:
+  application:
+    name: user-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      profile: dev
+      label: main
+```
+
+```java
+@org.springframework.web.bind.annotation.RestController
+@org.springframework.cloud.context.config.annotation.RefreshScope
+public class ConfigController {
+  @org.springframework.beans.factory.annotation.Value("${feature.enabled:false}")
+  private boolean enabled;
+  @org.springframework.web.bind.annotation.GetMapping("/enabled")
+  public String enabled() { return String.valueOf(enabled); }
+}
+```
+
+- 动态刷新：`/actuator/refresh` 或 Bus 刷新
+- 加密属性：对称/非对称
+
+## Apollo
+
+- Namespace、灰度发布、权限与审计
+- 客户端长轮询实时生效
+
+```properties
+app.id=user-service
+apollo.meta=http://localhost:8080
+```
+
+## Nacos Config
+
+```yaml
+spring:
+  application:
+    name: order-service
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+```
+
+## 配置优先级与隔离
+
+- 本地`application.yml` < 远程配置
+- `bootstrap`阶段优先装载
+- 多环境：profile、namespace、group
+
+## 安全与审计
+
+- 访问控制：token/账号
+- 变更审计与回滚
+- 敏感配置加密与脱敏
+
+## 面试题
+
+1. 动态刷新原理与RefreshScope作用
+2. 多环境与灰度配置如何组织
+3. Config/Apollo/Nacos Config差异
+4. 配置加密与密钥管理
+5. 配置变更如何保证安全与回滚

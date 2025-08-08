@@ -1,0 +1,618 @@
+---
+sidebar_position: 2
+title: "单元测试"
+description: "前端单元测试实践"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 单元测试
+
+单元测试是测试金字塔的基础，主要测试单个函数、组件或模块的功能。通过单元测试可以快速验证代码逻辑，提供即时反馈。
+
+## Jest基础
+
+### 安装和配置
+```bash
+# 安装Jest
+npm install --save-dev jest
+
+# 安装TypeScript支持
+npm install --save-dev @types/jest ts-jest
+```
+
+```javascript
+// jest.config.js
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  }
+};
+```
+
+### 基本测试结构
+```javascript
+// math.test.js
+function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+describe('Math functions', () => {
+  describe('add', () => {
+    it('should add two positive numbers', () => {
+      expect(add(2, 3)).toBe(5);
+    });
+
+    it('should handle negative numbers', () => {
+      expect(add(-1, 1)).toBe(0);
+    });
+
+    it('should handle zero', () => {
+      expect(add(0, 5)).toBe(5);
+    });
+  });
+
+  describe('multiply', () => {
+    it('should multiply two numbers', () => {
+      expect(multiply(2, 3)).toBe(6);
+    });
+  });
+});
+```
+
+## 测试工具函数
+
+### 工具函数测试
+```javascript
+// utils.js
+export function formatDate(date) {
+  return date.toISOString().split('T')[0];
+}
+
+export function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+export function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+```
+
+```javascript
+// utils.test.js
+import { formatDate, debounce, validateEmail } from './utils';
+
+describe('Utils', () => {
+  describe('formatDate', () => {
+    it('should format date correctly', () => {
+      const date = new Date('2023-12-25T10:30:00Z');
+      expect(formatDate(date)).toBe('2023-12-25');
+    });
+  });
+
+  describe('debounce', () => {
+    it('should debounce function calls', (done) => {
+      let callCount = 0;
+      const debouncedFn = debounce(() => {
+        callCount++;
+      }, 100);
+
+      debouncedFn();
+      debouncedFn();
+      debouncedFn();
+
+      setTimeout(() => {
+        expect(callCount).toBe(1);
+        done();
+      }, 150);
+    });
+  });
+
+  describe('validateEmail', () => {
+    it('should validate correct email addresses', () => {
+      expect(validateEmail('test@example.com')).toBe(true);
+      expect(validateEmail('user.name@domain.co.uk')).toBe(true);
+    });
+
+    it('should reject invalid email addresses', () => {
+      expect(validateEmail('invalid-email')).toBe(false);
+      expect(validateEmail('test@')).toBe(false);
+      expect(validateEmail('@example.com')).toBe(false);
+    });
+  });
+});
+```
+
+## React组件测试
+
+### 安装测试库
+```bash
+npm install --save-dev @testing-library/react @testing-library/jest-dom
+```
+
+```javascript
+// setupTests.js
+import '@testing-library/jest-dom';
+```
+
+### 基础组件测试
+```javascript
+// Button.jsx
+import React from 'react';
+
+function Button({ children, onClick, disabled = false, variant = 'primary' }) {
+  return (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      className={`btn btn-${variant}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+export default Button;
+```
+
+```javascript
+// Button.test.jsx
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Button from './Button';
+
+describe('Button', () => {
+  it('renders with correct text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    
+    fireEvent.click(screen.getByText('Click me'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('is disabled when disabled prop is true', () => {
+    render(<Button disabled>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeDisabled();
+  });
+
+  it('applies correct variant class', () => {
+    render(<Button variant="secondary">Click me</Button>);
+    expect(screen.getByText('Click me')).toHaveClass('btn-secondary');
+  });
+});
+```
+
+### 表单组件测试
+```javascript
+// LoginForm.jsx
+import React, { useState } from 'react';
+
+function LoginForm({ onSubmit }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ email, password });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required
+      />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
+
+export default LoginForm;
+```
+
+```javascript
+// LoginForm.test.jsx
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import LoginForm from './LoginForm';
+
+describe('LoginForm', () => {
+  it('renders form elements', () => {
+    render(<LoginForm onSubmit={jest.fn()} />);
+    
+    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+  });
+
+  it('updates input values', () => {
+    render(<LoginForm onSubmit={jest.fn()} />);
+    
+    const emailInput = screen.getByPlaceholderText('Email');
+    const passwordInput = screen.getByPlaceholderText('Password');
+    
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    
+    expect(emailInput.value).toBe('test@example.com');
+    expect(passwordInput.value).toBe('password123');
+  });
+
+  it('calls onSubmit with form data', () => {
+    const mockOnSubmit = jest.fn();
+    render(<LoginForm onSubmit={mockOnSubmit} />);
+    
+    fireEvent.change(screen.getByPlaceholderText('Email'), {
+      target: { value: 'test@example.com' }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
+      target: { value: 'password123' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Login' }));
+    
+    expect(mockOnSubmit).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123'
+    });
+  });
+});
+```
+
+## 异步测试
+
+### Promise测试
+```javascript
+// api.js
+export async function fetchUser(id) {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) {
+    throw new Error('User not found');
+  }
+  return response.json();
+}
+```
+
+```javascript
+// api.test.js
+import { fetchUser } from './api';
+
+// Mock fetch
+global.fetch = jest.fn();
+
+describe('fetchUser', () => {
+  beforeEach(() => {
+    fetch.mockClear();
+  });
+
+  it('should fetch user successfully', async () => {
+    const mockUser = { id: 1, name: 'John Doe' };
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockUser
+    });
+
+    const result = await fetchUser(1);
+    expect(result).toEqual(mockUser);
+    expect(fetch).toHaveBeenCalledWith('/api/users/1');
+  });
+
+  it('should throw error when user not found', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: false
+    });
+
+    await expect(fetchUser(999)).rejects.toThrow('User not found');
+  });
+});
+```
+
+### 异步组件测试
+```javascript
+// UserProfile.jsx
+import React, { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const response = await fetch(`/api/users/${userId}`);
+        if (!response.ok) {
+          throw new Error('User not found');
+        }
+        const userData = await response.json();
+        setUser(userData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, [userId]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!user) return <div>No user found</div>;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+export default UserProfile;
+```
+
+```javascript
+// UserProfile.test.jsx
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import UserProfile from './UserProfile';
+
+// Mock fetch
+global.fetch = jest.fn();
+
+describe('UserProfile', () => {
+  beforeEach(() => {
+    fetch.mockClear();
+  });
+
+  it('shows loading state initially', () => {
+    render(<UserProfile userId={1} />);
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  it('shows user data when fetch succeeds', async () => {
+    const mockUser = { name: 'John Doe', email: 'john@example.com' };
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockUser
+    });
+
+    render(<UserProfile userId={1} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+    });
+    expect(screen.getByText('john@example.com')).toBeInTheDocument();
+  });
+
+  it('shows error when fetch fails', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: false
+    });
+
+    render(<UserProfile userId={999} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Error: User not found')).toBeInTheDocument();
+    });
+  });
+});
+```
+
+## Mock和Stub
+
+### 函数Mock
+```javascript
+// calculator.js
+export function add(a, b) {
+  return a + b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+
+export function calculate(a, b, operation) {
+  switch (operation) {
+    case 'add':
+      return add(a, b);
+    case 'multiply':
+      return multiply(a, b);
+    default:
+      throw new Error('Unknown operation');
+  }
+}
+```
+
+```javascript
+// calculator.test.js
+import { calculate, add, multiply } from './calculator';
+
+// Mock the add and multiply functions
+jest.mock('./calculator', () => ({
+  ...jest.requireActual('./calculator'),
+  add: jest.fn(),
+  multiply: jest.fn()
+}));
+
+describe('calculate', () => {
+  beforeEach(() => {
+    add.mockClear();
+    multiply.mockClear();
+  });
+
+  it('should call add function for add operation', () => {
+    add.mockReturnValue(5);
+    
+    const result = calculate(2, 3, 'add');
+    
+    expect(add).toHaveBeenCalledWith(2, 3);
+    expect(result).toBe(5);
+  });
+
+  it('should call multiply function for multiply operation', () => {
+    multiply.mockReturnValue(6);
+    
+    const result = calculate(2, 3, 'multiply');
+    
+    expect(multiply).toHaveBeenCalledWith(2, 3);
+    expect(result).toBe(6);
+  });
+});
+```
+
+### 模块Mock
+```javascript
+// userService.js
+import { fetchUser } from './api';
+
+export async function getUserName(id) {
+  const user = await fetchUser(id);
+  return user.name;
+}
+```
+
+```javascript
+// userService.test.js
+import { getUserName } from './userService';
+
+// Mock the api module
+jest.mock('./api', () => ({
+  fetchUser: jest.fn()
+}));
+
+import { fetchUser } from './api';
+
+describe('getUserName', () => {
+  beforeEach(() => {
+    fetchUser.mockClear();
+  });
+
+  it('should return user name', async () => {
+    fetchUser.mockResolvedValue({ name: 'John Doe' });
+    
+    const result = await getUserName(1);
+    
+    expect(fetchUser).toHaveBeenCalledWith(1);
+    expect(result).toBe('John Doe');
+  });
+});
+```
+
+## 测试覆盖率
+
+### 配置覆盖率
+```javascript
+// jest.config.js
+module.exports = {
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/index.tsx',
+    '!src/serviceWorker.ts'
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
+};
+```
+
+### 运行覆盖率
+```bash
+# 运行测试并生成覆盖率报告
+npm test -- --coverage
+
+# 只运行覆盖率
+npm test -- --coverage --watchAll=false
+```
+
+## 测试最佳实践
+
+### 测试命名
+```javascript
+describe('UserService', () => {
+  describe('getUser', () => {
+    it('should return user when valid ID is provided', () => {
+      // test implementation
+    });
+
+    it('should throw error when user not found', () => {
+      // test implementation
+    });
+  });
+});
+```
+
+### 测试数据工厂
+```javascript
+// testFactories.js
+export function createUser(overrides = {}) {
+  return {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    ...overrides
+  };
+}
+
+export function createUserList(count = 3) {
+  return Array.from({ length: count }, (_, index) => 
+    createUser({ id: index + 1, name: `User ${index + 1}` })
+  );
+}
+```
+
+### 测试清理
+```javascript
+describe('UserService', () => {
+  beforeEach(() => {
+    // 设置测试环境
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // 清理测试数据
+  });
+
+  afterAll(() => {
+    // 清理全局状态
+  });
+});
+``` 

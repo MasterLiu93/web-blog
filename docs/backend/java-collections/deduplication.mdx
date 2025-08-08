@@ -1,0 +1,265 @@
+---
+sidebar_position: 7
+title: "对象去重详解"
+description: "Java集合对象去重技术"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 对象去重详解
+
+在Java开发中，对象去重是一个常见且重要的需求。本文将详细介绍各种去重技术及其适用场景。
+
+## 基本去重方法
+
+### 1. 使用HashSet去重
+
+HashSet是最常用的去重方式，基于对象的hashCode()和equals()方法：
+
+```java
+public class User {
+    private String name;
+    private int age;
+    
+    // 构造函数、getter、setter省略
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return age == user.age && Objects.equals(name, user.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+}
+
+// 去重示例
+List<User> users = Arrays.asList(
+    new User("Alice", 25),
+    new User("Bob", 30),
+    new User("Alice", 25)  // 重复
+);
+
+Set<User> uniqueUsers = new HashSet<>(users);
+List<User> deduplicatedList = new ArrayList<>(uniqueUsers);
+```
+
+### 2. 使用Stream API去重
+
+Java 8的Stream API提供了更优雅的去重方式：
+
+```java
+// 基于equals方法去重
+List<User> uniqueUsers = users.stream()
+    .distinct()
+    .collect(Collectors.toList());
+
+// 基于特定字段去重
+List<User> uniqueByName = users.stream()
+    .collect(Collectors.toMap(
+        User::getName,
+        user -> user,
+        (existing, replacement) -> existing
+    ))
+    .values()
+    .stream()
+    .collect(Collectors.toList());
+```
+
+### 3. 使用LinkedHashSet保持顺序
+
+如果需要保持原有顺序：
+
+```java
+Set<User> uniqueUsers = new LinkedHashSet<>(users);
+List<User> orderedUniqueList = new ArrayList<>(uniqueUsers);
+```
+
+## 高级去重技术
+
+### 1. 基于多个字段去重
+
+```java
+public class ComplexUser {
+    private String name;
+    private int age;
+    private String department;
+    
+    // 基于name和department去重
+    public static List<ComplexUser> deduplicateByNameAndDept(List<ComplexUser> users) {
+        return users.stream()
+            .collect(Collectors.toMap(
+                user -> user.getName() + "|" + user.getDepartment(),
+                user -> user,
+                (existing, replacement) -> existing
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
+    }
+}
+```
+
+### 2. 自定义比较器去重
+
+```java
+// 使用自定义比较器
+List<User> uniqueUsers = users.stream()
+    .collect(Collectors.toCollection(() -> 
+        new TreeSet<>(Comparator.comparing(User::getName)
+            .thenComparing(User::getAge))
+    ))
+    .stream()
+    .collect(Collectors.toList());
+```
+
+### 3. 基于时间戳去重
+
+```java
+public class TimestampedUser {
+    private String name;
+    private LocalDateTime timestamp;
+    
+    // 保留最新的记录
+    public static List<TimestampedUser> deduplicateKeepLatest(List<TimestampedUser> users) {
+        return users.stream()
+            .collect(Collectors.toMap(
+                TimestampedUser::getName,
+                user -> user,
+                (existing, replacement) -> 
+                    existing.getTimestamp().isAfter(replacement.getTimestamp()) ? existing : replacement
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
+    }
+}
+```
+
+## 性能优化技巧
+
+### 1. 预分配容量
+
+```java
+// 预分配HashSet容量，避免扩容
+Set<User> uniqueUsers = new HashSet<>(users.size());
+uniqueUsers.addAll(users);
+```
+
+### 2. 使用并行流处理大数据量
+
+```java
+List<User> uniqueUsers = users.parallelStream()
+    .distinct()
+    .collect(Collectors.toList());
+```
+
+### 3. 分批处理超大数据集
+
+```java
+public static <T> List<T> deduplicateLargeDataset(List<T> items, int batchSize) {
+    Set<T> uniqueItems = new HashSet<>();
+    List<T> result = new ArrayList<>();
+    
+    for (int i = 0; i < items.size(); i += batchSize) {
+        int end = Math.min(i + batchSize, items.size());
+        List<T> batch = items.subList(i, end);
+        
+        for (T item : batch) {
+            if (uniqueItems.add(item)) {
+                result.add(item);
+            }
+        }
+    }
+    
+    return result;
+}
+```
+
+## 常见问题和解决方案
+
+### 1. 内存溢出问题
+
+对于超大数据集，可以使用外部排序或数据库去重：
+
+```java
+// 使用数据库去重
+@Repository
+public class UserRepository {
+    @Query("SELECT DISTINCT u FROM User u")
+    List<User> findAllDistinct();
+}
+```
+
+### 2. 自定义对象去重
+
+确保正确实现equals()和hashCode()方法：
+
+```java
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    
+    User user = (User) obj;
+    
+    // 使用Objects.equals避免空指针异常
+    return Objects.equals(name, user.name) && 
+           Objects.equals(email, user.email);
+}
+
+@Override
+public int hashCode() {
+    return Objects.hash(name, email);
+}
+```
+
+### 3. 处理null值
+
+```java
+// 安全处理null值
+List<String> strings = Arrays.asList("a", null, "b", null, "a");
+List<String> uniqueStrings = strings.stream()
+    .filter(Objects::nonNull)
+    .distinct()
+    .collect(Collectors.toList());
+```
+
+## 面试题
+
+### 1. 如何实现自定义对象的去重？
+
+**答案：** 需要正确重写equals()和hashCode()方法，确保两个相等的对象有相同的hashCode，并且equals方法满足自反性、对称性、传递性和一致性。
+
+### 2. HashSet和TreeSet在去重时有什么区别？
+
+**答案：** 
+- HashSet基于hashCode和equals方法，时间复杂度O(1)
+- TreeSet基于比较器或Comparable接口，时间复杂度O(log n)
+- HashSet不保证顺序，TreeSet保证排序
+
+### 3. 如何对大数据集进行去重？
+
+**答案：** 
+- 使用分批处理避免内存溢出
+- 使用并行流提高性能
+- 考虑使用数据库或外部存储
+- 使用布隆过滤器进行预过滤
+
+### 4. Stream API的distinct()方法是如何工作的？
+
+**答案：** distinct()方法内部使用LinkedHashSet来维护已见过的元素，通过equals()方法判断是否重复，保持原有顺序。
+
+### 5. 如何实现基于多个字段的去重？
+
+**答案：** 
+- 使用Collectors.toMap()方法
+- 自定义比较器
+- 重写equals()和hashCode()方法包含多个字段
+- 使用Stream API的组合操作 

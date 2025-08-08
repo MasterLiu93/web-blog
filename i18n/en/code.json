@@ -1,0 +1,910 @@
+{
+  "theme.ErrorPageContent.title": {
+    "message": "This page crashed.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Scroll back to top",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.archive.title": {
+    "message": "Archive",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "Archive",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Blog list page navigation",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Newer entries",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Older entries",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Blog post page navigation",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Newer post",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Older post",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "View all tags",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.colorToggle.ariaLabel.mode.system": {
+    "message": "system mode",
+    "description": "The name for the system color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "light mode",
+    "description": "The name for the light color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "dark mode",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "Switch between dark and light mode (currently {mode})",
+    "description": "The ARIA label for the color mode toggle"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "Breadcrumbs",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.DocCard.categoryDescription.plurals": {
+    "message": "1 item|{count} items",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Docs pages",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Previous",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Next",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "One doc tagged|{count} docs tagged",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "{nDocsTagged} with \"{tagName}\"",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "Version: {versionLabel}"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "This is unreleased documentation for {siteTitle} {versionLabel} version.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "This is documentation for {siteTitle} {versionLabel}, which is no longer actively maintained.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "For up-to-date documentation, see the {latestVersionLink} ({versionLabel}).",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "latest version",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Edit this page",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Direct link to {heading}",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": " on {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": " by {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Last updated{atDate}{byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Versions",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.NotFound.title": {
+    "message": "Page Not Found",
+    "description": "The title of the 404 page"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Tags:",
+    "description": "The label alongside a tag list"
+  },
+  "theme.admonition.caution": {
+    "message": "caution",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.admonition.danger": {
+    "message": "danger",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "info",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.note": {
+    "message": "note",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "tip",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.warning": {
+    "message": "warning",
+    "description": "The default label used for the Warning admonition (:::warning)"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Close",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Blog recent posts navigation",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.DocSidebarItem.expandCategoryAriaLabel": {
+    "message": "Expand sidebar category '{label}'",
+    "description": "The ARIA label to expand the sidebar category"
+  },
+  "theme.DocSidebarItem.collapseCategoryAriaLabel": {
+    "message": "Collapse sidebar category '{label}'",
+    "description": "The ARIA label to collapse the sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "Main",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Languages",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.NotFound.p1": {
+    "message": "We could not find what you were looking for.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Please contact the owner of the site that linked you to the original URL and let them know their link is broken.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "On this page",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Read more",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "Read more about {title}",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "One min read|{readingTime} min read",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Copy",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Copied",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Copy code to clipboard",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "Toggle word wrap",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "Home page",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "Docs sidebar",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "Close navigation bar",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Back to main menu",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "Toggle navigation bar",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
+    "message": "Expand the dropdown",
+    "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
+    "message": "Collapse the dropdown",
+    "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "No results"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "See all results outside \"{context}\""
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "See all results within \"{context}\""
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "See all results"
+  },
+  "theme.SearchBar.label": {
+    "message": "Search",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Search results for \"{query}\"",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Search the documentation",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "Everywhere"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "1 document found|{count} documents found",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "No documents were found",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.blog.post.plurals": {
+    "message": "One post|{count} posts",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} tagged with \"{tagName}\"",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.blog.author.pageTitle": {
+    "message": "{authorName} - {nPosts}",
+    "description": "The title of the page for a blog author"
+  },
+  "theme.blog.authorsList.pageTitle": {
+    "message": "Authors",
+    "description": "The title of the authors page"
+  },
+  "theme.blog.authorsList.viewAll": {
+    "message": "View all authors",
+    "description": "The label of the link targeting the blog authors page"
+  },
+  "theme.blog.author.noPosts": {
+    "message": "This author has not written any posts yet.",
+    "description": "The text for authors with 0 blog post"
+  },
+  "theme.contentVisibility.unlistedBanner.title": {
+    "message": "Unlisted page",
+    "description": "The unlisted content banner title"
+  },
+  "theme.contentVisibility.unlistedBanner.message": {
+    "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
+    "description": "The unlisted content banner message"
+  },
+  "theme.contentVisibility.draftBanner.title": {
+    "message": "Draft page",
+    "description": "The draft content banner title"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "This page is a draft. It will only be visible in dev and be excluded from the production build.",
+    "description": "The draft content banner message"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Try again",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Skip to main content",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Tags",
+    "description": "The title of the tag list page"
+  },
+  "前端": {
+    "message": "Frontend",
+    "description": "Frontend tech badge"
+  },
+  "后端": {
+    "message": "Backend",
+    "description": "Backend tech badge"
+  },
+  "架构": {
+    "message": "Architecture",
+    "description": "Architecture tech badge"
+  },
+  "移动开发": {
+    "message": "Mobile Dev",
+    "description": "Mobile development tech badge"
+  },
+  "homepage.readBlog": {
+    "message": "Read Blog"
+  },
+  "homepage.viewProjects": {
+    "message": "View Projects"
+  },
+  "homepage.codeSnippet.name": {
+    "message": "Full Stack Developer"
+  },
+  "homepage.codeSnippet.return": {
+    "message": "Building excellent web experiences"
+  },
+  "构建现代Web应用": {
+    "message": "Building Modern Web Applications",
+    "description": "Blog post title about modern web applications"
+  },
+  "2023年8月25日": {
+    "message": "August 25, 2023",
+    "description": "Blog post date"
+  },
+  "探索使用React创建高性能Web应用的最新技术和最佳实践。": {
+    "message": "Explore the latest techniques and best practices for creating high-performance web applications with React.",
+    "description": "Blog post excerpt about React"
+  },
+  "可扩展的后端架构": {
+    "message": "Scalable Backend Architecture",
+    "description": "Blog post title about backend architecture"
+  },
+  "2023年7月12日": {
+    "message": "July 12, 2023",
+    "description": "Blog post date"
+  },
+  "如何使用微服务设计能够高效处理增长和扩展的后端系统。": {
+    "message": "How to design backend systems with microservices that efficiently handle growth and scaling.",
+    "description": "Blog post excerpt about microservices"
+  },
+  "homepage.latestArticles": {
+    "message": "Latest Articles"
+  },
+  "homepage.viewAll": {
+    "message": "View All"
+  },
+  "homepage.readMore": {
+    "message": "Read More"
+  },
+  "前端开发": {
+    "message": "Frontend Development",
+    "description": "Frontend development feature title"
+  },
+  "使用现代框架和库构建响应式、交互式的用户界面。": {
+    "message": "Build responsive, interactive user interfaces using modern frameworks and libraries.",
+    "description": "Frontend development feature description"
+  },
+  "后端解决方案": {
+    "message": "Backend Solutions",
+    "description": "Backend solutions feature title"
+  },
+  "创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。": {
+    "message": "Create robust server-side applications, APIs, and microservices to meet scalable application requirements.",
+    "description": "Backend solutions feature description"
+  },
+  "数据库设计": {
+    "message": "Database Design",
+    "description": "Database design feature title"
+  },
+  "设计高效的数据库架构和查询优化，提升应用性能。": {
+    "message": "Design efficient database architectures and optimize queries to enhance application performance.",
+    "description": "Database design feature description"
+  },
+  "移动应用开发": {
+    "message": "Mobile App Development",
+    "description": "Mobile app development feature title"
+  },
+  "开发跨平台移动应用，在iOS和Android上无缝运行。": {
+    "message": "Develop cross-platform mobile applications that run seamlessly on iOS and Android.",
+    "description": "Mobile app development feature description"
+  },
+  "DevOps实践": {
+    "message": "DevOps Practices",
+    "description": "DevOps practices feature title"
+  },
+  "实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。": {
+    "message": "Implement CI/CD pipelines, containerization, and infrastructure as code for smooth deployments.",
+    "description": "DevOps practices feature description"
+  },
+  "代码质量": {
+    "message": "Code Quality",
+    "description": "Code quality feature title"
+  },
+  "编写可维护、可测试的代码，遵循最佳实践和现代设计模式。": {
+    "message": "Write maintainable, testable code following best practices and modern design patterns.",
+    "description": "Code quality feature description"
+  },
+  "homepage.myExpertise": {
+    "message": "My Expertise"
+  },
+  "homepage.stayConnected": {
+    "message": "Stay Connected"
+  },
+  "homepage.newsletterDescription": {
+    "message": "Subscribe to my newsletter to receive the latest articles, tutorials, and tech insights."
+  },
+  "您的邮箱地址": {
+    "message": "Your email address",
+    "description": "Email input placeholder"
+  },
+  "homepage.subscribe": {
+    "message": "Subscribe"
+  },
+  "欢迎来到{siteName}": {
+    "message": "Welcome to {siteName}",
+    "description": "Homepage title with site name"
+  },
+  "全栈开发工程师的博客，分享Web开发见解、教程和最佳实践": {
+    "message": "A full-stack developer's blog sharing web development insights, tutorials, and best practices",
+    "description": "Homepage meta description"
+  },
+  "2020 - 至今": {
+    "message": "2020 - Present",
+    "description": "Work experience period"
+  },
+  "全栈开发工程师": {
+    "message": "Full Stack Developer",
+    "description": "Job title"
+  },
+  "科技": {
+    "message": "Technologies",
+    "description": "Company name suffix"
+  },
+  "负责公司核心产品的前后端开发，包括微服务架构设计、前端UI/UX优化和DevOps流程建设，主导了多个关键项目的技术选型与实施。": {
+    "message": "Responsible for front-end and back-end development of the company's core products, including microservice architecture design, front-end UI/UX optimization, and DevOps process construction. Led the technology selection and implementation of several key projects.",
+    "description": "Job description at TechForward"
+  },
+  "2017 - 2020": {
+    "message": "2017 - 2020",
+    "description": "Work experience period"
+  },
+  "数据创新": {
+    "message": "Data Innovation",
+    "description": "Company name suffix"
+  },
+  "参与大数据分析平台的开发，使用React和Node.js构建前端界面，开发RESTful API，同时负责数据可视化模块和自动化部署流程。": {
+    "message": "Participated in the development of a big data analysis platform, built front-end interfaces using React and Node.js, developed RESTful APIs, and was responsible for data visualization modules and automated deployment processes.",
+    "description": "Job description at DataInnovate"
+  },
+  "2015 - 2017": {
+    "message": "2015 - 2017",
+    "description": "Work experience period"
+  },
+  "前端开发工程师": {
+    "message": "Frontend Developer",
+    "description": "Job title"
+  },
+  "网络科技": {
+    "message": "Web Technologies",
+    "description": "Company name suffix"
+  },
+  "负责企业网站和电子商务平台的前端开发，优化用户体验，提高网站性能，参与了多个移动端适配项目。": {
+    "message": "Responsible for front-end development of corporate websites and e-commerce platforms, optimizing user experience, improving website performance, and participated in multiple mobile adaptation projects.",
+    "description": "Job description at WebPioneer"
+  },
+  "关于我": {
+    "message": "About Me",
+    "description": "About me page title"
+  },
+  "Laby - 全栈开发工程师的个人简介、技能、经历和联系方式": {
+    "message": "Laby - Personal profile, skills, experience and contact information of a full-stack developer",
+    "description": "About me page meta description"
+  },
+  "个人头像": {
+    "message": "Personal avatar",
+    "description": "Personal avatar alt text"
+  },
+  "about.fullstackDeveloper": {
+    "message": "Full Stack Developer"
+  },
+  "about.aboutMe": {
+    "message": "About Me"
+  },
+  "about.introduction1": {
+    "message": "I am a full-stack developer with 8 years of experience, focused on building high-quality web applications and solving complex technical challenges. I have comprehensive skills from front-end to back-end and DevOps, and am passionate about learning new technologies and best practices."
+  },
+  "about.introduction2": {
+    "message": "Throughout my career, I have been involved in developing various types of projects, including enterprise applications, e-commerce platforms, data analysis tools, and real-time communication systems. I particularly excel in building responsive user interfaces, designing scalable backend architectures, and optimizing development and deployment processes."
+  },
+  "about.introduction3": {
+    "message": "I believe that technology is not just a tool, but a means to solve problems. I like to approach from user and business requirements to provide elegant and practical technical solutions. On this blog, I will share my technical insights, project experiences, and learning notes."
+  },
+  "about.professionalSkills": {
+    "message": "Professional Skills"
+  },
+  "about.frontendDevelopment": {
+    "message": "Frontend Development"
+  },
+  "about.backendDevelopment": {
+    "message": "Backend Development"
+  },
+  "about.workExperience": {
+    "message": "Work Experience"
+  },
+  "about.contactMe": {
+    "message": "Contact Me"
+  },
+  "about.contactIntro": {
+    "message": "If you have project collaborations, technical exchanges, or other inquiries, please feel free to contact me through the following methods:"
+  },
+  "邮箱": {
+    "message": "Email",
+    "description": "Email contact label"
+  },
+  "微信": {
+    "message": "WeChat",
+    "description": "WeChat contact label"
+  },
+  "扫描下方二维码添加": {
+    "message": "Scan the QR code below to add me",
+    "description": "WeChat QR code instruction"
+  },
+  "微信二维码": {
+    "message": "WeChat QR code",
+    "description": "WeChat QR code alt text"
+  },
+  "about.scanQRCode": {
+    "message": "Scan to add me on WeChat"
+  },
+  "projects.featured": {
+    "message": "Featured Projects"
+  },
+  "projects.viewDemo": {
+    "message": "View Demo"
+  },
+  "projects.sourceCode": {
+    "message": "Source Code"
+  },
+  "项目开源中, 请持续关注。": {
+    "message": "Project is being open sourced, please stay tuned.",
+    "description": "Project open source tooltip"
+  },
+  "智慧城市安全监控系统": {
+    "message": "Smart City Security Monitoring System",
+    "description": "Smart city monitoring system project title"
+  },
+  "基于微服务架构的城市安全监控系统，实现了视频监控、报警处理和AI识别分析等功能。": {
+    "message": "A city security monitoring system based on microservice architecture, which implements functions such as video surveillance, alarm processing, and AI recognition analysis.",
+    "description": "Smart city monitoring system project description"
+  },
+  "微服务": {
+    "message": "Microservices",
+    "description": "Tech stack - Microservices"
+  },
+  "视觉分析": {
+    "message": "Vision Analysis",
+    "description": "Tech stack - Vision analysis"
+  },
+  "智慧仓储大屏": {
+    "message": "Smart Warehouse Dashboard",
+    "description": "Smart warehouse dashboard project title"
+  },
+  "实时监控仓储状态的数据可视化系统，包含人员调度、车辆管理和任务分配功能。": {
+    "message": "A data visualization system for real-time monitoring of warehouse status, including personnel scheduling, vehicle management, and task assignment functions.",
+    "description": "Smart warehouse dashboard project description"
+  },
+  "光纤线路安防预警监测平台": {
+    "message": "Fiber Optic Line Security Early Warning Monitoring Platform",
+    "description": "Fiber optic security monitoring platform project title"
+  },
+  "对光纤线路进行实时监测和预警，支持区域管理和异常情况快速响应。": {
+    "message": "Real-time monitoring and early warning of fiber optic lines, supporting area management and rapid response to abnormal situations.",
+    "description": "Fiber optic security monitoring platform project description"
+  },
+  "地图": {
+    "message": "GIS Mapping",
+    "description": "Tech stack - GIS map"
+  },
+  "智慧营地管理系统": {
+    "message": "Smart Camp Management System",
+    "description": "Smart camp management system project title"
+  },
+  "营地人员、设备和资源的智能管理平台，提供实时状态监控和数据统计。": {
+    "message": "An intelligent management platform for camp personnel, equipment, and resources, providing real-time status monitoring and data statistics.",
+    "description": "Smart camp management system project description"
+  },
+  "人脸识别": {
+    "message": "Facial Recognition",
+    "description": "Tech stack - Facial recognition"
+  },
+  "项目作品": {
+    "message": "Projects",
+    "description": "Projects page title"
+  },
+  "全栈开发工程师的项目作品展示，包括Web应用、移动应用和DevOps工具等": {
+    "message": "Projects showcase of a full-stack developer, including web applications, mobile apps, and DevOps tools",
+    "description": "Projects page meta description"
+  },
+  "projects.title": {
+    "message": "Projects"
+  },
+  "projects.subtitle": {
+    "message": "Here are some representative projects I've worked on as a full-stack developer. Each project combines technologies from front-end, back-end, and data visualization."
+  },
+  "projects.featuredProjects": {
+    "message": "Featured Projects"
+  },
+  "projects.moreProjects": {
+    "message": "More Projects"
+  },
+  "projects.haveIdea": {
+    "message": "Have a Project Idea?"
+  },
+  "projects.contactText": {
+    "message": "I'm open to new project collaborations and opportunities. If you have a project idea or technical issue that needs help, feel free to contact me."
+  },
+  "projects.contactMe": {
+    "message": "Contact Me"
+  },
+  "about.experience.period1": {
+    "message": "2020 - Present"
+  },
+  "about.experience.title1": {
+    "message": "Full Stack Developer"
+  },
+  "about.company.tech": {
+    "message": "Technologies"
+  },
+  "about.experience.desc1": {
+    "message": "Responsible for front-end and back-end development of the company's core products, including microservice architecture design, front-end UI/UX optimization, and DevOps process construction. Led the technology selection and implementation of several key projects."
+  },
+  "about.experience.period2": {
+    "message": "2017 - 2020"
+  },
+  "about.experience.title2": {
+    "message": "Full Stack Developer"
+  },
+  "about.company.data": {
+    "message": "Data Innovation"
+  },
+  "about.experience.desc2": {
+    "message": "Participated in the development of a big data analysis platform, built front-end interfaces using React and Node.js, developed RESTful APIs, and was responsible for data visualization modules and automated deployment processes."
+  },
+  "about.experience.period3": {
+    "message": "2015 - 2017"
+  },
+  "about.experience.title3": {
+    "message": "Frontend Developer"
+  },
+  "about.company.web": {
+    "message": "Web Technologies"
+  },
+  "about.experience.desc3": {
+    "message": "Responsible for front-end development of corporate websites and e-commerce platforms, optimizing user experience, improving website performance, and participated in multiple mobile adaptation projects."
+  },
+  "about.meta.title": {
+    "message": "About Me"
+  },
+  "about.meta.description": {
+    "message": "Laby - Personal profile, skills, experience and contact information of a full-stack developer"
+  },
+  "about.avatar.alt": {
+    "message": "Personal avatar"
+  },
+  "about.contact.email": {
+    "message": "Email"
+  },
+  "about.contact.wechat": {
+    "message": "WeChat"
+  },
+  "about.wechat.scan": {
+    "message": "Scan the QR code below to add me"
+  },
+  "about.wechat.qr.alt": {
+    "message": "WeChat QR code"
+  },
+  "hero.title": {
+    "message": "Laby's Blog"
+  },
+  "hero.tagline": {
+    "message": "Exploring the Entire Field of Modern Web Development"
+  },
+  "hero.badge.frontend": {
+    "message": "Frontend"
+  },
+  "hero.badge.backend": {
+    "message": "Backend"
+  },
+  "hero.badge.architecture": {
+    "message": "Architecture"
+  },
+  "hero.badge.mobile": {
+    "message": "Mobile Dev"
+  },
+  "hero.button.readBlog": {
+    "message": "Read Blog"
+  },
+  "hero.button.viewProjects": {
+    "message": "View Projects"
+  },
+  "code.developer.name": {
+    "message": "Full Stack Developer"
+  },
+  "code.developer.return": {
+    "message": "Building excellent web experiences"
+  },
+  "blog.post1.title": {
+    "message": "Building Modern Web Applications"
+  },
+  "blog.post1.date": {
+    "message": "August 25, 2023"
+  },
+  "blog.post1.excerpt": {
+    "message": "Explore the latest techniques and best practices for creating high-performance web applications with React."
+  },
+  "blog.post2.title": {
+    "message": "Scalable Backend Architecture"
+  },
+  "blog.post2.date": {
+    "message": "July 12, 2023"
+  },
+  "blog.post2.excerpt": {
+    "message": "How to design backend systems with microservices that efficiently handle growth and scaling."
+  },
+  "section.latestArticles": {
+    "message": "Latest Articles"
+  },
+  "section.viewAll": {
+    "message": "View All"
+  },
+  "blog.readMore": {
+    "message": "Read More"
+  },
+  "feature.frontend.title": {
+    "message": "Frontend Development"
+  },
+  "feature.frontend.desc": {
+    "message": "Building responsive, interactive user interfaces using modern frameworks and libraries."
+  },
+  "feature.backend.title": {
+    "message": "Backend Solutions"
+  },
+  "feature.backend.desc": {
+    "message": "Creating robust server-side applications, APIs, and microservices to meet the needs of scalable applications."
+  },
+  "feature.database.title": {
+    "message": "Database Design"
+  },
+  "feature.database.desc": {
+    "message": "Designing efficient database architecture and query optimization to improve application performance."
+  },
+  "feature.mobile.title": {
+    "message": "Mobile App Development"
+  },
+  "feature.mobile.desc": {
+    "message": "Developing cross-platform mobile applications that run seamlessly on iOS and Android."
+  },
+  "feature.devops.title": {
+    "message": "DevOps Practices"
+  },
+  "feature.devops.desc": {
+    "message": "Implementing CI/CD pipelines, containerization, and infrastructure as code for smooth deployments."
+  },
+  "feature.code.title": {
+    "message": "Code Quality"
+  },
+  "feature.code.desc": {
+    "message": "Writing maintainable, testable code following best practices and modern design patterns."
+  },
+  "section.myExpertise": {
+    "message": "My Expertise"
+  },
+  "newsletter.title": {
+    "message": "Stay Connected"
+  },
+  "newsletter.description": {
+    "message": "Subscribe to my newsletter for the latest articles, tutorials, and technical insights."
+  },
+  "newsletter.email.placeholder": {
+    "message": "Your email address"
+  },
+  "newsletter.subscribe": {
+    "message": "Subscribe"
+  },
+  "meta.title": {
+    "message": "Welcome to {siteName}"
+  },
+  "site.name": {
+    "message": "Laby's Blog"
+  },
+  "meta.description": {
+    "message": "A full-stack developer's blog sharing web development insights, tutorials, and best practices"
+  },
+  "projects.openSource.tooltip": {
+    "message": "Project is being open sourced, please stay tuned."
+  },
+  "project1.title": {
+    "message": "Smart City Security Monitoring System"
+  },
+  "project1.description": {
+    "message": "A city security monitoring system based on microservice architecture, which implements functions such as video surveillance, alarm processing, and AI recognition analysis."
+  },
+  "tech.microservices": {
+    "message": "Microservices"
+  },
+  "tech.vision": {
+    "message": "Vision Analysis"
+  },
+  "project2.title": {
+    "message": "Smart Warehouse Dashboard"
+  },
+  "project2.description": {
+    "message": "A data visualization system for real-time monitoring of warehouse status, including personnel scheduling, vehicle management, and task assignment functions."
+  },
+  "project3.title": {
+    "message": "Fiber Optic Line Security Early Warning System"
+  },
+  "project3.description": {
+    "message": "Real-time monitoring and early warning of fiber optic lines, supporting area management and rapid response to abnormal situations."
+  },
+  "tech.map": {
+    "message": "GIS Mapping"
+  },
+  "project4.title": {
+    "message": "Smart Camp Management System"
+  },
+  "project4.description": {
+    "message": "An intelligent management platform for camp personnel, equipment, and resources, providing real-time status monitoring and data statistics."
+  },
+  "tech.facial": {
+    "message": "Facial Recognition"
+  },
+  "projects.meta.title": {
+    "message": "Projects"
+  },
+  "projects.meta.description": {
+    "message": "Projects showcase of a full-stack developer, including web applications, mobile apps, and DevOps tools"
+  }
+}

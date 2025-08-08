@@ -5,6 +5,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import styles from './index.module.css';
+import Translate, {translate} from '@docusaurus/Translate';
 
 // Import SVG icons
 const icons = {
@@ -49,26 +50,28 @@ function HeroHeader() {
           <div className={clsx('col col--7', styles.heroContent)}>
             <div className="animate-fade-in" style={{animationDelay: '0.1s'}}>
               <Heading as="h1" className="hero__title">
-                {siteConfig.title}
+                <Translate id="hero.title">Laby的博客</Translate>
               </Heading>
-              <p className="hero__subtitle">{siteConfig.tagline}</p>
+              <p className="hero__subtitle">
+                <Translate id="hero.tagline">探索现代Web开发的全部领域</Translate>
+              </p>
               <div className={styles.heroBadges}>
-                <TechBadge name="前端" />
-                <TechBadge name="后端" />
+                <TechBadge name={translate({id: "hero.badge.frontend", message: '前端'})} />
+                <TechBadge name={translate({id: "hero.badge.backend", message: '后端'})} />
                 <TechBadge name="DevOps" />
-                <TechBadge name="架构" />
-                <TechBadge name="移动开发" />
+                <TechBadge name={translate({id: "hero.badge.architecture", message: '架构'})} />
+                <TechBadge name={translate({id: "hero.badge.mobile", message: '移动开发'})} />
               </div>
               <div className={styles.buttons}>
                 <Link
                   className={clsx('button button--primary button--lg', styles.heroButton)}
                   to="/blog">
-                  阅读博客
+                  <Translate id="hero.button.readBlog">阅读博客</Translate>
                 </Link>
                 <Link
                   className={clsx('button button--outline button--lg', styles.heroButton)}
                   to="/projects">
-                  查看项目
+                  <Translate id="hero.button.viewProjects">查看项目</Translate>
                 </Link>
               </div>
             </div>
@@ -85,12 +88,12 @@ function HeroHeader() {
                 <code>
                   <span className={styles.keyword}>const</span> <span className={styles.variable}>developer</span> = {'{'}
                   <br />
-                  {'  '}<span className={styles.property}>name</span>: <span className={styles.string}>'全栈开发者'</span>,
+                  {'  '}<span className={styles.property}>name</span>: <span className={styles.string}>'<Translate id="code.developer.name">全栈开发者</Translate>'</span>,
                   <br />
                   {'  '}<span className={styles.property}>skills</span>: [<span className={styles.string}>'React'</span>, <span className={styles.string}>'Node.js'</span>, <span className={styles.string}>'DevOps'</span>],
                   <br />
                   {'  '}<span className={styles.method}>code</span>(){' {'}<br />
-                  {'    '}<span className={styles.keyword}>return</span> <span className={styles.string}>'构建出色的Web体验'</span>;
+                  {'    '}<span className={styles.keyword}>return</span> <span className={styles.string}>'<Translate id="code.developer.return">构建出色的Web体验</Translate>'</span>;
                   <br />
                   {'  }'}<br />
                   {'};'}
@@ -128,15 +131,33 @@ function BlogPreview() {
   // This would typically fetch the actual blog posts
   const blogPosts = [
     {
-      title: '构建现代Web应用',
-      date: '2023年8月25日',
-      excerpt: '探索使用React创建高性能Web应用的最新技术和最佳实践。',
+      title: translate({
+        id: "blog.post1.title",
+        message: '构建现代Web应用'
+      }),
+      date: translate({
+        id: "blog.post1.date",
+        message: '2023年8月25日'
+      }),
+      excerpt: translate({
+        id: "blog.post1.excerpt",
+        message: '探索使用React创建高性能Web应用的最新技术和最佳实践。'
+      }),
       url: '/blog/modern-react-patterns',
     },
     {
-      title: '可扩展的后端架构',
-      date: '2023年7月12日',
-      excerpt: '如何使用微服务设计能够高效处理增长和扩展的后端系统。',
+      title: translate({
+        id: "blog.post2.title",
+        message: '可扩展的后端架构'
+      }),
+      date: translate({
+        id: "blog.post2.date",
+        message: '2023年7月12日'
+      }),
+      excerpt: translate({
+        id: "blog.post2.excerpt",
+        message: '如何使用微服务设计能够高效处理增长和扩展的后端系统。'
+      }),
       url: '/blog/long-blog-post',
     },
   ];
@@ -146,10 +167,10 @@ function BlogPreview() {
       <div className="container">
         <div className={styles.sectionHeader}>
           <Heading as="h2" className={styles.sectionTitle}>
-            最新文章
+            <Translate id="section.latestArticles">最新文章</Translate>
           </Heading>
           <Link to="/blog" className={styles.sectionLink}>
-            查看全部
+            <Translate id="section.viewAll">查看全部</Translate>
           </Link>
         </div>
         <div className="row">
@@ -162,7 +183,7 @@ function BlogPreview() {
                 <p className={styles.blogDate}>{post.date}</p>
                 <p className={styles.blogExcerpt}>{post.excerpt}</p>
                 <Link to={post.url} className={styles.blogReadMore}>
-                  阅读更多 →
+                  <Translate id="blog.readMore">阅读更多</Translate> →
                 </Link>
               </div>
             </div>
@@ -177,39 +198,57 @@ function BlogPreview() {
 function Features() {
   const features = [
     {
-      title: '前端开发',
+      title: translate({id: "feature.frontend.title", message: '前端开发'}),
       icon: 'frontend',
-      description: '使用现代框架和库构建响应式、交互式的用户界面。',
+      description: translate({
+        id: "feature.frontend.desc",
+        message: '使用现代框架和库构建响应式、交互式的用户界面。'
+      }),
       link: '/docs/frontend/frontend-intro',
     },
     {
-      title: '后端解决方案',
+      title: translate({id: "feature.backend.title", message: '后端解决方案'}),
       icon: 'backend',
-      description: '创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。',
+      description: translate({
+        id: "feature.backend.desc",
+        message: '创建健壮的服务器端应用程序、API和微服务，满足可扩展应用需求。'
+      }),
       link: '/docs/backend/backend-intro',
     },
     {
-      title: '数据库设计',
+      title: translate({id: "feature.database.title", message: '数据库设计'}),
       icon: 'database',
-      description: '设计高效的数据库架构和查询优化，提升应用性能。',
+      description: translate({
+        id: "feature.database.desc",
+        message: '设计高效的数据库架构和查询优化，提升应用性能。'
+      }),
       link: '/docs/backend/database-orm',
     },
     {
-      title: '移动应用开发',
+      title: translate({id: "feature.mobile.title", message: '移动应用开发'}),
       icon: 'mobile',
-      description: '开发跨平台移动应用，在iOS和Android上无缝运行。',
+      description: translate({
+        id: "feature.mobile.desc",
+        message: '开发跨平台移动应用，在iOS和Android上无缝运行。'
+      }),
       link: '/docs/frontend/mobile-dev/mobile-intro',
     },
     {
-      title: 'DevOps实践',
+      title: translate({id: "feature.devops.title", message: 'DevOps实践'}),
       icon: 'devops',
-      description: '实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。',
+      description: translate({
+        id: "feature.devops.desc",
+        message: '实现CI/CD流程、容器化和基础设施即代码，实现平滑部署。'
+      }),
       link: '/docs/backend/system-design/devops-intro',
     },
     {
-      title: '代码质量',
+      title: translate({id: "feature.code.title", message: '代码质量'}),
       icon: 'code',
-      description: '编写可维护、可测试的代码，遵循最佳实践和现代设计模式。',
+      description: translate({
+        id: "feature.code.desc",
+        message: '编写可维护、可测试的代码，遵循最佳实践和现代设计模式。'
+      }),
       link: '/docs/backend/design-patterns/code-quality-intro',
     },
   ];
@@ -219,7 +258,7 @@ function Features() {
       <div className="container">
         <div className={styles.sectionHeader}>
           <Heading as="h2" className={styles.sectionTitle}>
-            我的专长
+            <Translate id="section.myExpertise">我的专长</Translate>
           </Heading>
         </div>
         <div className="row" style={{margin: '0 -20px'}}>
@@ -248,10 +287,12 @@ function NewsletterSection() {
           <div className="row">
             <div className="col col--6">
               <Heading as="h2" className={styles.newsletterTitle}>
-                保持联系
+                <Translate id="newsletter.title">保持联系</Translate>
               </Heading>
               <p className={styles.newsletterDescription}>
-                订阅我的通讯，获取最新文章、教程和技术见解。
+                <Translate id="newsletter.description">
+                  订阅我的通讯，获取最新文章、教程和技术见解。
+                </Translate>
               </p>
             </div>
             <div className="col col--6">
@@ -259,10 +300,13 @@ function NewsletterSection() {
                 <input
                   type="email"
                   className={styles.newsletterInput}
-                  placeholder="您的邮箱地址"
+                  placeholder={translate({
+                    id: "newsletter.email.placeholder",
+                    message: '您的邮箱地址'
+                  })}
                 />
                 <button type="submit" className={styles.newsletterButton}>
-                  订阅
+                  <Translate id="newsletter.subscribe">订阅</Translate>
                 </button>
               </form>
             </div>
@@ -278,8 +322,14 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`欢迎来到${siteConfig.title}`}
-      description="全栈开发工程师的博客，分享Web开发见解、教程和最佳实践">
+      title={translate(
+        {id: "meta.title", message: '欢迎来到{siteName}'},
+        {siteName: translate({id: "site.name", message: 'Laby的博客'})}
+      )}
+      description={translate({
+        id: "meta.description",
+        message: '全栈开发工程师的博客，分享Web开发见解、教程和最佳实践'
+      })}>
       <HeroHeader />
       <main>
         <Features />

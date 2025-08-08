@@ -1,0 +1,65 @@
+---
+sidebar_position: 3
+title: "Socket编程"
+description: "Java Socket网络编程"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Socket编程
+
+## 阻塞IO（BIO）
+
+```java
+try (java.net.ServerSocket server = new java.net.ServerSocket(8080)) {
+  while (true) {
+    java.net.Socket socket = server.accept();
+    new Thread(() -> handle(socket)).start();
+  }
+}
+```
+
+## NIO（选择器）
+
+```java
+java.nio.channels.Selector selector = java.nio.channels.Selector.open();
+java.nio.channels.ServerSocketChannel ssc = java.nio.channels.ServerSocketChannel.open();
+ssc.configureBlocking(false);
+ssc.bind(new java.net.InetSocketAddress(8080));
+ssc.register(selector, java.nio.channels.SelectionKey.OP_ACCEPT);
+while (true) {
+  selector.select();
+  java.util.Iterator<java.nio.channels.SelectionKey> it = selector.selectedKeys().iterator();
+  while (it.hasNext()) {
+    java.nio.channels.SelectionKey key = it.next(); it.remove();
+    if (key.isAcceptable()) { /* accept并注册OP_READ */ }
+    if (key.isReadable()) { /* 读取并处理 */ }
+  }
+}
+```
+
+## AIO（异步IO）
+
+```java
+java.nio.channels.AsynchronousServerSocketChannel server =
+  java.nio.channels.AsynchronousServerSocketChannel.open().bind(new java.net.InetSocketAddress(8080));
+server.accept(null, new java.nio.channels.CompletionHandler`<java.nio.channels.AsynchronousSocketChannel, Void>`() {
+  @Override public void completed(java.nio.channels.AsynchronousSocketChannel ch, Void att) { /* 处理 */ }
+  @Override public void failed(Throwable exc, Void att) { }
+});
+```
+
+## 优化要点
+- 线程模型：线程池 + 任务队列
+- 零拷贝、直接内存
+- 粘包拆包：定长、分隔符、长度字段
+- 背压与限速
+
+## 面试题
+1. BIO/NIO/AIO的区别
+2. Selector的工作原理
+3. 如何处理TCP粘包拆包
+4. 零拷贝的实现与优势
+5. 高并发连接的线程模型 

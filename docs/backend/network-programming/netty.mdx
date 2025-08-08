@@ -1,0 +1,68 @@
+---
+sidebar_position: 4
+title: "Netty"
+description: "Netty网络编程框架"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Netty
+
+## 架构
+- EventLoopGroup（多路复用）
+- Channel（连接）
+- Pipeline（处理链）
+- ByteBuf（高效缓冲）
+
+## 服务端示例
+
+```java
+io.netty.bootstrap.ServerBootstrap b = new io.netty.bootstrap.ServerBootstrap();
+io.netty.channel.EventLoopGroup boss = new io.netty.channel.nio.NioEventLoopGroup(1);
+io.netty.channel.EventLoopGroup worker = new io.netty.channel.nio.NioEventLoopGroup();
+try {
+  b.group(boss, worker)
+   .channel(io.netty.channel.socket.nio.NioServerSocketChannel.class)
+   .childHandler(new io.netty.channel.ChannelInitializer`<io.netty.channel.socket.SocketChannel>`() {
+     @Override protected void initChannel(io.netty.channel.socket.SocketChannel ch) {
+       io.netty.channel.ChannelPipeline p = ch.pipeline();
+       p.addLast(new io.netty.handler.codec.LineBasedFrameDecoder(1024));
+       p.addLast(new io.netty.handler.codec.string.StringDecoder());
+       p.addLast(new io.netty.handler.codec.string.StringEncoder());
+       p.addLast(new SimpleHandler());
+     }
+   })
+   .bind(8080).sync().channel().closeFuture().sync();
+} finally {
+  boss.shutdownGracefully(); worker.shutdownGracefully();
+}
+```
+
+## 自定义处理器
+
+```java
+public class SimpleHandler extends io.netty.channel.SimpleChannelInboundHandler`<String>` {
+  @Override protected void channelRead0(io.netty.channel.ChannelHandlerContext ctx, String msg) {
+    ctx.writeAndFlush("echo: " + msg + "\n");
+  }
+}
+```
+
+## 编解码
+- 定长/分隔符/长度字段帧解码器
+- JSON/Protobuf编解码
+
+## 生产要点
+- 连接数与内存规划
+- 水位线与背压
+- 空闲检测与心跳
+- 业务线程池隔离
+
+## 面试题
+1. EventLoop/Channel/Pipeline的职责
+2. ByteBuf与JDK ByteBuffer差异
+3. 如何处理半包/粘包
+4. Netty的背压与水位线
+5. 零拷贝在Netty中的应用

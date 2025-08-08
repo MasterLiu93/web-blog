@@ -1,0 +1,727 @@
+---
+sidebar_position: 1
+title: "List集合"
+description: "Java List接口及其实现类"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# List集合
+
+## List接口概述
+
+List是Java集合框架中最常用的接口之一，它继承自Collection接口，是一个有序的集合。
+
+### List接口特点
+
+```java
+// List接口的主要特点
+1. 有序性：元素按照插入顺序存储
+2. 可重复：允许存储重复元素
+3. 可索引：通过索引访问元素
+4. 可修改：支持增删改查操作
+```
+
+### List接口方法
+
+```java
+// List接口的核心方法
+public interface List<E> extends Collection<E> {
+    // 基本操作
+    boolean add(E e);                    // 添加元素
+    boolean remove(Object o);            // 删除元素
+    E get(int index);                   // 获取指定位置的元素
+    E set(int index, E element);        // 设置指定位置的元素
+    
+    // 索引操作
+    void add(int index, E element);     // 在指定位置插入元素
+    E remove(int index);                // 删除指定位置的元素
+    int indexOf(Object o);              // 查找元素第一次出现的位置
+    int lastIndexOf(Object o);          // 查找元素最后一次出现的位置
+    
+    // 批量操作
+    boolean addAll(Collection<? extends E> c);           // 添加集合
+    boolean addAll(int index, Collection<? extends E> c); // 在指定位置添加集合
+    List<E> subList(int fromIndex, int toIndex);        // 获取子列表
+    
+    // 迭代器
+    ListIterator<E> listIterator();      // 获取列表迭代器
+    ListIterator<E> listIterator(int index); // 获取从指定位置开始的列表迭代器
+}
+```
+
+## ArrayList
+
+### ArrayList概述
+
+ArrayList是基于动态数组实现的List，是Java中最常用的List实现类。
+
+```java
+// ArrayList的特点
+1. 基于动态数组实现
+2. 随机访问性能好 O(1)
+3. 插入删除性能差 O(n)
+4. 线程不安全
+5. 支持快速随机访问
+```
+
+### ArrayList源码分析
+
+```java
+public class ArrayList<E> extends AbstractList<E>
+        implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
+    
+    // 默认初始容量
+    private static final int DEFAULT_CAPACITY = 10;
+    
+    // 空数组，用于空实例
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+    
+    // 默认空数组，用于默认大小的实例
+    private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
+    
+    // 存储元素的数组
+    transient Object[] elementData;
+    
+    // 实际元素个数
+    private int size;
+    
+    // 构造方法
+    public ArrayList() {
+        this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    }
+    
+    public ArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        }
+    }
+}
+```
+
+### ArrayList扩容机制
+
+```java
+// 扩容方法
+private void grow(int minCapacity) {
+    int oldCapacity = elementData.length;
+    // 新容量 = 旧容量 + 旧容量/2
+    int newCapacity = oldCapacity + (oldCapacity >> 1);
+    
+    if (newCapacity - minCapacity < 0)
+        newCapacity = minCapacity;
+    
+    if (newCapacity - MAX_ARRAY_SIZE > 0)
+        newCapacity = hugeCapacity(minCapacity);
+    
+    // 复制数组
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+
+// 添加元素
+public boolean add(E e) {
+    ensureCapacityInternal(size + 1);  // 确保容量足够
+    elementData[size++] = e;
+    return true;
+}
+
+private void ensureCapacityInternal(int minCapacity) {
+    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
+        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+    }
+    ensureExplicitCapacity(minCapacity);
+}
+```
+
+### ArrayList使用示例
+
+```java
+// 基本使用
+public class ArrayListExample {
+    public static void main(String[] args) {
+        // 创建ArrayList
+        List<String> list = new ArrayList<>();
+        
+        // 添加元素
+        list.add("Java");
+        list.add("Python");
+        list.add("C++");
+        
+        // 访问元素
+        String first = list.get(0);
+        System.out.println("第一个元素: " + first);
+        
+        // 修改元素
+        list.set(1, "JavaScript");
+        
+        // 删除元素
+        list.remove("C++");
+        
+        // 遍历
+        for (String item : list) {
+            System.out.println(item);
+        }
+        
+        // 使用索引遍历
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("索引 " + i + ": " + list.get(i));
+        }
+    }
+}
+```
+
+### ArrayList性能分析
+
+```java
+// 时间复杂度分析
+public class ArrayListPerformance {
+    
+    // 添加元素 - 平均O(1)，最坏O(n)
+    public void addPerformance() {
+        `ArrayList<Integer> list = new ArrayList<>();`
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            list.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("添加100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // 随机访问 - O(1)
+    public void getPerformance() {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            list.add(i);
+        }
+        
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            list.get(i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("随机访问100000次耗时: " + (end - start) + "ms");
+    }
+    
+    // 插入元素 - O(n)
+    public void insertPerformance() {
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            list.add(i);
+        }
+        
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            list.add(0, i); // 在开头插入
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("在开头插入1000个元素耗时: " + (end - start) + "ms");
+    }
+}
+```
+
+## LinkedList
+
+### LinkedList概述
+
+LinkedList是基于双向链表实现的List，适合频繁的插入删除操作。
+
+```java
+// LinkedList的特点
+1. 基于双向链表实现
+2. 插入删除性能好 O(1)
+3. 随机访问性能差 O(n)
+4. 线程不安全
+5. 支持快速插入删除
+```
+
+### LinkedList源码分析
+
+```java
+public class LinkedList<E> extends AbstractSequentialList<E>
+        implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+    
+    // 链表节点
+    private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+        
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+    
+    // 头节点
+    transient Node<E> first;
+    
+    // 尾节点
+    transient Node<E> last;
+    
+    // 元素个数
+    transient int size = 0;
+    
+    // 构造方法
+    public LinkedList() {}
+    
+    public LinkedList(Collection<? extends E> c) {
+        this();
+        addAll(c);
+    }
+}
+```
+
+### LinkedList核心方法
+
+```java
+// 添加元素到头部
+private void linkFirst(E e) {
+    final Node<E> f = first;
+    final Node<E> newNode = new Node<>(null, e, f);
+    first = newNode;
+    if (f == null)
+        last = newNode;
+    else
+        f.prev = newNode;
+    size++;
+    modCount++;
+}
+
+// 添加元素到尾部
+void linkLast(E e) {
+    final Node<E> l = last;
+    final Node<E> newNode = new Node<>(l, e, null);
+    last = newNode;
+    if (l == null)
+        first = newNode;
+    else
+        l.next = newNode;
+    size++;
+    modCount++;
+}
+
+// 在指定节点前插入
+void linkBefore(E e, Node<E> succ) {
+    final Node<E> pred = succ.prev;
+    final Node<E> newNode = new Node<>(pred, e, succ);
+    succ.prev = newNode;
+    if (pred == null)
+        first = newNode;
+    else
+        pred.next = newNode;
+    size++;
+    modCount++;
+}
+```
+
+### LinkedList使用示例
+
+```java
+// LinkedList基本使用
+public class LinkedListExample {
+    public static void main(String[] args) {
+        // 创建LinkedList
+        LinkedList<String> list = new LinkedList<>();
+        
+        // 添加元素
+        list.add("Java");
+        list.addFirst("Python");    // 添加到头部
+        list.addLast("C++");        // 添加到尾部
+        
+        // 获取元素
+        String first = list.getFirst();
+        String last = list.getLast();
+        
+        // 删除元素
+        list.removeFirst();         // 删除头部元素
+        list.removeLast();          // 删除尾部元素
+        
+        // 作为队列使用
+        list.offer("JavaScript");   // 入队
+        String polled = list.poll(); // 出队
+        
+        // 作为栈使用
+        list.push("Go");           // 压栈
+        String popped = list.pop(); // 弹栈
+        
+        // 遍历
+        for (String item : list) {
+            System.out.println(item);
+        }
+    }
+}
+```
+
+### LinkedList性能分析
+
+```java
+// LinkedList性能测试
+public class LinkedListPerformance {
+    
+    // 插入性能测试
+    public void insertPerformance() {
+        LinkedList<Integer> list = new LinkedList<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            list.addFirst(i); // 在头部插入
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("LinkedList头部插入100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // 随机访问性能测试
+    public void getPerformance() {
+        LinkedList<Integer> list = new LinkedList<>();
+        for (int i = 0; i < 10000; i++) {
+            list.add(i);
+        }
+        
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            list.get(i);
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("LinkedList随机访问10000次耗时: " + (end - start) + "ms");
+    }
+}
+```
+
+## Vector
+
+### Vector概述
+
+Vector是线程安全的List实现，但性能较差，已被ArrayList替代。
+
+```java
+// Vector的特点
+1. 基于动态数组实现
+2. 线程安全（同步）
+3. 性能较差
+4. 默认容量为10
+5. 扩容时容量翻倍
+```
+
+### Vector与ArrayList对比
+
+```java
+// Vector vs ArrayList
+public class VectorVsArrayList {
+    
+    public static void main(String[] args) {
+        // 线程安全测试
+        testThreadSafety();
+        
+        // 性能对比
+        testPerformance();
+    }
+    
+    // 线程安全测试
+    public static void testThreadSafety() {
+        List<Integer> arrayList = new ArrayList<>();
+        List<Integer> vector = new Vector<>();
+        
+        // 多线程操作ArrayList（不安全）
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                arrayList.add(i);
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                arrayList.add(i);
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("ArrayList最终大小: " + arrayList.size());
+        System.out.println("Vector最终大小: " + vector.size());
+    }
+    
+    // 性能对比
+    public static void testPerformance() {
+        List<Integer> arrayList = new ArrayList<>();
+        List<Integer> vector = new Vector<>();
+        
+        // ArrayList性能测试
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            arrayList.add(i);
+        }
+        long arrayListTime = System.currentTimeMillis() - start;
+        
+        // Vector性能测试
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            vector.add(i);
+        }
+        long vectorTime = System.currentTimeMillis() - start;
+        
+        System.out.println("ArrayList耗时: " + arrayListTime + "ms");
+        System.out.println("Vector耗时: " + vectorTime + "ms");
+    }
+}
+```
+
+## 其他List实现
+
+### CopyOnWriteArrayList
+
+```java
+// CopyOnWriteArrayList - 线程安全的List
+public class CopyOnWriteArrayListExample {
+    public static void main(String[] args) {
+        List<String> list = new CopyOnWriteArrayList<>();
+        
+        // 多线程安全操作
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                list.add("Thread1-" + i);
+            }
+        });
+        
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                list.add("Thread2-" + i);
+            }
+        });
+        
+        t1.start();
+        t2.start();
+        
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("最终大小: " + list.size());
+    }
+}
+```
+
+### Arrays.asList()
+
+```java
+// Arrays.asList() - 固定大小的List
+public class ArraysAsListExample {
+    public static void main(String[] args) {
+        // 创建固定大小的List
+        List<String> list = Arrays.asList("Java", "Python", "C++");
+        
+        // 可以修改元素，但不能改变大小
+        list.set(0, "JavaScript"); // 可以
+        // list.add("Go");         // 抛出UnsupportedOperationException
+        // list.remove(0);         // 抛出UnsupportedOperationException
+        
+        System.out.println(list);
+    }
+}
+```
+
+## List使用最佳实践
+
+### 选择合适的List实现
+
+```java
+// List选择指南
+public class ListSelectionGuide {
+    
+    // 场景1：频繁随机访问
+    public void randomAccessScenario() {
+        `List<Integer> list = new ArrayList<>();` // 推荐
+        // `List<Integer> list = new LinkedList<>();` // 不推荐
+    }
+    
+    // 场景2：频繁插入删除
+    public void frequentModificationScenario() {
+        `List<Integer> list = new LinkedList<>();` // 推荐
+        // `List<Integer> list = new ArrayList<>();` // 不推荐
+    }
+    
+    // 场景3：多线程环境
+    public void threadSafeScenario() {
+        `List<Integer> list = new CopyOnWriteArrayList<>();` // 推荐
+        // `List<Integer> list = new ArrayList<>();` // 不推荐
+    }
+    
+    // 场景4：固定大小
+    public void fixedSizeScenario() {
+        `List<String> list = Arrays.asList("a", "b", "c");` // 推荐
+    }
+}
+```
+
+### 性能优化技巧
+
+```java
+// List性能优化
+public class ListOptimization {
+    
+    // 1. 预分配容量
+    public void preAllocateCapacity() {
+        // 如果知道大概需要多少元素，可以预分配容量
+        `List<String> list = new ArrayList<>(1000);` // 预分配1000个容量
+    }
+    
+    // 2. 批量操作
+    public void batchOperation() {
+        `List<String> list = new ArrayList<>();`
+        `List<String> toAdd = Arrays.asList("a", "b", "c");`
+        
+        // 批量添加
+        list.addAll(toAdd);
+        
+        // 批量删除
+        list.removeAll(toAdd);
+    }
+    
+    // 3. 使用迭代器删除
+    public void iteratorRemove() {
+        `List<String> list = new ArrayList<>();`
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        
+        // 正确的删除方式
+        `Iterator<String> iterator = list.iterator();`
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if ("b".equals(item)) {
+                iterator.remove(); // 使用迭代器删除
+            }
+        }
+        
+        // 错误的删除方式（会抛出ConcurrentModificationException）
+        // for (String item : list) {
+        //     if ("b".equals(item)) {
+        //         list.remove(item); // 不要在遍历时直接删除
+        //     }
+        // }
+    }
+}
+```
+
+## 面试题
+
+### 1. ArrayList和LinkedList的区别？
+
+**ArrayList**：
+- 基于动态数组实现
+- 随机访问性能好 O(1)
+- 插入删除性能差 O(n)
+- 内存连续，缓存友好
+
+**LinkedList**：
+- 基于双向链表实现
+- 插入删除性能好 O(1)
+- 随机访问性能差 O(n)
+- 内存不连续，缓存不友好
+
+### 2. ArrayList的扩容机制？
+
+1. **初始容量**：默认10
+2. **扩容时机**：当元素个数超过当前容量时
+3. **扩容大小**：新容量 = 旧容量 + 旧容量/2
+4. **扩容过程**：创建新数组，复制元素
+
+### 3. Vector和ArrayList的区别？
+
+**Vector**：
+- 线程安全（同步）
+- 性能较差
+- 扩容时容量翻倍
+
+**ArrayList**：
+- 线程不安全
+- 性能较好
+- 扩容时容量增加50%
+
+### 4. 如何选择合适的List实现？
+
+- **频繁随机访问**：ArrayList
+- **频繁插入删除**：LinkedList
+- **多线程环境**：CopyOnWriteArrayList
+- **固定大小**：Arrays.asList()
+
+### 5. List的线程安全问题？
+
+- **ArrayList**：线程不安全
+- **LinkedList**：线程不安全
+- **Vector**：线程安全（同步）
+- **CopyOnWriteArrayList**：线程安全（写时复制）
+
+### 6. 如何避免ConcurrentModificationException？
+
+1. **使用迭代器删除**：iterator.remove()
+2. **使用CopyOnWriteArrayList**
+3. **使用Collections.synchronizedList()**
+4. **在删除前复制一份**
+
+### 7. List的遍历方式有哪些？
+
+```java
+// 1. for循环
+for (int i = 0; i < list.size(); i++) {
+    System.out.println(list.get(i));
+}
+
+// 2. for-each循环
+for (String item : list) {
+    System.out.println(item);
+}
+
+// 3. 迭代器
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+
+        // 4. ListIterator（双向遍历）
+        `ListIterator<String> listIterator = list.listIterator();`
+        while (listIterator.hasNext()) {
+            System.out.println(listIterator.next());
+        }
+```
+
+### 8. List的性能优化技巧？
+
+1. **预分配容量**：`new ArrayList<>(initialCapacity)`
+2. **批量操作**：addAll(), removeAll()
+3. **使用迭代器删除**：避免ConcurrentModificationException
+4. **选择合适的实现**：根据使用场景选择
+
+### 9. CopyOnWriteArrayList的工作原理？
+
+- **写时复制**：修改时创建新数组
+- **读不加锁**：读取时不需要同步
+- **写加锁**：写入时使用ReentrantLock
+- **适用场景**：读多写少的场景
+
+### 10. List的常见陷阱？
+
+1. **在遍历时修改**：会导致ConcurrentModificationException
+2. **使用Arrays.asList()后修改大小**：会抛出UnsupportedOperationException
+3. **多线程环境使用非线程安全的List**
+4. **频繁插入删除使用ArrayList** 

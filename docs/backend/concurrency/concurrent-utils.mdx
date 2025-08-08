@@ -1,0 +1,552 @@
+---
+sidebar_position: 4
+title: "并发工具类"
+description: "Java并发工具类详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 并发工具类
+
+Java并发包（java.util.concurrent）提供了丰富的并发工具类，用于简化多线程编程。这些工具类提供了比传统synchronized更灵活和高效的并发控制机制。
+
+## CountDownLatch
+
+CountDownLatch是一个同步工具类，允许一个或多个线程等待其他线程完成操作。
+
+### 基本用法
+
+```java
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class CountDownLatchExample {
+    
+    public static void main(String[] args) throws InterruptedException {
+        int threadCount = 3;
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        
+        for (int i = 0; i < threadCount; i++) {
+            final int taskId = i;
+            executor.submit(() -> {
+                try {
+                    System.out.println("任务 " + taskId + " 开始执行");
+                    Thread.sleep(1000 + taskId * 500);
+                    System.out.println("任务 " + taskId + " 执行完成");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    latch.countDown(); // 计数器减1
+                }
+            });
+        }
+        
+        System.out.println("等待所有任务完成...");
+        latch.await(); // 等待所有任务完成
+        System.out.println("所有任务已完成！");
+        executor.shutdown();
+    }
+}
+```
+
+### 实际应用场景
+
+```java
+public class DataProcessor {
+    
+    public void processData() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(3);
+        
+        // 并行加载数据
+        new Thread(() -> {
+            loadUserData();
+            latch.countDown();
+        }).start();
+        
+        new Thread(() -> {
+            loadProductData();
+            latch.countDown();
+        }).start();
+        
+        new Thread(() -> {
+            loadOrderData();
+            latch.countDown();
+        }).start();
+        
+        // 等待所有数据加载完成
+        latch.await();
+        
+        // 开始处理数据
+        processAllData();
+    }
+    
+    private void loadUserData() {
+        // 加载用户数据
+    }
+    
+    private void loadProductData() {
+        // 加载产品数据
+    }
+    
+    private void loadOrderData() {
+        // 加载订单数据
+    }
+    
+    private void processAllData() {
+        // 处理所有数据
+    }
+}
+```
+
+## CyclicBarrier
+
+CyclicBarrier是一个同步工具类，允许一组线程互相等待，直到所有线程都到达某个公共屏障点。
+
+### 基本用法
+
+```java
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class CyclicBarrierExample {
+    
+    public static void main(String[] args) {
+        int threadCount = 3;
+        CyclicBarrier barrier = new CyclicBarrier(threadCount, () -> {
+            System.out.println("所有线程都到达屏障点，开始下一轮");
+        });
+        
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        
+        for (int i = 0; i < threadCount; i++) {
+            final int threadId = i;
+            executor.submit(() -> {
+                try {
+                    for (int round = 0; round < 3; round++) {
+                        System.out.println("线程 " + threadId + " 执行第 " + round + " 轮");
+                        Thread.sleep(1000);
+                        System.out.println("线程 " + threadId + " 到达屏障点");
+                        barrier.await(); // 等待其他线程
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+### 实际应用场景
+
+```java
+public class MatrixProcessor {
+    
+    public void processMatrix(int[][] matrix) throws InterruptedException {
+        int rows = matrix.length;
+        CyclicBarrier barrier = new CyclicBarrier(rows, () -> {
+            System.out.println("所有行处理完成，开始下一阶段");
+        });
+        
+        for (int i = 0; i < rows; i++) {
+            final int rowIndex = i;
+            new Thread(() -> {
+                try {
+                    // 处理矩阵的每一行
+                    processRow(matrix[rowIndex]);
+                    barrier.await();
+                    
+                    // 等待所有行处理完成后，进行下一阶段
+                    processRowPhase2(matrix[rowIndex]);
+                    barrier.await();
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+    
+    private void processRow(int[] row) {
+        // 处理行数据
+    }
+    
+    private void processRowPhase2(int[] row) {
+        // 第二阶段处理
+    }
+}
+```
+
+## Semaphore
+
+Semaphore是一个计数信号量，用于控制同时访问特定资源的线程数量。
+
+### 基本用法
+
+```java
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class SemaphoreExample {
+    
+    public static void main(String[] args) {
+        // 限制同时访问的线程数为2
+        Semaphore semaphore = new Semaphore(2);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        
+        for (int i = 0; i < 5; i++) {
+            final int taskId = i;
+            executor.submit(() -> {
+                try {
+                    System.out.println("任务 " + taskId + " 尝试获取许可");
+                    semaphore.acquire(); // 获取许可
+                    
+                    System.out.println("任务 " + taskId + " 获得许可，开始执行");
+                    Thread.sleep(2000); // 模拟工作
+                    System.out.println("任务 " + taskId + " 执行完成");
+                    
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    semaphore.release(); // 释放许可
+                    System.out.println("任务 " + taskId + " 释放许可");
+                }
+            });
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+### 实际应用场景
+
+```java
+public class ConnectionPool {
+    
+    private final Semaphore semaphore;
+    private final List<Connection> connections;
+    
+    public ConnectionPool(int poolSize) {
+        this.semaphore = new Semaphore(poolSize);
+        this.connections = new ArrayList<>();
+        
+        // 初始化连接池
+        for (int i = 0; i < poolSize; i++) {
+            connections.add(new Connection("Connection-" + i));
+        }
+    }
+    
+    public Connection getConnection() throws InterruptedException {
+        semaphore.acquire(); // 获取许可
+        synchronized (connections) {
+            return connections.remove(0);
+        }
+    }
+    
+    public void releaseConnection(Connection connection) {
+        synchronized (connections) {
+            connections.add(connection);
+        }
+        semaphore.release(); // 释放许可
+    }
+    
+    static class Connection {
+        private final String name;
+        
+        public Connection(String name) {
+            this.name = name;
+        }
+        
+        public String getName() {
+            return name;
+        }
+    }
+}
+```
+
+## Exchanger
+
+Exchanger是一个同步工具类，用于两个线程之间交换数据。
+
+### 基本用法
+
+```java
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ExchangerExample {
+    
+    public static void main(String[] args) {
+        Exchanger<String> exchanger = new Exchanger<>();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        
+        // 生产者线程
+        executor.submit(() -> {
+            try {
+                String data = "生产者数据";
+                System.out.println("生产者准备交换数据: " + data);
+                String received = exchanger.exchange(data);
+                System.out.println("生产者收到数据: " + received);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        
+        // 消费者线程
+        executor.submit(() -> {
+            try {
+                Thread.sleep(1000); // 模拟处理时间
+                String data = "消费者数据";
+                System.out.println("消费者准备交换数据: " + data);
+                String received = exchanger.exchange(data);
+                System.out.println("消费者收到数据: " + received);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        
+        executor.shutdown();
+    }
+}
+```
+
+### 实际应用场景
+
+```java
+public class ProducerConsumer {
+    
+    public static void main(String[] args) {
+        Exchanger<List<String>> exchanger = new Exchanger<>();
+        
+        // 生产者
+        new Thread(() -> {
+            try {
+                List<String> buffer = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    buffer.add("数据-" + i);
+                    if (buffer.size() == 3) {
+                        System.out.println("生产者交换缓冲区");
+                        buffer = exchanger.exchange(buffer);
+                        Thread.sleep(1000);
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+        
+        // 消费者
+        new Thread(() -> {
+            try {
+                List<String> buffer = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    if (buffer.isEmpty()) {
+                        System.out.println("消费者等待数据");
+                        buffer = exchanger.exchange(buffer);
+                    }
+                    String data = buffer.remove(0);
+                    System.out.println("消费者处理: " + data);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+}
+```
+
+## Phaser
+
+Phaser是一个更灵活的同步工具类，可以动态调整参与同步的线程数量。
+
+### 基本用法
+
+```java
+import java.util.concurrent.Phaser;
+
+public class PhaserExample {
+    
+    public static void main(String[] args) {
+        Phaser phaser = new Phaser(3); // 初始参与线程数为3
+        
+        for (int i = 0; i < 3; i++) {
+            final int threadId = i;
+            new Thread(() -> {
+                try {
+                    System.out.println("线程 " + threadId + " 开始第一阶段");
+                    Thread.sleep(1000);
+                    phaser.arriveAndAwaitAdvance(); // 等待所有线程完成第一阶段
+                    
+                    System.out.println("线程 " + threadId + " 开始第二阶段");
+                    Thread.sleep(1000);
+                    phaser.arriveAndAwaitAdvance(); // 等待所有线程完成第二阶段
+                    
+                    System.out.println("线程 " + threadId + " 完成所有阶段");
+                    phaser.arriveAndDeregister(); // 退出同步
+                    
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
+        }
+    }
+}
+```
+
+## 高级用法
+
+### 1. 组合使用多个工具类
+
+```java
+public class ComplexConcurrencyExample {
+    
+    public void processWithMultipleTools() throws InterruptedException {
+        int threadCount = 5;
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch endLatch = new CountDownLatch(threadCount);
+        Semaphore semaphore = new Semaphore(2);
+        
+        for (int i = 0; i < threadCount; i++) {
+            final int taskId = i;
+            new Thread(() -> {
+                try {
+                    startLatch.await(); // 等待开始信号
+                    
+                    semaphore.acquire(); // 获取资源许可
+                    try {
+                        System.out.println("任务 " + taskId + " 开始处理");
+                        Thread.sleep(1000);
+                        System.out.println("任务 " + taskId + " 处理完成");
+                    } finally {
+                        semaphore.release(); // 释放资源许可
+                    }
+                    
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    endLatch.countDown(); // 标记任务完成
+                }
+            }).start();
+        }
+        
+        System.out.println("开始所有任务");
+        startLatch.countDown(); // 释放开始信号
+        
+        endLatch.await(); // 等待所有任务完成
+        System.out.println("所有任务完成");
+    }
+}
+```
+
+### 2. 超时控制
+
+```java
+public class TimeoutExample {
+    
+    public void processWithTimeout() {
+        Semaphore semaphore = new Semaphore(1);
+        
+        new Thread(() -> {
+            try {
+                // 尝试在1秒内获取许可
+                if (semaphore.tryAcquire(1, TimeUnit.SECONDS)) {
+                    try {
+                        System.out.println("获得许可，开始处理");
+                        Thread.sleep(2000);
+                    } finally {
+                        semaphore.release();
+                    }
+                } else {
+                    System.out.println("获取许可超时");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+}
+```
+
+## 性能考虑
+
+### 1. 选择合适的工具类
+
+```java
+// 简单等待 - 使用CountDownLatch
+CountDownLatch latch = new CountDownLatch(1);
+
+// 循环等待 - 使用CyclicBarrier
+CyclicBarrier barrier = new CyclicBarrier(3);
+
+// 资源控制 - 使用Semaphore
+Semaphore semaphore = new Semaphore(5);
+
+// 数据交换 - 使用Exchanger
+Exchanger<String> exchanger = new Exchanger<>();
+```
+
+### 2. 避免死锁
+
+```java
+// 正确的资源获取顺序
+public void acquireResources(Semaphore sem1, Semaphore sem2) {
+    try {
+        sem1.acquire();
+        sem2.acquire();
+        // 使用资源
+    } finally {
+        sem2.release();
+        sem1.release();
+    }
+}
+```
+
+## 面试题
+
+### 1. CountDownLatch和CyclicBarrier有什么区别？
+
+**答案：**
+- CountDownLatch是一次性的，计数器不能重置
+- CyclicBarrier可以重复使用，支持重置
+- CountDownLatch适合等待多个任务完成
+- CyclicBarrier适合多个线程在某个点同步
+
+### 2. Semaphore的公平模式和非公平模式有什么区别？
+
+**答案：**
+- 非公平模式：线程获取许可的顺序不确定，性能更好
+- 公平模式：按照请求顺序获取许可，性能稍差但更公平
+- 使用`new Semaphore(permits, true)`创建公平模式
+
+### 3. 如何避免使用Exchanger时的死锁？
+
+**答案：**
+- 确保两个线程都会调用exchange()方法
+- 使用超时版本的exchange()方法
+- 正确处理InterruptedException异常
+
+### 4. CountDownLatch和join()方法有什么区别？
+
+**答案：**
+- join()只能等待单个线程完成
+- CountDownLatch可以等待多个线程完成
+- CountDownLatch更灵活，可以在任何地方等待
+- CountDownLatch支持超时等待
+
+### 5. 什么时候使用Phaser而不是CyclicBarrier？
+
+**答案：**
+- 当需要动态调整参与线程数量时
+- 当需要更复杂的同步逻辑时
+- 当需要支持分层同步时
+- Phaser提供了更丰富的API和更灵活的控制

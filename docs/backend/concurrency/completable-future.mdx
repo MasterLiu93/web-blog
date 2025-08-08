@@ -1,0 +1,636 @@
+---
+sidebar_position: 9
+title: "CompletableFuture"
+description: "Java异步编程与CompletableFuture"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# CompletableFuture
+
+CompletableFuture是Java 8引入的异步编程工具，它实现了Future接口，并提供了丰富的API来支持异步编程、函数式编程和响应式编程。
+
+## 异步编程基础
+
+### 为什么需要异步编程？
+
+```java
+public class SynchronousExample {
+    
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        
+        // 同步执行，每个任务需要1秒
+        String result1 = doTask1();
+        String result2 = doTask2();
+        String result3 = doTask3();
+        
+        // 总耗时3秒
+        System.out.println("结果: " + result1 + ", " + result2 + ", " + result3);
+        System.out.println("总耗时: " + (System.currentTimeMillis() - start) + "ms");
+    }
+    
+    private static String doTask1() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task1完成";
+    }
+    
+    private static String doTask2() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task2完成";
+    }
+    
+    private static String doTask3() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task3完成";
+    }
+}
+```
+
+### 使用CompletableFuture实现异步
+
+```java
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class AsynchronousExample {
+    
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        
+        // 异步执行，所有任务并行运行
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> doTask1());
+        CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> doTask2());
+        CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> doTask3());
+        
+        // 等待所有任务完成
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(future1, future2, future3);
+        
+        allFutures.thenRun(() -> {
+            try {
+                String result1 = future1.get();
+                String result2 = future2.get();
+                String result3 = future3.get();
+                
+                System.out.println("结果: " + result1 + ", " + result2 + ", " + result3);
+                System.out.println("总耗时: " + (System.currentTimeMillis() - start) + "ms");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 等待完成
+        allFutures.join();
+    }
+    
+    private static String doTask1() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task1完成";
+    }
+    
+    private static String doTask2() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task2完成";
+    }
+    
+    private static String doTask3() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "Task3完成";
+    }
+}
+```
+
+## CompletableFuture API
+
+### 1. 创建CompletableFuture
+
+```java
+public class CompletableFutureCreation {
+    
+    public static void main(String[] args) {
+        // 1. 使用supplyAsync创建有返回值的异步任务
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return "异步任务结果";
+        });
+        
+        // 2. 使用runAsync创建无返回值的异步任务
+        CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            System.out.println("异步任务执行完成");
+        });
+        
+        // 3. 使用自定义线程池
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
+            return "使用自定义线程池";
+        }, executor);
+        
+        // 4. 手动完成Future
+        CompletableFuture<String> future4 = new CompletableFuture<>();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                future4.complete("手动完成的结果");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                future4.completeExceptionally(e);
+            }
+        }).start();
+        
+        // 获取结果
+        try {
+            System.out.println("Future1结果: " + future1.get());
+            future2.get(); // 等待完成
+            System.out.println("Future3结果: " + future3.get());
+            System.out.println("Future4结果: " + future4.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+### 2. 链式调用
+
+```java
+public class CompletableFutureChaining {
+    
+    public static void main(String[] args) {
+        // 链式调用示例
+        CompletableFuture<String> future = CompletableFuture
+            .supplyAsync(() -> "Hello")
+            .thenApply(s -> s + " World")
+            .thenApply(s -> s + "!")
+            .thenApply(String::toUpperCase);
+        
+        try {
+            System.out.println("链式调用结果: " + future.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 异步链式调用
+        CompletableFuture<String> asyncFuture = CompletableFuture
+            .supplyAsync(() -> "异步")
+            .thenApplyAsync(s -> s + " 处理")
+            .thenApplyAsync(s -> s + " 完成");
+        
+        try {
+            System.out.println("异步链式调用结果: " + asyncFuture.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 3. 组合多个Future
+
+```java
+public class CompletableFutureCombination {
+    
+    public static void main(String[] args) {
+        // 1. thenCombine - 组合两个Future的结果
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> "Hello");
+        CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> "World");
+        
+        CompletableFuture<String> combined = future1.thenCombine(future2, (result1, result2) -> 
+            result1 + " " + result2);
+        
+        try {
+            System.out.println("组合结果: " + combined.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 2. thenCompose - 链式组合
+        CompletableFuture<String> composed = future1.thenCompose(result -> 
+            CompletableFuture.supplyAsync(() -> result + " 被处理"));
+        
+        try {
+            System.out.println("链式组合结果: " + composed.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 3. allOf - 等待所有Future完成
+        CompletableFuture<String> task1 = CompletableFuture.supplyAsync(() -> "任务1");
+        CompletableFuture<String> task2 = CompletableFuture.supplyAsync(() -> "任务2");
+        CompletableFuture<String> task3 = CompletableFuture.supplyAsync(() -> "任务3");
+        
+        CompletableFuture<Void> allTasks = CompletableFuture.allOf(task1, task2, task3);
+        
+        allTasks.thenRun(() -> {
+            try {
+                System.out.println("所有任务完成: " + task1.get() + ", " + task2.get() + ", " + task3.get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        
+        allTasks.join();
+    }
+}
+```
+
+### 4. 异常处理
+
+```java
+public class CompletableFutureExceptionHandling {
+    
+    public static void main(String[] args) {
+        // 1. exceptionally - 处理异常并返回默认值
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
+            if (Math.random() > 0.5) {
+                throw new RuntimeException("随机异常");
+            }
+            return "成功结果";
+        }).exceptionally(throwable -> {
+            System.out.println("捕获异常: " + throwable.getMessage());
+            return "默认值";
+        });
+        
+        try {
+            System.out.println("Future1结果: " + future1.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 2. handle - 处理成功和异常情况
+        CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
+            if (Math.random() > 0.5) {
+                throw new RuntimeException("随机异常");
+            }
+            return "成功结果";
+        }).handle((result, throwable) -> {
+            if (throwable != null) {
+                System.out.println("处理异常: " + throwable.getMessage());
+                return "异常时的默认值";
+            } else {
+                return result + " 处理成功";
+            }
+        });
+        
+        try {
+            System.out.println("Future2结果: " + future2.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 3. whenComplete - 无论成功失败都执行
+        CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> {
+            if (Math.random() > 0.5) {
+                throw new RuntimeException("随机异常");
+            }
+            return "成功结果";
+        }).whenComplete((result, throwable) -> {
+            if (throwable != null) {
+                System.out.println("任务失败: " + throwable.getMessage());
+            } else {
+                System.out.println("任务成功: " + result);
+            }
+        });
+        
+        try {
+            future3.get();
+        } catch (Exception e) {
+            System.out.println("Future3抛出异常: " + e.getMessage());
+        }
+    }
+}
+```
+
+## 实际应用场景
+
+### 1. 并行数据处理
+
+```java
+public class ParallelDataProcessing {
+    
+    public static void main(String[] args) {
+        List<String> data = Arrays.asList("数据1", "数据2", "数据3", "数据4", "数据5");
+        
+        // 并行处理数据
+        List<CompletableFuture<String>> futures = data.stream()
+            .map(item -> CompletableFuture.supplyAsync(() -> processData(item)))
+            .collect(Collectors.toList());
+        
+        // 等待所有处理完成
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+            futures.toArray(new CompletableFuture[0]));
+        
+        allFutures.thenRun(() -> {
+            List<String> results = futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+            
+            System.out.println("处理结果: " + results);
+        });
+        
+        allFutures.join();
+    }
+    
+    private static String processData(String data) {
+        try {
+            Thread.sleep(1000); // 模拟处理时间
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return data + " 已处理";
+    }
+}
+```
+
+### 2. 异步API调用
+
+```java
+public class AsyncApiCall {
+    
+    public static void main(String[] args) {
+        // 模拟异步API调用
+        CompletableFuture<User> userFuture = getUserAsync(1L);
+        CompletableFuture<Order> orderFuture = getOrderAsync(1L);
+        CompletableFuture<Product> productFuture = getProductAsync(1L);
+        
+        // 组合多个API调用结果
+        CompletableFuture<UserOrderInfo> combinedFuture = userFuture
+            .thenCombine(orderFuture, (user, order) -> new UserOrderInfo(user, order))
+            .thenCombine(productFuture, (userOrder, product) -> {
+                userOrder.setProduct(product);
+                return userOrder;
+            });
+        
+        try {
+            UserOrderInfo result = combinedFuture.get();
+            System.out.println("组合结果: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static CompletableFuture<User> getUserAsync(Long userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return new User(userId, "用户" + userId);
+        });
+    }
+    
+    private static CompletableFuture<Order> getOrderAsync(Long orderId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return new Order(orderId, "订单" + orderId);
+        });
+    }
+    
+    private static CompletableFuture<Product> getProductAsync(Long productId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return new Product(productId, "产品" + productId);
+        });
+    }
+    
+    static class User {
+        private Long id;
+        private String name;
+        
+        public User(Long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        @Override
+        public String toString() {
+            return "User{id=" + id + ", name='" + name + "'}";
+        }
+    }
+    
+    static class Order {
+        private Long id;
+        private String name;
+        
+        public Order(Long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        @Override
+        public String toString() {
+            return "Order{id=" + id + ", name='" + name + "'}";
+        }
+    }
+    
+    static class Product {
+        private Long id;
+        private String name;
+        
+        public Product(Long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        @Override
+        public String toString() {
+            return "Product{id=" + id + ", name='" + name + "'}";
+        }
+    }
+    
+    static class UserOrderInfo {
+        private User user;
+        private Order order;
+        private Product product;
+        
+        public UserOrderInfo(User user, Order order) {
+            this.user = user;
+            this.order = order;
+        }
+        
+        public void setProduct(Product product) {
+            this.product = product;
+        }
+        
+        @Override
+        public String toString() {
+            return "UserOrderInfo{user=" + user + ", order=" + order + ", product=" + product + "}";
+        }
+    }
+}
+```
+
+### 3. 超时控制
+
+```java
+public class CompletableFutureTimeout {
+    
+    public static void main(String[] args) {
+        // 创建可能超时的任务
+        CompletableFuture<String> slowTask = CompletableFuture.supplyAsync(() -> {
+            try {
+                Thread.sleep(3000); // 3秒
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return "慢任务完成";
+        });
+        
+        // 添加超时控制
+        CompletableFuture<String> timeoutTask = slowTask
+            .orTimeout(2, TimeUnit.SECONDS) // 2秒超时
+            .exceptionally(throwable -> {
+                if (throwable instanceof TimeoutException) {
+                    return "任务超时";
+                }
+                return "其他异常: " + throwable.getMessage();
+            });
+        
+        try {
+            String result = timeoutTask.get();
+            System.out.println("结果: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## 性能优化
+
+### 1. 使用自定义线程池
+
+```java
+public class CompletableFutureOptimization {
+    
+    public static void main(String[] args) {
+        // 创建专用线程池
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        
+        // 使用自定义线程池
+        CompletableFuture<String> future = CompletableFuture
+            .supplyAsync(() -> "任务1", executor)
+            .thenApplyAsync(s -> s + " 处理", executor)
+            .thenApplyAsync(s -> s + " 完成", executor);
+        
+        try {
+            System.out.println("结果: " + future.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        executor.shutdown();
+    }
+}
+```
+
+### 2. 避免阻塞操作
+
+```java
+public class NonBlockingOperations {
+    
+    public static void main(String[] args) {
+        // 避免在异步任务中使用阻塞操作
+        CompletableFuture<String> future = CompletableFuture
+            .supplyAsync(() -> "数据")
+            .thenApplyAsync(data -> processData(data)) // 异步处理
+            .thenAcceptAsync(result -> System.out.println("处理结果: " + result)); // 异步消费
+        
+        // 等待完成
+        future.join();
+    }
+    
+    private static String processData(String data) {
+        // 模拟数据处理
+        return data + " 已处理";
+    }
+}
+```
+
+## 面试题
+
+### 1. CompletableFuture和Future有什么区别？
+
+**答案：**
+- Future只能通过get()方法获取结果，会阻塞
+- CompletableFuture支持链式调用和异步处理
+- CompletableFuture提供了丰富的API来处理异步操作
+- CompletableFuture支持异常处理和超时控制
+
+### 2. thenApply和thenApplyAsync有什么区别？
+
+**答案：**
+- thenApply在调用线程中执行
+- thenApplyAsync在ForkJoinPool.commonPool()中执行
+- thenApplyAsync可以指定自定义线程池
+- thenApplyAsync更适合CPU密集型任务
+
+### 3. 如何处理CompletableFuture中的异常？
+
+**答案：**
+- 使用exceptionally()处理异常并返回默认值
+- 使用handle()同时处理成功和异常情况
+- 使用whenComplete()无论成功失败都执行
+- 使用completeExceptionally()手动完成异常
+
+### 4. CompletableFuture.allOf和anyOf有什么区别？
+
+**答案：**
+- allOf等待所有Future完成
+- anyOf等待任意一个Future完成
+- allOf返回Void类型
+- anyOf返回Object类型（第一个完成的Future的结果）
+
+### 5. 如何实现CompletableFuture的超时控制？
+
+**答案：**
+- 使用orTimeout()方法设置超时时间
+- 使用completeOnTimeout()设置超时时的默认值
+- 使用get()方法的超时版本
+- 结合Timer或ScheduledExecutorService实现自定义超时

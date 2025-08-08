@@ -1,0 +1,78 @@
+---
+sidebar_position: 5
+title: "链路追踪"
+description: "微服务分布式链路追踪"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 链路追踪
+
+通过TraceId将一次请求在多服务间的调用串联，便于故障定位与性能分析。
+
+## Sleuth + Zipkin
+
+```xml
+<!-- pom.xml 关键依赖（示意） -->
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-sleuth</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-zipkin</artifactId>
+</dependency>
+```
+
+```yaml
+spring:
+  sleuth:
+    sampler:
+      probability: 0.1 # 10%采样
+  zipkin:
+    base-url: http://localhost:9411
+```
+
+## OpenTelemetry（推荐）
+
+- 统一标准（OTLP导出），适配多后端（Jaeger/Zipkin/Tempo）
+- 自动探针/手动埋点
+
+```java
+// 手动埋点示例
+io.opentelemetry.api.trace.Tracer tracer = io.opentelemetry.api.GlobalOpenTelemetry.getTracer("svc");
+io.opentelemetry.api.trace.Span span = tracer.spanBuilder("processOrder").startSpan();
+try {
+    span.setAttribute("order.id", "123");
+    // do business
+} finally {
+    span.end();
+}
+```
+
+## Trace上下文与Baggage
+
+- 上下文透传：`traceparent`/`b3`，跨线程/异步要保留上下文
+- Baggage：携带业务键值（慎量），避免放PII
+
+## 采样与性能
+
+- 采样策略：概率采样、规则采样
+- 关键路径全采样，背景流量低比例
+- 批量导出、限速，避免监控反噬
+
+## 指标与日志关联
+
+- 指标（RED：Rate/Errors/Duration）
+- 日志注入TraceId（MDC整合）
+- 异常事件、慢调用标注
+
+## 面试题
+
+1. Trace/Span/ParentId的关系
+2. B3与W3C `traceparent`的区别
+3. 采样如何配置才不影响性能
+4. 如何跨线程与异步保持上下文
+5. 指标/日志/Trace三者如何联动

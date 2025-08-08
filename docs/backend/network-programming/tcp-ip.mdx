@@ -1,0 +1,43 @@
+---
+sidebar_position: 1
+title: "TCP/IP"
+description: "TCP/IP协议栈详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# TCP/IP
+
+## 网络模型
+- OSI七层 vs TCP/IP四层
+- 应用 / 传输 / 网络 / 链路
+
+## TCP协议
+- 三次握手、四次挥手
+- 流量控制（滑动窗口）、拥塞控制（慢启动、拥塞避免、快重传、快恢复）
+- 重传机制：超时重传、快速重传、SACK
+
+```text
+Client -> SYN(seq=x)
+Server -> SYN-ACK(seq=y, ack=x+1)
+Client -> ACK(ack=y+1)
+```
+
+## UDP协议
+- 无连接、不保证可靠
+- 报文小、实时性好（DNS、视频）
+- 需要在应用层做重传与顺序控制（如QUIC内建）
+
+## Socket编程（概览）
+- 阻塞IO/非阻塞IO
+- 多路复用：select/poll/epoll
+- 半关闭、Nagle、KeepAlive
+
+## 面试题
+1. 三次握手为什么不是两次
+2. 四次挥手中TIME_WAIT的意义
+3. 快重传与SACK的作用
+4. TCP与UDP的差异与场景
+5. 滑动窗口如何实现流量控制 

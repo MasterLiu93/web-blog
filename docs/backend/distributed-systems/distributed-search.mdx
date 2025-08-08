@@ -1,0 +1,86 @@
+---
+sidebar_position: 5
+title: "分布式搜索"
+description: "分布式搜索引擎原理与应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 分布式搜索
+
+## Elasticsearch
+
+### 基本概念
+- Index（库）、Type（7.x起弱化）、Document（文档）、Field（字段）
+- Shard（主分片）/Replica（副本）
+- 倒排索引、分词器（Analyzer）
+
+```json
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": { "my_analyzer": { "type": "standard" } }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": { "type": "text", "analyzer": "my_analyzer" },
+      "price": { "type": "double" },
+      "created_at": { "type": "date" }
+    }
+  }
+}
+```
+
+### 查询
+
+- Query DSL：match / term / range / bool
+- 过滤与查询分离：filter可缓存
+
+```json
+{
+  "query": {
+    "bool": {
+      "must": [ { "match": { "title": "spring" } } ],
+      "filter": [ { "range": { "price": { "lte": 100 } } } ]
+    }
+  },
+  "sort": [ { "created_at": "desc" } ],
+  "from": 0, "size": 10
+}
+```
+
+### 聚合与高亮
+
+```json
+{
+  "aggs": {
+    "by_price": { "histogram": { "field": "price", "interval": 10 } }
+  },
+  "highlight": { "fields": { "title": {} } }
+}
+```
+
+### 调优要点
+
+- 分片规划：主分片不可变，预估数据量
+- 刷新/合并：批量写入时调低刷新，提高throughput
+- 映射设计：避免过多字段/动态映射爆炸
+- 查询优化：filter、doc_values、预热
+
+## Solr（简述）
+
+- 基于Lucene，支持SolrCloud（分片副本）、Schema配置
+- 与ES对比：生态/易用性/动态映射差异
+
+## 面试题
+
+1. 倒排索引及分词原理
+2. ES分片/副本的作用与规划
+3. term与match的区别
+4. 如何优化写入与查询性能
+5. ES与Solr的差异与选型

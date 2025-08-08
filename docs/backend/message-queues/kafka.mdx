@@ -1,0 +1,43 @@
+---
+sidebar_position: 1
+---
+
+# 8.1 Kafka
+
+## 架构设计
+- Broker、Topic、Partition、Replica、ISR
+- Producer/Consumer、Controller
+- 顺序性：分区内有序
+
+## 分区机制
+- 分区键一致路由（hash）
+- 副本与ISR，Leader选举
+- 日志段、索引与压缩
+
+## 消费者组
+- 同组消费分区独占，扩缩容自动再均衡
+- 位移（offset）存储：__consumer_offsets
+- 交付语义：至少一次、至多一次、恰好一次（幂等+事务）
+
+```properties
+enable.idempotence=true
+acks=all
+retries=3
+max.in.flight.requests.per.connection=1
+```
+
+## 事务（Exactly-Once 语义）
+- 生产端：幂等生产者 + 事务ID
+- 消费-生产：read-process-write 使用事务
+
+## 调优要点
+- 批量与压缩：batch.size、linger.ms、compression.type
+- IO与文件：页缓存、零拷贝、磁盘顺序写
+- 分区数量与副本因子规划
+
+## 面试题
+1. 分区与副本如何协同保证高可用
+2. 恰好一次的前置条件与配置
+3. 再均衡触发时机与影响
+4. 如何规划分区数与消费者并行度
+5. Kafka与RocketMQ的差异 

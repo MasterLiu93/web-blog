@@ -1,0 +1,30 @@
+{
+  "title": {
+    "message": "Laby's Blog",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Laby's Blog Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.博客": {
+    "message": "Blog",
+    "description": "Navbar item with label 博客"
+  },
+  "item.label.知识库导航": {
+    "message": "Knowledge Base",
+    "description": "Navbar item with label 知识库导航"
+  },
+  "item.label.项目": {
+    "message": "Projects",
+    "description": "Navbar item with label 项目"
+  },
+  "item.label.关于我": {
+    "message": "About Me",
+    "description": "Navbar item with label 关于我"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

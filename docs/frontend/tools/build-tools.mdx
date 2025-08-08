@@ -1,0 +1,444 @@
+---
+sidebar_position: 1
+title: "构建工具"
+description: "现代前端构建工具介绍"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 构建工具
+
+现代前端开发离不开构建工具，它们负责代码转换、打包、优化等任务，是前端工程化的核心。
+
+## Webpack
+
+### 基础配置
+```javascript
+// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    clean: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  },
+  plugins: [],
+  mode: 'development'
+};
+```
+
+### 常用Loader
+```javascript
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      // JavaScript处理
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
+      },
+      
+      // TypeScript处理
+      {
+        test: /\.ts$/,
+        use: 'ts-loader'
+      },
+      
+      // CSS处理
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      
+      // SCSS处理
+      {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      
+      // 图片处理
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: 'asset/resource'
+      },
+      
+      // 字体处理
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource'
+      }
+    ]
+  }
+};
+```
+
+### 常用Plugin
+```javascript
+// webpack.config.js
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+  plugins: [
+    // 生成HTML文件
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html'
+    }),
+    
+    // 提取CSS到单独文件
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+    
+    // 清理构建目录
+    new CleanWebpackPlugin()
+  ]
+};
+```
+
+### 开发服务器
+```javascript
+// webpack.config.js
+module.exports = {
+  devServer: {
+    static: './dist',
+    hot: true,
+    port: 3000,
+    open: true,
+    historyApiFallback: true
+  }
+};
+```
+
+## Vite
+
+### 基础配置
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  root: './src',
+  build: {
+    outDir: '../dist',
+    rollupOptions: {
+      input: {
+        main: './src/index.html'
+      }
+    }
+  },
+  server: {
+    port: 3000,
+    open: true
+  }
+});
+```
+
+### 插件配置
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import legacy from '@vitejs/plugin-legacy';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    })
+  ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/styles/variables.scss";`
+      }
+    }
+  }
+});
+```
+
+### 环境变量
+```javascript
+// vite.config.js
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  
+  return {
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
+    },
+    server: {
+      port: env.VITE_PORT || 3000
+    }
+  };
+});
+```
+
+## Rollup
+
+### 基础配置
+```javascript
+// rollup.config.js
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import babel from '@rollup/plugin-babel';
+
+export default {
+  input: 'src/index.js',
+  output: [
+    {
+      file: 'dist/bundle.js',
+      format: 'cjs'
+    },
+    {
+      file: 'dist/bundle.esm.js',
+      format: 'es'
+    }
+  ],
+  plugins: [
+    resolve(),
+    commonjs(),
+    babel({
+      exclude: 'node_modules/**'
+    })
+  ],
+  external: ['lodash']
+};
+```
+
+### 库打包配置
+```javascript
+// rollup.config.js
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+
+export default {
+  input: 'src/index.ts',
+  output: [
+    {
+      file: 'dist/index.js',
+      format: 'cjs',
+      sourcemap: true
+    },
+    {
+      file: 'dist/index.esm.js',
+      format: 'es',
+      sourcemap: true
+    }
+  ],
+  plugins: [
+    resolve(),
+    commonjs(),
+    typescript({
+      tsconfig: './tsconfig.json'
+    })
+  ],
+  external: ['react', 'react-dom']
+};
+```
+
+## Parcel
+
+### 零配置使用
+```bash
+# 安装Parcel
+npm install --save-dev parcel
+
+# 开发模式
+npx parcel src/index.html
+
+# 构建
+npx parcel build src/index.html
+```
+
+### 配置文件
+```json
+// .parcelrc
+{
+  "extends": "@parcel/config-default",
+  "transformers": {
+    "*.{jpg,jpeg,png,gif,svg}": ["@parcel/transformer-image"]
+  }
+}
+```
+
+## 工具对比
+
+### 性能对比
+| 工具 | 启动速度 | 热更新 | 构建速度 | 配置复杂度 |
+|------|----------|--------|----------|------------|
+| Webpack | 慢 | 中等 | 慢 | 高 |
+| Vite | 快 | 快 | 快 | 中等 |
+| Rollup | 中等 | 无 | 快 | 中等 |
+| Parcel | 快 | 快 | 中等 | 低 |
+
+### 适用场景
+- **Webpack**：大型项目，需要复杂配置
+- **Vite**：现代项目，快速开发体验
+- **Rollup**：库开发，ES模块输出
+- **Parcel**：简单项目，零配置需求
+
+## 优化策略
+
+### 代码分割
+```javascript
+// webpack.config.js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  }
+};
+```
+
+### 缓存优化
+```javascript
+// webpack.config.js
+module.exports = {
+  output: {
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js'
+  },
+  optimization: {
+    moduleIds: 'deterministic',
+    chunkIds: 'deterministic'
+  }
+};
+```
+
+### 压缩优化
+```javascript
+// webpack.config.js
+const TerserPlugin = require('terser-webpack-plugin');
+
+module.exports = {
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true
+          }
+        }
+      })
+    ]
+  }
+};
+```
+
+## 现代构建工具
+
+### ESBuild
+```javascript
+// esbuild.config.js
+const esbuild = require('esbuild');
+
+esbuild.build({
+  entryPoints: ['src/index.js'],
+  bundle: true,
+  outfile: 'dist/bundle.js',
+  minify: true,
+  sourcemap: true,
+  target: ['es2020']
+}).catch(() => process.exit(1));
+```
+
+### SWC
+```javascript
+// .swcrc
+{
+  "jsc": {
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    }
+  }
+}
+```
+
+## 最佳实践
+
+### 环境配置
+```javascript
+// webpack.config.js
+const isProduction = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  mode: isProduction ? 'production' : 'development',
+  devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
+  optimization: {
+    minimize: isProduction
+  }
+};
+```
+
+### 多环境配置
+```javascript
+// webpack.config.js
+const configs = {
+  development: {
+    mode: 'development',
+    devtool: 'eval-source-map'
+  },
+  production: {
+    mode: 'production',
+    devtool: 'source-map'
+  }
+};
+
+module.exports = (env, argv) => {
+  const mode = argv.mode || 'development';
+  return {
+    ...configs[mode],
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.js'
+    }
+  };
+};
+``` 

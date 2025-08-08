@@ -1,0 +1,83 @@
+---
+sidebar_position: 3
+title: "分布式锁"
+description: "分布式锁实现方案详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 分布式锁
+
+用于在分布式场景下实现临界资源的互斥访问。关键关注正确性（互斥、无饥饿）、可用性与性能。
+
+## Redis分布式锁
+
+- SET key value NX EX ttl
+- 释放锁需校验持有者（Lua脚本原子校验+删除）
+- 超时续期（看门狗）
+
+```java
+// 获取锁
+Boolean ok = redis.opsForValue().setIfAbsent(k, v, java.time.Duration.ofSeconds(30));
+// 释放锁（Lua）
+String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+Long r = redis.execute(new org.springframework.data.redis.core.script.DefaultRedisScript<>(script, Long.class),
+        java.util.Collections.singletonList(k), v);
+```
+
+### RedLock（简述）
+
+- 多实例独立Redis节点，必须获取大多数节点的锁
+- 旨在提升在网络分区/单点故障下的安全性
+- 工程中需谨慎评估时钟漂移与网络假设
+
+## Zookeeper分布式锁
+
+- 基于临时顺序节点 + 监听前驱节点
+- 会话级别持有，断连自动释放
+- 公平性好，强一致，吞吐较低
+
+```text
+/locks/my-lock/
+  ├─ lock-00000001 (clientA)
+  ├─ lock-00000002 (clientB)  ← 监听00000001删除
+```
+
+## 数据库分布式锁
+
+- 基于唯一索引插入/更新
+- 依赖数据库事务与隔离级别
+- 吞吐受限，适用于小规模/过渡方案
+
+```sql
+CREATE TABLE dist_lock (
+  lock_key VARCHAR(64) PRIMARY KEY,
+  owner VARCHAR(64),
+  expire_at BIGINT
+);
+-- 申请锁：INSERT 或 UPDATE ... WHERE expire_at < now
+```
+
+## 选型对比
+
+- Redis：高性能，需处理续期、误删、时钟漂移
+- ZK：强一致，自动释放，吞吐一般
+- DB：实现简单，性能瓶颈明显
+
+## 常见坑
+
+- 误删锁：释放前必须校验持有者
+- 锁续期：长任务需看门狗续期
+- 时钟问题：避免依赖本地时钟判断过期
+- 可重入与锁粒度：明确锁Key与重入策略
+- 死锁：设置合理TTL并兜底
+
+## 面试题
+
+1. Redis分布式锁的正确释放姿势
+2. RedLock的原理与争议
+3. ZK顺序节点锁如何保证公平性
+4. 如何实现可重入锁/读写锁
+5. 分布式锁的可观测性与告警指标

@@ -1,0 +1,568 @@
+---
+sidebar_position: 1
+title: "MySQL"
+description: "MySQL数据库基础与优化"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# MySQL
+
+MySQL是一个开源的关系型数据库管理系统，广泛应用于Web应用程序中。它支持多种存储引擎，提供了丰富的功能和良好的性能。
+
+## 索引原理
+
+### 什么是索引？
+
+索引是数据库中用于提高查询效率的数据结构，类似于书籍的目录。
+
+```sql
+-- 1. 创建索引
+CREATE INDEX idx_user_name ON users(name);
+CREATE INDEX idx_user_email ON users(email);
+
+-- 2. 复合索引
+CREATE INDEX idx_user_name_email ON users(name, email);
+
+-- 3. 唯一索引
+CREATE UNIQUE INDEX idx_user_email_unique ON users(email);
+
+-- 4. 主键索引（自动创建）
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100)
+);
+```
+
+### 索引类型
+
+```sql
+-- 1. B+树索引（默认）
+-- 适用于等值查询、范围查询、排序
+CREATE INDEX idx_user_age ON users(age);
+
+-- 2. 哈希索引
+-- 适用于等值查询，不支持范围查询
+CREATE INDEX idx_user_id_hash ON users(id) USING HASH;
+
+-- 3. 全文索引
+-- 适用于文本搜索
+CREATE FULLTEXT INDEX idx_user_description ON users(description);
+
+-- 4. 空间索引
+-- 适用于地理数据
+CREATE SPATIAL INDEX idx_location ON locations(coordinates);
+```
+
+### 索引优化
+
+```sql
+-- 1. 查看索引使用情况
+EXPLAIN SELECT * FROM users WHERE name = 'John';
+
+-- 2. 分析查询性能
+ANALYZE TABLE users;
+
+-- 3. 优化索引
+-- 避免在索引列上使用函数
+-- 错误示例
+SELECT * FROM users WHERE YEAR(created_at) = 2023;
+
+-- 正确示例
+SELECT * FROM users WHERE created_at >= '2023-01-01' AND created_at < '2024-01-01';
+
+-- 4. 复合索引最左前缀原则
+CREATE INDEX idx_user_name_age_email ON users(name, age, email);
+
+-- 可以使用索引的查询
+SELECT * FROM users WHERE name = 'John';
+SELECT * FROM users WHERE name = 'John' AND age = 25;
+SELECT * FROM users WHERE name = 'John' AND age = 25 AND email = 'john@example.com';
+
+-- 不能使用索引的查询
+SELECT * FROM users WHERE age = 25; -- 没有name条件
+SELECT * FROM users WHERE name = 'John' AND email = 'john@example.com'; -- 缺少age条件
+```
+
+## 事务和锁
+
+### 事务特性（ACID）
+
+```sql
+-- 1. 原子性（Atomicity）
+START TRANSACTION;
+INSERT INTO users(name, email) VALUES('John', 'john@example.com');
+UPDATE accounts SET balance = balance - 100 WHERE user_id = 1;
+COMMIT; -- 或者 ROLLBACK;
+
+-- 2. 一致性（Consistency）
+-- 确保数据从一个一致状态转换到另一个一致状态
+
+-- 3. 隔离性（Isolation）
+-- 设置事务隔离级别
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+-- 4. 持久性（Durability）
+-- 事务提交后，数据永久保存
+```
+
+### 事务隔离级别
+
+```sql
+-- 1. READ UNCOMMITTED（读未提交）
+SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+-- 最低隔离级别，可能出现脏读
+
+-- 2. READ COMMITTED（读已提交）
+SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
+-- 防止脏读，可能出现不可重复读
+
+-- 3. REPEATABLE READ（可重复读）- MySQL默认
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+-- 防止不可重复读，可能出现幻读
+
+-- 4. SERIALIZABLE（串行化）
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+-- 最高隔离级别，防止所有并发问题
+```
+
+### 锁机制
+
+```sql
+-- 1. 共享锁（S锁）
+SELECT * FROM users WHERE id = 1 LOCK IN SHARE MODE;
+
+-- 2. 排他锁（X锁）
+SELECT * FROM users WHERE id = 1 FOR UPDATE;
+
+-- 3. 意向锁
+-- 表级锁，表示表中某些行被锁定
+
+-- 4. 记录锁
+-- 锁定索引记录
+
+-- 5. 间隙锁
+-- 锁定索引记录之间的间隙
+
+-- 6. Next-Key锁
+-- 记录锁和间隙锁的组合
+```
+
+## 乐观锁与悲观锁
+
+### 悲观锁实现
+
+```sql
+-- 1. 使用SELECT FOR UPDATE
+START TRANSACTION;
+SELECT * FROM products WHERE id = 1 FOR UPDATE;
+UPDATE products SET stock = stock - 1 WHERE id = 1;
+COMMIT;
+
+-- 2. 使用SELECT LOCK IN SHARE MODE
+START TRANSACTION;
+SELECT * FROM products WHERE id = 1 LOCK IN SHARE MODE;
+UPDATE products SET stock = stock - 1 WHERE id = 1;
+COMMIT;
+```
+
+### 乐观锁实现
+
+```sql
+-- 1. 使用版本号
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    stock INT,
+    version INT DEFAULT 0
+);
+
+-- 更新时检查版本号
+UPDATE products 
+SET stock = stock - 1, version = version + 1 
+WHERE id = 1 AND version = 0;
+
+-- 2. 使用时间戳
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    stock INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 更新时检查时间戳
+UPDATE products 
+SET stock = stock - 1 
+WHERE id = 1 AND updated_at = '2023-01-01 10:00:00';
+```
+
+### Java中的实现
+
+```java
+// 1. 悲观锁实现
+@Service
+public class ProductService {
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Transactional
+    public void updateStockWithPessimisticLock(Long productId, int quantity) {
+        // 使用悲观锁
+        Product product = productRepository.findByIdForUpdate(productId);
+        
+        if (product.getStock() >= quantity) {
+            product.setStock(product.getStock() - quantity);
+            productRepository.save(product);
+        } else {
+            throw new RuntimeException("库存不足");
+        }
+    }
+}
+
+// 2. 乐观锁实现
+@Service
+public class ProductService {
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Transactional
+    public boolean updateStockWithOptimisticLock(Long productId, int quantity, int version) {
+        // 使用乐观锁
+        int updatedRows = productRepository.updateStockWithVersion(productId, quantity, version);
+        
+        if (updatedRows == 0) {
+            throw new RuntimeException("数据已被修改，请重试");
+        }
+        
+        return true;
+    }
+}
+
+// 3. 重试机制
+@Service
+public class ProductService {
+    
+    @Retryable(value = {OptimisticLockException.class}, maxAttempts = 3)
+    public void updateStockWithRetry(Long productId, int quantity) {
+        try {
+            updateStockWithOptimisticLock(productId, quantity);
+        } catch (OptimisticLockException e) {
+            // 重试逻辑
+            throw e;
+        }
+    }
+}
+```
+
+## 性能优化
+
+### 查询优化
+
+```sql
+-- 1. 使用EXPLAIN分析查询
+EXPLAIN SELECT * FROM users WHERE name = 'John';
+
+-- 2. 避免SELECT *
+SELECT id, name, email FROM users WHERE name = 'John';
+
+-- 3. 使用LIMIT限制结果集
+SELECT * FROM users LIMIT 10;
+
+-- 4. 使用索引优化JOIN
+SELECT u.name, o.order_id 
+FROM users u 
+JOIN orders o ON u.id = o.user_id 
+WHERE u.name = 'John';
+
+-- 5. 使用子查询优化
+SELECT * FROM users 
+WHERE id IN (SELECT user_id FROM orders WHERE amount > 1000);
+
+-- 6. 使用EXISTS优化
+SELECT * FROM users u 
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id AND o.amount > 1000);
+```
+
+### 表结构优化
+
+```sql
+-- 1. 选择合适的数据类型
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT, -- 使用INT而不是BIGINT
+    name VARCHAR(100), -- 指定合适的长度
+    email VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. 使用NOT NULL约束
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+-- 3. 使用合适的字符集
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
+);
+
+-- 4. 分区表
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    amount DECIMAL(10,2),
+    created_at TIMESTAMP
+) PARTITION BY RANGE (YEAR(created_at)) (
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024),
+    PARTITION p2024 VALUES LESS THAN (2025)
+);
+```
+
+### 配置优化
+
+```sql
+-- 1. 调整缓冲池大小
+SET GLOBAL innodb_buffer_pool_size = 1073741824; -- 1GB
+
+-- 2. 调整查询缓存
+SET GLOBAL query_cache_size = 67108864; -- 64MB
+
+-- 3. 调整连接数
+SET GLOBAL max_connections = 200;
+
+-- 4. 调整慢查询日志
+SET GLOBAL slow_query_log = ON;
+SET GLOBAL long_query_time = 2;
+```
+
+## 分库分表
+
+### 水平分表
+
+```sql
+-- 1. 按时间分表
+CREATE TABLE orders_2023 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    amount DECIMAL(10,2),
+    created_at TIMESTAMP
+);
+
+CREATE TABLE orders_2024 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    amount DECIMAL(10,2),
+    created_at TIMESTAMP
+);
+
+-- 2. 按ID范围分表
+CREATE TABLE users_0 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(255)
+);
+
+CREATE TABLE users_1 (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(255)
+);
+```
+
+### 垂直分表
+
+```sql
+-- 1. 将大表拆分为多个小表
+CREATE TABLE users_basic (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(255)
+);
+
+CREATE TABLE users_detail (
+    user_id INT PRIMARY KEY,
+    address TEXT,
+    phone VARCHAR(20),
+    bio TEXT,
+    FOREIGN KEY (user_id) REFERENCES users_basic(id)
+);
+```
+
+### Java中的分库分表实现
+
+```java
+// 1. 使用Sharding-JDBC
+@Configuration
+public class ShardingConfig {
+    
+    @Bean
+    public DataSource shardingDataSource() {
+        // 配置分库分表规则
+        Map<String, DataSource> dataSourceMap = new HashMap<>();
+        dataSourceMap.put("ds0", createDataSource("jdbc:mysql://localhost:3306/db0"));
+        dataSourceMap.put("ds1", createDataSource("jdbc:mysql://localhost:3306/db1"));
+        
+        // 配置分片规则
+        TableRuleConfiguration tableRuleConfig = new TableRuleConfiguration();
+        tableRuleConfig.setLogicTable("users");
+        tableRuleConfig.setActualDataNodes("ds${0..1}.users_${0..1}");
+        
+        // 配置分片策略
+        StandardShardingStrategyConfiguration shardingStrategyConfig = 
+            new StandardShardingStrategyConfiguration("id", new ModuloDatabaseShardingAlgorithm(), 
+                                                   new ModuloTableShardingAlgorithm());
+        tableRuleConfig.setTableShardingStrategyConfig(shardingStrategyConfig);
+        
+        return ShardingDataSourceFactory.createDataSource(dataSourceMap, 
+                                                       Arrays.asList(tableRuleConfig), 
+                                                       new Properties());
+    }
+}
+
+// 2. 分片算法
+public class ModuloDatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Integer> {
+    
+    @Override
+    public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Integer> shardingValue) {
+        int databaseIndex = shardingValue.getValue() % availableTargetNames.size();
+        return "ds" + databaseIndex;
+    }
+}
+
+public class ModuloTableShardingAlgorithm implements PreciseShardingAlgorithm<Integer> {
+    
+    @Override
+    public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Integer> shardingValue) {
+        int tableIndex = shardingValue.getValue() % availableTargetNames.size();
+        return "users_" + tableIndex;
+    }
+}
+```
+
+## MySQL搜索引擎
+
+### InnoDB引擎
+
+```sql
+-- 1. 创建InnoDB表
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- 2. InnoDB特性
+-- 支持事务
+-- 支持外键
+-- 支持行级锁
+-- 支持崩溃恢复
+-- 支持MVCC（多版本并发控制）
+
+-- 3. 配置InnoDB
+SET GLOBAL innodb_buffer_pool_size = 1073741824; -- 缓冲池大小
+SET GLOBAL innodb_log_file_size = 268435456; -- 日志文件大小
+SET GLOBAL innodb_flush_log_at_trx_commit = 1; -- 事务提交时刷新日志
+```
+
+### MyISAM引擎
+
+```sql
+-- 1. 创建MyISAM表
+CREATE TABLE logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM;
+
+-- 2. MyISAM特性
+-- 不支持事务
+-- 不支持外键
+-- 支持表级锁
+-- 支持全文索引
+-- 查询性能较好
+
+-- 3. 适用场景
+-- 日志表
+-- 只读表
+-- 临时表
+```
+
+### 其他引擎
+
+```sql
+-- 1. MEMORY引擎（内存表）
+CREATE TABLE cache (
+    key_name VARCHAR(100) PRIMARY KEY,
+    value_data TEXT
+) ENGINE=MEMORY;
+
+-- 2. ARCHIVE引擎（归档表）
+CREATE TABLE archive_logs (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    message TEXT,
+    created_at TIMESTAMP
+) ENGINE=ARCHIVE;
+
+-- 3. CSV引擎
+CREATE TABLE csv_data (
+    id INT,
+    name VARCHAR(100),
+    email VARCHAR(255)
+) ENGINE=CSV;
+```
+
+## 面试题
+
+### 1. MySQL的索引原理是什么？
+
+**答案：**
+- MySQL主要使用B+树索引
+- B+树是一种平衡树，支持范围查询和排序
+- 索引可以加速查询，但会增加写入开销
+- 复合索引遵循最左前缀原则
+
+### 2. 事务的ACID特性是什么？
+
+**答案：**
+- 原子性（Atomicity）：事务是不可分割的工作单位
+- 一致性（Consistency）：事务执行前后数据保持一致
+- 隔离性（Isolation）：事务之间相互隔离
+- 持久性（Durability）：事务提交后永久保存
+
+### 3. MySQL的锁机制有哪些？
+
+**答案：**
+- 共享锁（S锁）：读锁，多个事务可以同时持有
+- 排他锁（X锁）：写锁，只能有一个事务持有
+- 意向锁：表级锁，表示表中某些行被锁定
+- 记录锁：锁定索引记录
+- 间隙锁：锁定索引记录之间的间隙
+- Next-Key锁：记录锁和间隙锁的组合
+
+### 4. 如何优化MySQL查询性能？
+
+**答案：**
+- 使用合适的索引
+- 避免SELECT *
+- 使用LIMIT限制结果集
+- 优化JOIN查询
+- 使用EXPLAIN分析查询计划
+- 调整MySQL配置参数
+- 使用连接池
+- 读写分离
+
+### 5. 分库分表的策略有哪些？
+
+**答案：**
+- 水平分表：按行分割，如按时间、ID范围分表
+- 垂直分表：按列分割，将大表拆分为多个小表
+- 水平分库：按数据库分割
+- 垂直分库：按业务模块分割
+- 分片策略：取模、范围、哈希等

@@ -1,0 +1,385 @@
+---
+sidebar_position: 2
+title: "包管理器"
+description: "前端包管理器介绍"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 包管理器
+
+包管理器是前端开发中不可或缺的工具，用于管理项目依赖、脚本执行和版本控制。
+
+## npm
+
+### 基础命令
+```bash
+# 初始化项目
+npm init
+npm init -y
+
+# 安装依赖
+npm install lodash
+npm install lodash --save
+npm install lodash --save-dev
+
+# 全局安装
+npm install -g create-react-app
+
+# 卸载依赖
+npm uninstall lodash
+
+# 更新依赖
+npm update lodash
+
+# 查看依赖
+npm list
+npm list --depth=0
+```
+
+### package.json配置
+```json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "description": "A sample project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.0",
+    "jest": "^29.5.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}
+```
+
+### 脚本管理
+```json
+{
+  "scripts": {
+    "prebuild": "echo 'Preparing build...'",
+    "build": "webpack --mode production",
+    "postbuild": "echo 'Build completed!'",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js",
+    "client": "webpack serve --mode development"
+  }
+}
+```
+
+## Yarn
+
+### 安装和基础命令
+```bash
+# 安装Yarn
+npm install -g yarn
+
+# 初始化项目
+yarn init
+yarn init -y
+
+# 安装依赖
+yarn add lodash
+yarn add lodash --dev
+yarn add lodash --peer
+
+# 全局安装
+yarn global add create-react-app
+
+# 卸载依赖
+yarn remove lodash
+
+# 更新依赖
+yarn upgrade lodash
+
+# 查看依赖
+yarn list
+yarn list --depth=0
+```
+
+### yarn.lock文件
+```yaml
+# yarn.lock
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz"
+  integrity sha512-AyFvJfG4U9vE1AkJ0gQMC3Ec3nJXpGI6A3L1jyLWyNgqxcwot6AO/PF7A0vyxQ/ghjF49StH+CLiHjDicJ2ScQ==
+```
+
+### 工作区配置
+```json
+// package.json
+{
+  "name": "monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test"
+  }
+}
+```
+
+## pnpm
+
+### 安装和基础命令
+```bash
+# 安装pnpm
+npm install -g pnpm
+
+# 初始化项目
+pnpm init
+
+# 安装依赖
+pnpm add lodash
+pnpm add -D webpack
+pnpm add -O react
+
+# 全局安装
+pnpm add -g create-react-app
+
+# 卸载依赖
+pnpm remove lodash
+
+# 更新依赖
+pnpm update lodash
+
+# 查看依赖
+pnpm list
+```
+
+### pnpm-workspace.yaml
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - '!**/test/**'
+```
+
+### 依赖管理
+```json
+{
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
+  }
+}
+```
+
+## 包管理器对比
+
+### 性能对比
+| 特性 | npm | Yarn | pnpm |
+|------|-----|------|------|
+| 安装速度 | 慢 | 快 | 最快 |
+| 磁盘空间 | 高 | 中等 | 低 |
+| 缓存机制 | 基础 | 好 | 优秀 |
+| 并行安装 | 不支持 | 支持 | 支持 |
+| 确定性 | 不确定 | 确定 | 确定 |
+
+### 功能对比
+| 功能 | npm | Yarn | pnpm |
+|------|-----|------|------|
+| 工作区 | 支持 | 支持 | 支持 |
+| 零安装 | 不支持 | 支持 | 支持 |
+| 离线模式 | 基础 | 好 | 优秀 |
+| 安全审计 | 支持 | 支持 | 支持 |
+
+## 最佳实践
+
+### 依赖管理
+```json
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.0",
+    "jest": "^29.5.0",
+    "eslint": "^8.45.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "resolutions": {
+    "react": "^18.2.0"
+  }
+}
+```
+
+### 脚本优化
+```json
+{
+  "scripts": {
+    "preinstall": "node scripts/check-node-version.js",
+    "postinstall": "node scripts/setup-hooks.js",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.{js,jsx,ts,tsx}",
+    "lint:fix": "eslint src/**/*.{js,jsx,ts,tsx} --fix",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
+
+### 安全配置
+```json
+{
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "os": ["darwin", "linux", "win32"],
+  "cpu": ["x64", "arm64"],
+  "overrides": {
+    "vulnerable-package": "1.2.3"
+  }
+}
+```
+
+## 版本管理
+
+### 语义化版本
+```bash
+# 主版本号.次版本号.修订号
+# 1.2.3
+
+# 安装特定版本
+npm install lodash@4.17.21
+npm install lodash@^4.17.21
+npm install lodash@~4.17.21
+npm install lodash@latest
+npm install lodash@next
+```
+
+### 版本范围
+```json
+{
+  "dependencies": {
+    "lodash": "^4.17.21",    // 兼容版本
+    "react": "~18.2.0",       // 补丁版本
+    "webpack": "5.88.0",      // 精确版本
+    "typescript": ">=4.0.0",  // 最低版本
+    "jest": "*"               // 任意版本
+  }
+}
+```
+
+## 私有包管理
+
+### npm私有包
+```bash
+# 发布私有包
+npm publish --access private
+
+# 安装私有包
+npm install @myorg/package-name
+```
+
+### Yarn私有包
+```bash
+# 配置私有仓库
+yarn config set registry https://registry.yarnpkg.com
+yarn config set @myorg:registry https://npm.myorg.com
+
+# 发布私有包
+yarn publish --access private
+```
+
+### pnpm私有包
+```bash
+# 配置私有仓库
+pnpm config set @myorg:registry https://npm.myorg.com
+
+# 发布私有包
+pnpm publish --access private
+```
+
+## 依赖锁定
+
+### package-lock.json
+```json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "lockfileVersion": 2,
+  "dependencies": {
+    "lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-AyFvJfG4U9vE1AkJ0gQMC3Ec3nJXpGI6A3L1jyLWyNgqxcwot6AO/PF7A0vyxQ/ghjF49StH+CLiHjDicJ2ScQ=="
+    }
+  }
+}
+```
+
+### 锁定文件管理
+```bash
+# 更新锁定文件
+npm install
+yarn install
+pnpm install
+
+# 强制重新安装
+npm ci
+yarn install --frozen-lockfile
+pnpm install --frozen-lockfile
+```
+
+## 性能优化
+
+### 缓存配置
+```bash
+# npm缓存
+npm cache clean --force
+npm cache verify
+
+# Yarn缓存
+yarn cache clean
+yarn cache list
+
+# pnpm缓存
+pnpm store prune
+pnpm store status
+```
+
+### 镜像配置
+```bash
+# 配置淘宝镜像
+npm config set registry https://registry.npmmirror.com
+yarn config set registry https://registry.npmmirror.com
+pnpm config set registry https://registry.npmmirror.com
+``` 

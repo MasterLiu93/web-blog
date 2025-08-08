@@ -1,0 +1,110 @@
+---
+sidebar_position: 2
+title: "服务网关"
+description: "微服务网关实现与配置"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 服务网关
+
+网关是微服务的统一入口，提供路由、鉴权、限流、熔断、观测等能力。
+
+## Spring Cloud Gateway
+
+### 路由与断言
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+            - Method=GET,POST
+          filters:
+            - StripPrefix=1
+            - AddRequestHeader=X-Request-Source, gateway
+        - id: order_route
+          uri: lb://order-service  # 与注册中心联动
+          predicates:
+            - Path=/api/orders/**
+```
+
+### 全局过滤器（鉴权示例）
+
+```java
+@org.springframework.stereotype.Component
+public class AuthGlobalFilter implements org.springframework.cloud.gateway.filter.GlobalFilter, org.springframework.core.Ordered {
+    @Override
+    public reactor.core.publisher.Mono`<Void>` filter(org.springframework.web.server.ServerWebExchange exchange,
+            org.springframework.cloud.gateway.filter.GatewayFilterChain chain) {
+        String token = exchange.getRequest().getHeaders().getFirst("Authorization");
+        if (token == null || token.isEmpty()) {
+            exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
+        return chain.filter(exchange);
+    }
+    @Override
+    public int getOrder() { return -1; }
+}
+```
+
+### 限流（RedisRateLimiter）
+
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: api_limited
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10  # 每秒令牌
+                redis-rate-limiter.burstCapacity: 20  # 桶容量
+                key-resolver: "#{@ipKeyResolver}"
+```
+
+```java
+@org.springframework.context.annotation.Configuration
+public class RateLimitConfig {
+    @org.springframework.context.annotation.Bean
+    public org.springframework.cloud.gateway.support.KeyResolver ipKeyResolver() {
+        return exchange -> reactor.core.publisher.Mono.just(
+            exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+    }
+}
+```
+
+### 与熔断/监控集成
+
+- 集成Resilience4j：超时、重试、熔断
+- 集成Prometheus/Grafana：网关指标
+- Trace上下文透传：`X-B3-TraceId`/`traceparent`
+
+## Zuul（简述）
+
+Zuul 1基于Servlet，已进入维护期；Zuul 2为异步非阻塞模型。现在更推荐使用Spring Cloud Gateway。
+
+## 跨域与安全
+
+- CORS：配置允许的Origin/Method/Header
+- 鉴权：JWT/OAuth2，黑白名单、IP限流
+- 防护：限速、WAF、签名校验
+
+## 面试题
+
+1. 网关的核心职责有哪些
+2. Gateway的断言与过滤器体系
+3. 如何实现全局限流与IP维度限流
+4. 如何在网关中做鉴权与Trace透传
+5. Zuul与Gateway的差异与选型 

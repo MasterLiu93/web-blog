@@ -1,0 +1,249 @@
+---
+sidebar_position: 2
+title: "加载优化"
+description: "前端资源加载优化策略"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 加载优化
+
+加载优化是前端性能优化的核心，主要目标是减少页面加载时间和提升用户体验。
+
+## 资源压缩与合并
+
+### 文件压缩
+```javascript
+// webpack配置示例
+module.exports = {
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true
+          }
+        }
+      })
+    ]
+  }
+}
+```
+
+### CSS压缩
+- 移除不必要的空格和注释
+- 合并相同的CSS规则
+- 使用CSS压缩工具如cssnano
+
+### 图片优化
+- **格式选择**：WebP、AVIF等现代格式
+- **响应式图片**：使用srcset和sizes属性
+- **懒加载**：延迟加载非首屏图片
+
+```html
+<!-- 响应式图片示例 -->
+<img src="image-800w.jpg" 
+     srcset="image-400w.jpg 400w,
+             image-800w.jpg 800w,
+             image-1200w.jpg 1200w"
+     sizes="(max-width: 600px) 400px,
+            (max-width: 1200px) 800px,
+            1200px"
+     alt="响应式图片">
+```
+
+## 代码分割
+
+### 路由级分割
+```javascript
+// React Router代码分割
+import { lazy, Suspense } from 'react';
+
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </Suspense>
+  );
+}
+```
+
+### 组件级分割
+```javascript
+// 动态导入组件
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+
+function MyComponent() {
+  const [showHeavy, setShowHeavy] = useState(false);
+  
+  return (
+    <div>
+      <button onClick={() => setShowHeavy(true)}>
+        加载重型组件
+      </button>
+      {showHeavy && (
+        <Suspense fallback={<div>加载中...</div>}>
+          <HeavyComponent />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+```
+
+## 缓存策略
+
+### 浏览器缓存
+```javascript
+// Service Worker缓存策略
+const CACHE_NAME = 'my-app-cache-v1';
+const urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/scripts/main.js'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+```
+
+### HTTP缓存头
+```nginx
+# Nginx缓存配置
+location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+
+location ~* \.(html)$ {
+    expires 1h;
+    add_header Cache-Control "public, must-revalidate";
+}
+```
+
+## 预加载与预取
+
+### 关键资源预加载
+```html
+<!-- 预加载关键CSS -->
+<link rel="preload" href="critical.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+<!-- 预加载字体 -->
+<link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin>
+
+<!-- DNS预解析 -->
+<link rel="dns-prefetch" href="//cdn.example.com">
+```
+
+### 预取非关键资源
+```html
+<!-- 预取下一页资源 -->
+<link rel="prefetch" href="/next-page">
+
+<!-- 预取图片 -->
+<link rel="prefetch" href="hero-image.jpg">
+```
+
+## 懒加载实现
+
+### 图片懒加载
+```javascript
+// Intersection Observer API
+const imageObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      img.src = img.dataset.src;
+      img.classList.remove('lazy');
+      observer.unobserve(img);
+    }
+  });
+});
+
+document.querySelectorAll('img[data-src]').forEach(img => {
+  imageObserver.observe(img);
+});
+```
+
+### 组件懒加载
+```javascript
+// React组件懒加载
+import { lazy, Suspense } from 'react';
+
+const LazyComponent = lazy(() => 
+  import('./LazyComponent').then(module => ({
+    default: module.LazyComponent
+  }))
+);
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LazyComponent />
+    </Suspense>
+  );
+}
+```
+
+## 关键渲染路径优化
+
+### CSS优化
+```html
+<!-- 内联关键CSS -->
+<style>
+  .critical-styles { /* 关键样式 */ }
+</style>
+
+<!-- 异步加载非关键CSS -->
+<link rel="preload" href="non-critical.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+```
+
+### JavaScript优化
+```html
+<!-- 异步加载JavaScript -->
+<script src="app.js" async></script>
+
+<!-- 延迟加载JavaScript -->
+<script src="analytics.js" defer></script>
+```
+
+## 性能监控
+
+### 加载时间监控
+```javascript
+// 监控页面加载性能
+window.addEventListener('load', () => {
+  const navigation = performance.getEntriesByType('navigation')[0];
+  
+  console.log('页面加载时间:', navigation.loadEventEnd - navigation.loadEventStart);
+  console.log('DOM内容加载时间:', navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart);
+});
+```
+
+### 资源加载监控
+```javascript
+// 监控资源加载性能
+const observer = new PerformanceObserver((list) => {
+  list.getEntries().forEach((entry) => {
+    if (entry.entryType === 'resource') {
+      console.log(`${entry.name} 加载时间:`, entry.duration);
+    }
+  });
+});
+
+observer.observe({ entryTypes: ['resource'] });
+``` 

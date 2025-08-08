@@ -1,0 +1,86 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.前端开发": {
+    "message": "Frontend Development",
+    "description": "The label for category 前端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.前端开发.link.generated-index.description": {
+    "message": "Technical documentation, framework usage and best practices for frontend development",
+    "description": "The generated-index page description for category 前端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.HTML和CSS": {
+    "message": "HTML and CSS",
+    "description": "The label for category HTML和CSS in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.JavaScript": {
+    "message": "JavaScript",
+    "description": "The label for category JavaScript in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.React": {
+    "message": "React",
+    "description": "The label for category React in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.移动应用开发": {
+    "message": "Mobile App Development",
+    "description": "The label for category 移动应用开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.后端开发": {
+    "message": "Backend Development",
+    "description": "The label for category 后端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.后端开发.link.generated-index.description": {
+    "message": "Complete guide to Java backend development, including Java basics, collection framework, concurrent programming, JVM, Spring framework, etc.",
+    "description": "The generated-index page description for category 后端开发 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Java基础": {
+    "message": "Java Basics",
+    "description": "The label for category Java基础 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Java集合框架": {
+    "message": "Java Collections Framework",
+    "description": "The label for category Java集合框架 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.并发编程": {
+    "message": "Concurrent Programming",
+    "description": "The label for category 并发编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.JVM": {
+    "message": "JVM",
+    "description": "The label for category JVM in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Spring框架": {
+    "message": "Spring Framework",
+    "description": "The label for category Spring框架 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.数据库与ORM": {
+    "message": "Database and ORM",
+    "description": "The label for category 数据库与ORM in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.微服务": {
+    "message": "Microservices",
+    "description": "The label for category 微服务 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.分布式系统": {
+    "message": "Distributed Systems",
+    "description": "The label for category 分布式系统 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.消息队列": {
+    "message": "Message Queues",
+    "description": "The label for category 消息队列 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.网络编程": {
+    "message": "Network Programming",
+    "description": "The label for category 网络编程 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.设计模式": {
+    "message": "Design Patterns",
+    "description": "The label for category 设计模式 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.系统设计": {
+    "message": "System Design",
+    "description": "The label for category 系统设计 in sidebar tutorialSidebar"
+  }
+}

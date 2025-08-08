@@ -1,0 +1,724 @@
+---
+sidebar_position: 9
+title: "Stream API"
+description: "Java Stream API使用详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Stream API
+
+Java Stream API是Java 8引入的一种新的抽象概念，用于处理集合中的数据。Stream API提供了一种函数式编程风格的方法来操作数据集合，通过声明式的方式处理数据，而无需关注具体的实现细节。
+
+## Stream基础
+
+### 什么是Stream？
+
+Stream是数据元素的序列，支持顺序和并行操作。它不是一种数据结构，而是对数据源（如集合、数组）进行操作的API。Stream操作分为中间操作和终端操作两类，具有以下特点：
+
+- **声明式**：像SQL查询一样以声明方式表达，而非命令式编程
+- **可组合**：多个操作可以组合成管道
+- **可并行**：并行处理大规模数据集，无需编写多线程代码
+- **内部迭代**：由Stream API内部完成迭代，而非开发者显式控制
+- **延迟执行**：中间操作不会立即执行，直到遇到终端操作
+
+### 创建Stream
+
+Stream可以通过多种方式创建：
+
+1. **从集合创建**
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+Stream<String> stream = list.stream(); // 顺序流
+Stream<String> parallelStream = list.parallelStream(); // 并行流
+```
+
+2. **从数组创建**
+```java
+String[] array = {"a", "b", "c"};
+Stream<String> stream = Arrays.stream(array);
+```
+
+3. **从值创建**
+```java
+Stream<String> stream = Stream.of("a", "b", "c");
+```
+
+4. **无限流**
+```java
+// 生成无限序列
+Stream<Integer> infiniteNumbers = Stream.iterate(0, n -> n + 1);
+// 生成10个随机数
+Stream<Double> randomNumbers = Stream.generate(Math::random).limit(10);
+```
+
+5. **空Stream**
+```java
+Stream<String> emptyStream = Stream.empty();
+```
+
+6. **文件流**
+```java
+Stream<String> lines = Files.lines(Paths.get("file.txt"));
+```
+
+## Stream操作
+
+Stream API操作分为两类：中间操作（Intermediate operations）和终端操作（Terminal operations）。
+
+### 中间操作
+
+中间操作返回一个新的Stream，允许我们对操作进行链接。它们是惰性的，即在遇到终端操作前不会执行。
+
+#### 筛选和切片
+
+1. **filter**：过滤元素
+```java
+Stream<String> filtered = stream.filter(s -> s.startsWith("a"));
+```
+
+2. **distinct**：去重
+```java
+Stream<String> distinct = stream.distinct();
+```
+
+3. **limit**：限制数量
+```java
+Stream<String> limited = stream.limit(10); // 取前10个元素
+```
+
+4. **skip**：跳过元素
+```java
+Stream<String> skipped = stream.skip(5); // 跳过前5个元素
+```
+
+#### 映射
+
+1. **map**：一对一映射
+```java
+Stream<Integer> lengths = stream.map(String::length);
+```
+
+2. **flatMap**：一对多映射，将每个元素转换为流，然后合并所有流
+```java
+// 将二维数组扁平化为一维
+List<List<Integer>> nestedList = Arrays.asList(
+    Arrays.asList(1, 2, 3),
+    Arrays.asList(4, 5, 6)
+);
+Stream<Integer> flatStream = nestedList.stream()
+    .flatMap(Collection::stream);
+```
+
+#### 排序
+
+1. **sorted**：自然排序
+```java
+Stream<String> sorted = stream.sorted();
+```
+
+2. **sorted(Comparator)**：自定义排序
+```java
+Stream<String> customSorted = stream.sorted(Comparator.comparing(String::length));
+```
+
+#### 窥视
+
+**peek**：查看每个元素（主要用于调试）
+```java
+Stream<String> peeked = stream.peek(System.out::println);
+```
+
+### 终端操作
+
+终端操作会触发Stream的执行，并产生结果。执行终端操作后，Stream不能再被使用。
+
+#### 匹配与查找
+
+1. **anyMatch**：任一元素匹配
+```java
+boolean hasAnyA = stream.anyMatch(s -> s.contains("a"));
+```
+
+2. **allMatch**：所有元素匹配
+```java
+boolean allStartWithA = stream.allMatch(s -> s.startsWith("a"));
+```
+
+3. **noneMatch**：没有元素匹配
+```java
+boolean noneHasZ = stream.noneMatch(s -> s.contains("z"));
+```
+
+4. **findFirst**：找到第一个元素
+```java
+Optional<String> first = stream.findFirst();
+```
+
+5. **findAny**：找到任意元素（并行时性能优于findFirst）
+```java
+Optional<String> any = stream.findAny();
+```
+
+#### 归约
+
+1. **count**：计数
+```java
+long count = stream.count();
+```
+
+2. **max/min**：最大值/最小值
+```java
+Optional<String> max = stream.max(Comparator.naturalOrder());
+Optional<String> min = stream.min(Comparator.naturalOrder());
+```
+
+3. **reduce**：归约操作，将Stream元素组合成一个结果
+```java
+// 求和
+Integer sum = numbers.stream().reduce(0, Integer::sum);
+
+// 字符串连接
+String joined = strings.stream().reduce("", String::concat);
+
+// 找最大值
+Optional<Integer> max = numbers.stream().reduce(Integer::max);
+```
+
+#### 收集
+
+**collect**：将Stream转换为其他形式
+```java
+// 转为List
+List<String> list = stream.collect(Collectors.toList());
+
+// 转为Set
+Set<String> set = stream.collect(Collectors.toSet());
+
+// 转为Map
+Map<String, Integer> map = stream.collect(
+    Collectors.toMap(s -> s, String::length)
+);
+
+// 分组
+Map<Integer, List<String>> groups = stream.collect(
+    Collectors.groupingBy(String::length)
+);
+
+// 拼接字符串
+String joined = stream.collect(Collectors.joining(", "));
+```
+
+#### 遍历
+
+**forEach**：对每个元素执行操作
+```java
+stream.forEach(System.out::println);
+```
+
+## 实际应用场景
+
+### 数据转换与过滤
+
+```java
+// 找出所有长度大于3的单词并转为大写
+List<String> result = words.stream()
+    .filter(s -> s.length() > 3)
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+```
+
+### 数据分析与统计
+
+```java
+// 计算产品的平均价格
+double avgPrice = products.stream()
+    .mapToDouble(Product::getPrice)
+    .average()
+    .orElse(0.0);
+
+// 按类别分组并计算每组的总价
+Map<String, Double> totalPriceByCategory = products.stream()
+    .collect(Collectors.groupingBy(
+        Product::getCategory,
+        Collectors.summingDouble(Product::getPrice)
+    ));
+```
+
+### 复杂对象处理
+
+```java
+// 找出每个部门薪资最高的员工
+Map<Department, Optional<Employee>> highestPaidByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.maxBy(Comparator.comparing(Employee::getSalary))
+    ));
+```
+
+### 并行处理
+
+```java
+// 并行计算所有数字的平方和
+long sum = numbers.parallelStream()
+    .mapToLong(n -> n * n)
+    .sum();
+```
+
+## Stream的高级特性
+
+### Optional与Stream
+
+Optional是一个可以为null的容器对象，可以配合Stream使用：
+
+```java
+// 找到第一个偶数并乘以2
+Optional<Integer> result = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .findFirst()
+    .map(n -> n * 2);
+```
+
+### 自定义Collector
+
+可以实现Collector接口来创建自定义收集器：
+
+```java
+public class CustomCollector<T> implements Collector<T, List<T>, List<T>> {
+    @Override
+    public Supplier<List<T>> supplier() {
+        return ArrayList::new;
+    }
+
+    @Override
+    public BiConsumer<List<T>, T> accumulator() {
+        return List::add;
+    }
+
+    @Override
+    public BinaryOperator<List<T>> combiner() {
+        return (list1, list2) -> {
+            list1.addAll(list2);
+            return list1;
+        };
+    }
+
+    @Override
+    public Function<List<T>, List<T>> finisher() {
+        return Function.identity();
+    }
+
+    @Override
+    public Set<Characteristics> characteristics() {
+        return EnumSet.of(Characteristics.IDENTITY_FINISH);
+    }
+}
+```
+
+### 处理无限流
+
+当使用无限流时，必须使用短路操作(如limit, findFirst, findAny)：
+
+```java
+// 生成10个偶数
+List<Integer> evenNumbers = Stream.iterate(0, n -> n + 2)
+    .limit(10)
+    .collect(Collectors.toList());
+```
+
+## Stream API的性能考量
+
+### 性能优化建议
+
+1. **选择适当的Stream操作**：避免不必要的中间操作
+2. **使用并行流时需谨慎**：
+   - 数据量大时才考虑
+   - 确保操作是线程安全的
+   - 避免在共享状态上操作
+3. **优先使用特定类型Stream**：如IntStream而非包装类型Stream
+4. **慎用flatMap**：会产生额外的Stream对象
+5. **避免装箱/拆箱**：使用基本类型Stream (IntStream, LongStream, DoubleStream)
+
+```java
+// 推荐：直接使用IntStream
+int sum = IntStream.range(1, 1000).sum();
+
+// 不推荐：需要装箱和拆箱
+int sum = Stream.iterate(1, n -> n + 1)
+    .limit(999)
+    .mapToInt(Integer::intValue)
+    .sum();
+```
+
+### 并行流使用场景
+
+适合并行流的场景：
+
+- 大数据量处理（元素数量很多）
+- 每个元素处理逻辑比较耗时
+- 无状态操作
+- 元素之间无依赖关系
+- 数据源为ArrayList, 数组或IntStream.range()这样的可分解数据源
+
+不适合并行流的场景：
+
+- 数据量小
+- 操作简单快速
+- 有状态操作
+- 使用LinkedList等不易分解的数据源
+
+## Stream与传统迭代对比
+
+### 函数式与命令式对比
+
+Stream API与传统for循环对比：
+
+**传统方式**：
+```java
+List<String> longNames = new ArrayList<>();
+for (String name : names) {
+    if (name.length() > 5) {
+        longNames.add(name.toUpperCase());
+    }
+}
+Collections.sort(longNames);
+```
+
+**Stream方式**：
+```java
+List<String> longNames = names.stream()
+    .filter(name -> name.length() > 5)
+    .map(String::toUpperCase)
+    .sorted()
+    .collect(Collectors.toList());
+```
+
+### Stream的优势
+
+1. **代码简洁**：更少的样板代码，更高的可读性
+2. **声明式编程**：表达的是做什么，而非怎么做
+3. **并行化简单**：简单切换到并行流
+4. **懒加载**：仅在需要时执行运算
+5. **无副作用**：鼓励不可变性和无副作用的函数
+6. **数据转换清晰**：清晰表达数据转换过程
+
+## 面试题
+
+### 1. 什么是Java Stream? Stream与集合有什么区别?
+
+**答**：Java Stream是Java 8引入的处理数据序列的API，允许以声明式方式操作数据集。
+
+Stream与集合的主要区别：
+- **数据存储**：集合是数据结构，存储数据；Stream只是数据的视图，不存储数据
+- **计算方式**：集合是外部迭代(开发者控制)；Stream是内部迭代(API控制)
+- **执行模式**：集合立即计算；Stream延迟计算，直到终端操作才执行
+- **功能性**：集合侧重于数据的访问和管理；Stream侧重于数据的计算和转换
+- **一次性**：集合可以反复使用；Stream只能使用一次
+- **并行支持**：Stream原生支持并行操作；集合需手动实现并行
+
+### 2. Stream操作的执行过程是怎样的？
+
+**答**：Stream操作的执行过程分为三个阶段：
+1. **创建Stream**：从数据源（如集合、数组）创建Stream
+2. **构建中间操作管道**：添加一个或多个中间操作（filter, map等），这些操作会返回新Stream，并且是延迟执行的
+3. **执行终端操作**：添加一个终端操作（collect, forEach等）触发整个流水线的执行，获得结果
+
+Stream采用"垂直执行"模式——对每个元素依次执行所有操作，而不是"水平执行"（先对所有元素执行第一个操作，再执行第二个）。这种短路执行模式能提高处理大数据集或无限流的效率。
+
+### 3. 什么是中间操作和终端操作？请举例说明。
+
+**答**：Stream操作分为两类：中间操作和终端操作。
+
+**中间操作**：
+- 返回Stream对象，可以链式调用
+- 延迟执行（懒加载），直到遇到终端操作
+- 例子：filter(), map(), flatMap(), distinct(), sorted(), peek(), limit(), skip()
+
+**终端操作**：
+- 返回非Stream结果（或void）
+- 触发整个Stream管道的执行
+- 执行后Stream被消费，不能再使用
+- 例子：forEach(), collect(), reduce(), count(), anyMatch(), allMatch(), noneMatch(), findFirst(), findAny(), min(), max()
+
+### 4. 如何将Stream转换为集合？有哪些常用的Collectors方法？
+
+**答**：可以使用Stream的collect()方法与Collectors类中的收集器将Stream转换为集合：
+
+```java
+// 转为List
+List<String> list = stream.collect(Collectors.toList());
+// 或使用JDK 16+新方法
+List<String> list = stream.toList();
+
+// 转为Set
+Set<String> set = stream.collect(Collectors.toSet());
+
+// 转为特定集合实现
+ArrayList<String> arrayList = stream.collect(Collectors.toCollection(ArrayList::new));
+```
+
+常用的Collectors方法：
+- **toList()/toSet()/toCollection()**：转换为集合
+- **joining()**：连接字符串
+- **summingInt()/averagingDouble()**：计算数值统计
+- **groupingBy()**：分组
+- **partitioningBy()**：分区（根据条件分为两组）
+- **mapping()**：在收集前对元素进行映射
+- **reducing()**：归约操作
+- **summarizingInt()/summarizingLong()/summarizingDouble()**：数值统计（count, sum, min, max, average）
+- **toConcurrentMap()**：并行收集到ConcurrentMap
+
+### 5. 解释Stream中map和flatMap的区别。
+
+**答**：map和flatMap都是Stream的中间操作，用于转换元素，但有重要区别：
+
+**map**：
+- 一对一转换，将每个元素映射为一个新元素
+- 函数签名：map方法接收一个Function类型参数，将T类型映射为R类型
+- 结果：保持Stream的一维结构不变
+
+```java
+// 将字符串转换为长度
+Stream<Integer> lengths = Stream.of("a", "bc", "def").map(String::length);
+// 结果: [1, 2, 3]
+```
+
+**flatMap**：
+- 一对多转换，将每个元素映射为一个Stream，然后将所有Stream合并
+- 函数签名：flatMap方法接收一个Function类型参数，将T类型映射为Stream
+- 结果：将多维结构扁平化为一维
+
+```java
+// 将字符串数组展平为字符流
+Stream<String> words = Stream.of("Hello", "World");
+Stream<Character> letters = words.flatMap(word -> 
+    word.chars().mapToObj(c -> (char) c)
+);
+// 结果: ['H','e','l','l','o','W','o','r','l','d']
+```
+
+本质区别：map操作是"一对一"函数，而flatMap是"一对多"函数，适合处理嵌套集合。
+
+### 6. 如何使用Stream API对集合中的对象进行分组或分区？
+
+**答**：Stream API提供了强大的分组和分区功能：
+
+**分组(groupingBy)**：根据某个属性将元素分到不同的组中，结果是Map类型
+
+```java
+// 按长度分组
+Map<Integer, List<String>> byLength = strings.stream()
+    .collect(Collectors.groupingBy(String::length));
+
+// 多级分组
+Map<Department, Map<EmployeeType, List<Employee>>> byDeptAndType = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.groupingBy(Employee::getType)
+    ));
+
+// 自定义下游收集器
+Map<Department, Long> countByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.counting()
+    ));
+```
+
+**分区(partitioningBy)**：根据条件将元素分成两组（true/false），结果是Boolean键的Map
+
+```java
+// 将员工分为高薪和低薪两组
+Map<Boolean, List<Employee>> partitioned = employees.stream()
+    .collect(Collectors.partitioningBy(e -> e.getSalary() > 100000));
+
+// 每组使用不同的下游收集器
+Map<Boolean, Long> highLowSalaryCount = employees.stream()
+    .collect(Collectors.partitioningBy(
+        e -> e.getSalary() > 100000,
+        Collectors.counting()
+    ));
+```
+
+### 7. 如何使用并行流？何时应该使用它？
+
+**答**：使用并行流很简单，只需要调用parallelStream()方法或parallel()方法：
+
+```java
+// 从集合创建并行流
+List<String> result1 = collection.parallelStream()
+    .filter(s -> s.length() > 5)
+    .collect(Collectors.toList());
+
+// 将顺序流转换为并行流
+List<String> result2 = collection.stream()
+    .parallel()
+    .filter(s -> s.length() > 5)
+    .collect(Collectors.toList());
+```
+
+**适合使用并行流的场景**：
+- 数据量大（通常至少数万个元素）
+- 每个元素处理成本高（处理时间长）
+- 操作是无状态的，元素之间没有依赖关系
+- 数据结构易于分解（如ArrayList、数组，而非LinkedList）
+- 计算密集型任务，而非I/O密集型
+- 机器有足够的CPU核心
+
+**不应使用并行流的场景**：
+- 数据量小
+- 操作简单快速，顺序执行开销小
+- 使用有状态操作(distinct, sorted等)
+- 使用不易分解的数据源
+- 依赖共享可变状态的操作(非线程安全)
+
+### 8. Stream中的reduce操作是什么？如何使用？
+
+**答**：reduce是Stream API的终端操作之一，用于将Stream中的元素组合成一个结果。它通过重复应用组合操作，将所有元素合并成一个单一结果。
+
+reduce有三种形式：
+
+1. **有标识值的归约**（初始值+二元操作）:
+```java
+// 求和
+int sum = numbers.stream().reduce(0, Integer::sum);
+
+// 拼接字符串
+String concat = strings.stream().reduce("", String::concat);
+```
+
+2. **无初始值的归约**（返回Optional）:
+```java
+// 找最大值
+Optional<Integer> max = numbers.stream().reduce(Integer::max);
+
+// 如果Stream为空，返回空Optional
+Optional<Integer> sum = numbers.stream().reduce(Integer::sum);
+```
+
+3. **带组合器的归约**（用于并行Stream）:
+```java
+// 计算所有员工的总薪资
+int totalSalary = employees.parallelStream().reduce(
+    0,                                          // 初始值
+    (sum, emp) -> sum + emp.getSalary(),        // 累加器
+    Integer::sum                                // 组合器(并行处理时合并结果)
+);
+```
+
+reduce操作的关键点：
+- 初始值可选，无初始值时返回Optional
+- 累加器需满足结合律以支持并行处理
+- 通常用于汇总、统计、集合等操作
+
+### 9. 如何避免Stream API中的常见陷阱？
+
+**答**：使用Stream API时的常见陷阱和解决方案：
+
+1. **重复使用Stream**：
+   - 陷阱：Stream只能消费一次，重复使用会抛异常
+   - 解决：每次需要Stream时重新从源创建
+
+2. **副作用**：
+   - 陷阱：在Stream操作中修改外部状态
+   - 解决：优先使用无副作用函数，如reduce和collect，而非forEach
+
+3. **阻塞操作**：
+   - 陷阱：在并行流中使用阻塞操作或I/O
+   - 解决：并行流主要用于CPU密集型任务，I/O操作使用其他并发工具
+
+4. **过度并行化**：
+   - 陷阱：盲目使用并行流
+   - 解决：只在数据量大且适合并行的场景使用，先测量性能
+
+5. **订单依赖**：
+   - 陷阱：依赖Stream操作的顺序
+   - 解决：重新考虑算法设计，避免顺序依赖，特别是在并行流中
+
+6. **装箱/拆箱开销**：
+   - 陷阱：处理基本类型时使用包装类型的Stream
+   - 解决：使用IntStream, LongStream等专用流
+
+7. **无限流未短路**：
+   - 陷阱：在无限流上使用非短路操作
+   - 解决：在无限流上必须使用limit或类似操作限制
+
+8. **流操作干扰源集合**：
+   - 陷阱：在遍历的同时修改源集合
+   - 解决：不在Stream操作中修改源数据
+
+### 10. 如何编写自定义收集器(Collector)?
+
+**答**：自定义收集器需实现Collector接口的五个方法：supplier(), accumulator(), combiner(), finisher()和characteristics()。
+
+例如，实现一个计算平均值的收集器：
+
+```java
+public class AverageCollector implements Collector<Integer, double[], Double> {
+    // 创建累加器
+    @Override
+    public Supplier<double[]> supplier() {
+        return () -> new double[]{0.0, 0.0}; // [sum, count]
+    }
+    
+    // 累加元素
+    @Override
+    public BiConsumer<double[], Integer> accumulator() {
+        return (acc, item) -> {
+            acc[0] += item; // 累加和
+            acc[1]++;       // 累加计数
+        };
+    }
+    
+    // 合并两个累加器（并行流使用）
+    @Override
+    public BinaryOperator<double[]> combiner() {
+        return (acc1, acc2) -> {
+            acc1[0] += acc2[0]; // 合并和
+            acc1[1] += acc2[1]; // 合并计数
+            return acc1;
+        };
+    }
+    
+    // 最终转换
+    @Override
+    public Function<double[], Double> finisher() {
+        return acc -> acc[1] == 0 ? 0.0 : acc[0] / acc[1];
+    }
+    
+    // 收集器特性
+    @Override
+    public Set<Characteristics> characteristics() {
+        return Collections.emptySet();
+    }
+}
+```
+
+使用自定义收集器：
+
+```java
+Double average = Stream.of(1, 2, 3, 4, 5)
+    .collect(new AverageCollector());
+```
+
+也可以使用Collector.of工厂方法简化创建过程：
+
+```java
+Collector<Integer, double[], Double> averageCollector = Collector.of(
+    () -> new double[]{0.0, 0.0},          // supplier
+    (acc, i) -> { acc[0] += i; acc[1]++; }, // accumulator
+    (acc1, acc2) -> {                       // combiner
+        acc1[0] += acc2[0];
+        acc1[1] += acc2[1];
+        return acc1;
+    },
+    acc -> acc[1] == 0 ? 0.0 : acc[0] / acc[1] // finisher
+);
+```
+
+收集器特性(Characteristics)影响收集过程的优化：
+- CONCURRENT：可以并行收集到同一个结果容器
+- UNORDERED：收集顺序不重要
+- IDENTITY_FINISH：finisher是恒等函数，可省略

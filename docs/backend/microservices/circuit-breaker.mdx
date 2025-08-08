@@ -1,0 +1,101 @@
+---
+sidebar_position: 3
+title: "服务熔断与降级"
+description: "微服务熔断降级解决方案"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 服务熔断与降级
+
+在微服务系统中，故障会放大并级联。熔断、限流、隔离、重试与超时共同构成韧性保护网。
+
+## Resilience4j
+
+### 常用组件
+- CircuitBreaker：熔断
+- RateLimiter：限流
+- Bulkhead：舱壁隔离（线程池/信号量）
+- Retry：重试（配合退避）
+- TimeLimiter：超时
+
+### 使用示例
+
+```java
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+
+@org.springframework.stereotype.Service
+public class ProductService {
+
+    @CircuitBreaker(name = "product", fallbackMethod = "getProductFallback")
+    @RateLimiter(name = "product")
+    @TimeLimiter(name = "product")
+    public java.util.concurrent.CompletableFuture`<String>` getProduct(String id) {
+        return java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+            // 调用下游服务（可能超时/失败）
+            if (Math.random() < 0.3) throw new RuntimeException("downstream error");
+            return "OK";
+        });
+    }
+
+    public java.util.concurrent.CompletableFuture`<String>` getProductFallback(String id, Throwable ex) {
+        return java.util.concurrent.CompletableFuture.completedFuture("FALLBACK");
+    }
+}
+```
+
+```yaml
+resilience4j:
+  circuitbreaker:
+    instances:
+      product:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+  ratelimiter:
+    instances:
+      product:
+        limit-for-period: 10
+        limit-refresh-period: 1s
+  timelimiter:
+    instances:
+      product:
+        timeout-duration: 2s
+```
+
+注意：
+- Fallback方法签名需与原方法匹配并追加`Throwable`
+- 与线程池隔离结合，避免调用方被阻塞
+
+## Sentinel（简述）
+
+- 流量控制（QPS/并发）、熔断降级（慢调用/异常比率）、系统自适应保护
+- 控制台动态规则下发，实时监控
+
+## 常见策略
+
+- 超时设置：上游超时 < 下游超时
+- 重试：指数退避 + 抖动，限定最大重试
+- 舱壁隔离：线程池限额，避免排队堆积
+- 失败快速返回：熔断打开时直接降级
+- 灰度与熔断联动：针对灰度流量单独阈值
+
+## 指标与观测
+
+- 指标：成功率、P95/P99、拒绝数、半开通过数
+- 日志：慢调用、拒绝、Fallback触发
+- 链路：TraceId关联端到端延迟
+
+## 面试题
+
+1. 熔断器的三种状态与切换条件
+2. 限流的几种算法（令牌桶、漏桶）与差异
+3. 舱壁隔离如何避免线程池饥饿
+4. Resilience4j与Sentinel的差异
+5. 网关与服务侧熔断如何配合 

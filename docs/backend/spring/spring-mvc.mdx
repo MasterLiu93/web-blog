@@ -1,0 +1,758 @@
+---
+sidebar_position: 4
+title: "Spring MVC"
+description: "Spring MVC框架原理与应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Spring MVC
+
+Spring MVC是Spring框架的一个模块，用于构建Web应用程序。它基于MVC（Model-View-Controller）设计模式，提供了灵活的Web开发解决方案。
+
+## MVC架构
+
+### 什么是MVC？
+
+MVC是一种软件架构模式，将应用程序分为三个核心组件：
+
+```java
+// 1. Model（模型）- 数据和业务逻辑
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+    private String email;
+    
+    // getter和setter方法
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}
+
+// 2. View（视图）- 用户界面
+@Controller
+public class UserController {
+    
+    @GetMapping("/users")
+    public String listUsers(Model model) {
+        List`<User>` users = userService.findAll();
+        model.addAttribute("users", users);
+        return "user/list"; // 返回视图名称
+    }
+}
+
+// 3. Controller（控制器）- 处理请求和响应
+@Controller
+@RequestMapping("/users")
+public class UserController {
+    
+    @Autowired
+    private UserService userService;
+    
+    @GetMapping
+    public String listUsers(Model model) {
+        List`<User>` users = userService.findAll();
+        model.addAttribute("users", users);
+        return "user/list";
+    }
+    
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable Long id, Model model) {
+        User user = userService.findById(id);
+        model.addAttribute("user", user);
+        return "user/detail";
+    }
+    
+    @PostMapping
+    public String createUser(@ModelAttribute User user) {
+        userService.save(user);
+        return "redirect:/users";
+    }
+}
+```
+
+### MVC组件详解
+
+```java
+// 1. DispatcherServlet - 前端控制器
+@WebServlet("/")
+public class DispatcherServlet extends HttpServlet {
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // 处理GET请求
+        processRequest(request, response);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // 处理POST请求
+        processRequest(request, response);
+    }
+    
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
+        // 1. 获取HandlerMapping
+        HandlerMapping handlerMapping = getHandlerMapping();
+        
+        // 2. 获取Handler
+        Object handler = handlerMapping.getHandler(request);
+        
+        // 3. 获取HandlerAdapter
+        HandlerAdapter handlerAdapter = getHandlerAdapter(handler);
+        
+        // 4. 执行Handler
+        ModelAndView mv = handlerAdapter.handle(request, response, handler);
+        
+        // 5. 处理视图
+        processView(request, response, mv);
+    }
+}
+
+// 2. HandlerMapping - 处理器映射
+public interface HandlerMapping {
+    Object getHandler(HttpServletRequest request) throws Exception;
+}
+
+// 3. HandlerAdapter - 处理器适配器
+public interface HandlerAdapter {
+    boolean supports(Object handler);
+    ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+}
+
+// 4. ViewResolver - 视图解析器
+public interface ViewResolver {
+    View resolveViewName(String viewName, Locale locale) throws Exception;
+}
+```
+
+## 请求处理流程
+
+### 1. 请求处理流程详解
+
+```java
+// Spring MVC请求处理流程
+public class RequestProcessingFlow {
+    
+    public void processRequest(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 1. 请求进入DispatcherServlet
+            DispatcherServlet dispatcher = new DispatcherServlet();
+            
+            // 2. 获取HandlerMapping
+            HandlerMapping handlerMapping = getHandlerMapping();
+            
+            // 3. 根据请求URL找到对应的Handler
+            Object handler = handlerMapping.getHandler(request);
+            
+            // 4. 获取HandlerAdapter
+            HandlerAdapter handlerAdapter = getHandlerAdapter(handler);
+            
+            // 5. 执行Handler方法
+            ModelAndView mv = handlerAdapter.handle(request, response, handler);
+            
+            // 6. 处理视图
+            if (mv != null) {
+                processView(request, response, mv);
+            }
+            
+        } catch (Exception e) {
+            // 异常处理
+            handleException(request, response, e);
+        }
+    }
+    
+    private HandlerMapping getHandlerMapping() {
+        // 获取HandlerMapping实现
+        return new RequestMappingHandlerMapping();
+    }
+    
+    private HandlerAdapter getHandlerAdapter(Object handler) {
+        // 获取HandlerAdapter实现
+        return new RequestMappingHandlerAdapter();
+    }
+    
+    private void processView(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) {
+        // 视图处理逻辑
+        ViewResolver viewResolver = new InternalResourceViewResolver();
+        View view = viewResolver.resolveViewName(mv.getViewName(), Locale.getDefault());
+        view.render(mv.getModel(), request, response);
+    }
+}
+```
+
+### 2. 控制器方法详解
+
+```java
+@Controller
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @Autowired
+    private UserService userService;
+    
+    // 1. GET请求 - 获取用户列表
+    @GetMapping
+    public ResponseEntity`<List<User>>` getUsers() {
+        List`<User>` users = userService.findAll();
+        return ResponseEntity.ok(users);
+    }
+    
+    // 2. GET请求 - 获取单个用户
+    @GetMapping("/{id}")
+    public ResponseEntity`<User>` getUser(@PathVariable Long id) {
+        User user = userService.findById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    // 3. POST请求 - 创建用户
+    @PostMapping
+    public ResponseEntity`<User>` createUser(@RequestBody User user) {
+        User savedUser = userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+    
+    // 4. PUT请求 - 更新用户
+    @PutMapping("/{id}")
+    public ResponseEntity`<User>` updateUser(@PathVariable Long id, @RequestBody User user) {
+        user.setId(id);
+        User updatedUser = userService.update(user);
+        return ResponseEntity.ok(updatedUser);
+    }
+    
+    // 5. DELETE请求 - 删除用户
+    @DeleteMapping("/{id}")
+    public ResponseEntity`<Void>` deleteUser(@PathVariable Long id) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    // 6. 查询参数处理
+    @GetMapping("/search")
+    public ResponseEntity`<List<User>>` searchUsers(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
+        List`<User>` users = userService.searchByName(name, page, size);
+        return ResponseEntity.ok(users);
+    }
+    
+    // 7. 文件上传
+    @PostMapping("/upload")
+    public ResponseEntity`<String>` uploadFile(@RequestParam("file") MultipartFile file) {
+        String fileName = fileService.saveFile(file);
+        return ResponseEntity.ok("文件上传成功: " + fileName);
+    }
+    
+    // 8. 表单处理
+    @PostMapping("/form")
+    public String handleForm(@ModelAttribute User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return "user/form";
+        }
+        userService.save(user);
+        return "redirect:/users";
+    }
+}
+```
+
+### 3. 参数绑定注解
+
+```java
+@Controller
+public class ParameterBindingController {
+    
+    // 1. @PathVariable - 路径变量
+    @GetMapping("/users/{id}/orders/{orderId}")
+    public String getUserOrder(@PathVariable Long id, @PathVariable Long orderId) {
+        // 处理逻辑
+        return "user/order";
+    }
+    
+    // 2. @RequestParam - 请求参数
+    @GetMapping("/search")
+    public String search(@RequestParam String keyword, 
+                        @RequestParam(defaultValue = "1") int page,
+                        @RequestParam(required = false) String sort) {
+        // 处理逻辑
+        return "search/result";
+    }
+    
+    // 3. @RequestBody - 请求体
+    @PostMapping("/api/users")
+    public ResponseEntity`<User>` createUser(@RequestBody User user) {
+        User savedUser = userService.save(user);
+        return ResponseEntity.ok(savedUser);
+    }
+    
+    // 4. @ModelAttribute - 模型属性
+    @PostMapping("/users")
+    public String createUser(@ModelAttribute User user, Model model) {
+        userService.save(user);
+        model.addAttribute("message", "用户创建成功");
+        return "user/success";
+    }
+    
+    // 5. @RequestHeader - 请求头
+    @GetMapping("/api/data")
+    public ResponseEntity`<String>` getData(@RequestHeader("Authorization") String auth) {
+        // 处理认证逻辑
+        return ResponseEntity.ok("数据");
+    }
+    
+    // 6. @CookieValue - Cookie值
+    @GetMapping("/preferences")
+    public String getPreferences(@CookieValue("theme") String theme) {
+        // 处理主题偏好
+        return "preferences";
+    }
+    
+    // 7. @SessionAttribute - 会话属性
+    @GetMapping("/profile")
+    public String getProfile(@SessionAttribute("user") User user) {
+        // 处理用户资料
+        return "user/profile";
+    }
+}
+```
+
+## 拦截器
+
+### 1. 拦截器实现
+
+```java
+// 1. 实现HandlerInterceptor接口
+public class LoggingInterceptor implements HandlerInterceptor {
+    
+    private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
+    
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        logger.info("请求开始: {} {}", request.getMethod(), request.getRequestURI());
+        request.setAttribute("startTime", System.currentTimeMillis());
+        return true; // 返回true继续执行，返回false中断请求
+    }
+    
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        logger.info("请求处理完成: {} {}", request.getMethod(), request.getRequestURI());
+    }
+    
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        long startTime = (Long) request.getAttribute("startTime");
+        long endTime = System.currentTimeMillis();
+        logger.info("请求完成: {} {} 耗时: {}ms", request.getMethod(), request.getRequestURI(), endTime - startTime);
+    }
+}
+
+// 2. 认证拦截器
+public class AuthenticationInterceptor implements HandlerInterceptor {
+    
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String token = request.getHeader("Authorization");
+        
+        if (token == null || !isValidToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+        
+        // 设置用户信息到请求属性
+        User user = getUserFromToken(token);
+        request.setAttribute("currentUser", user);
+        
+        return true;
+    }
+    
+    private boolean isValidToken(String token) {
+        // 验证token逻辑
+        return token != null && token.startsWith("Bearer ");
+    }
+    
+    private User getUserFromToken(String token) {
+        // 从token中获取用户信息
+        return new User();
+    }
+}
+
+// 3. 权限拦截器
+public class AuthorizationInterceptor implements HandlerInterceptor {
+    
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        User user = (User) request.getAttribute("currentUser");
+        
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+        
+        // 检查用户权限
+        if (!hasPermission(user, request.getRequestURI())) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private boolean hasPermission(User user, String uri) {
+        // 权限检查逻辑
+        return user.getPermissions().contains(uri);
+    }
+}
+```
+
+### 2. 拦截器配置
+
+```java
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 添加日志拦截器
+        registry.addInterceptor(new LoggingInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns("/static/**", "/error");
+        
+        // 添加认证拦截器
+        registry.addInterceptor(new AuthenticationInterceptor())
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/auth/**");
+        
+        // 添加权限拦截器
+        registry.addInterceptor(new AuthorizationInterceptor())
+                .addPathPatterns("/api/admin/**")
+                .order(1); // 设置执行顺序
+    }
+    
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+    }
+}
+```
+
+## 异常处理
+
+### 1. 全局异常处理
+
+```java
+// 1. 使用@ControllerAdvice注解
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    
+    // 处理业务异常
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity`<ErrorResponse>` handleBusinessException(BusinessException e) {
+        logger.error("业务异常: {}", e.getMessage());
+        
+        ErrorResponse error = new ErrorResponse();
+        error.setCode("BUSINESS_ERROR");
+        error.setMessage(e.getMessage());
+        error.setTimestamp(System.currentTimeMillis());
+        
+        return ResponseEntity.badRequest().body(error);
+    }
+    
+    // 处理验证异常
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity`<ErrorResponse>` handleValidationException(MethodArgumentNotValidException e) {
+        logger.error("参数验证失败: {}", e.getMessage());
+        
+        List`<String>` errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
+        
+        ErrorResponse error = new ErrorResponse();
+        error.setCode("VALIDATION_ERROR");
+        error.setMessage("参数验证失败");
+        error.setDetails(errors);
+        error.setTimestamp(System.currentTimeMillis());
+        
+        return ResponseEntity.badRequest().body(error);
+    }
+    
+    // 处理文件上传异常
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity`<ErrorResponse>` handleFileUploadException(MaxUploadSizeExceededException e) {
+        logger.error("文件上传失败: {}", e.getMessage());
+        
+        ErrorResponse error = new ErrorResponse();
+        error.setCode("FILE_UPLOAD_ERROR");
+        error.setMessage("文件大小超过限制");
+        error.setTimestamp(System.currentTimeMillis());
+        
+        return ResponseEntity.badRequest().body(error);
+    }
+    
+    // 处理通用异常
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity`<ErrorResponse>` handleGenericException(Exception e) {
+        logger.error("系统异常: {}", e.getMessage(), e);
+        
+        ErrorResponse error = new ErrorResponse();
+        error.setCode("SYSTEM_ERROR");
+        error.setMessage("系统内部错误");
+        error.setTimestamp(System.currentTimeMillis());
+        
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+}
+
+// 2. 错误响应类
+public class ErrorResponse {
+    private String code;
+    private String message;
+    private List`<String>` details;
+    private long timestamp;
+    
+    // getter和setter方法
+    public String getCode() {
+        return code;
+    }
+    
+    public void setCode(String code) {
+        this.code = code;
+    }
+    
+    public String getMessage() {
+        return message;
+    }
+    
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
+    public List`<String>` getDetails() {
+        return details;
+    }
+    
+    public void setDetails(List`<String>` details) {
+        this.details = details;
+    }
+    
+    public long getTimestamp() {
+        return timestamp;
+    }
+    
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+}
+```
+
+### 2. 控制器级异常处理
+
+```java
+@Controller
+@RequestMapping("/users")
+public class UserController {
+    
+    @Autowired
+    private UserService userService;
+    
+    @GetMapping("/{id}")
+    public ResponseEntity`<User>` getUser(@PathVariable Long id) {
+        try {
+            User user = userService.findById(id);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @PostMapping
+    public ResponseEntity`<User>` createUser(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            List`<String>` errors = result.getFieldErrors()
+                    .stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            
+            ErrorResponse error = new ErrorResponse();
+            error.setCode("VALIDATION_ERROR");
+            error.setMessage("用户信息验证失败");
+            error.setDetails(errors);
+            
+            return ResponseEntity.badRequest().body(error);
+        }
+        
+        try {
+            User savedUser = userService.save(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        } catch (DuplicateUserException e) {
+            ErrorResponse error = new ErrorResponse();
+            error.setCode("DUPLICATE_USER");
+            error.setMessage("用户已存在");
+            
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+}
+```
+
+### 3. 自定义异常
+
+```java
+// 1. 业务异常基类
+public abstract class BusinessException extends RuntimeException {
+    
+    private String code;
+    
+    public BusinessException(String message) {
+        super(message);
+    }
+    
+    public BusinessException(String code, String message) {
+        super(message);
+        this.code = code;
+    }
+    
+    public String getCode() {
+        return code;
+    }
+}
+
+// 2. 具体业务异常
+public class UserNotFoundException extends BusinessException {
+    
+    public UserNotFoundException(Long id) {
+        super("USER_NOT_FOUND", "用户不存在: " + id);
+    }
+}
+
+public class DuplicateUserException extends BusinessException {
+    
+    public DuplicateUserException(String email) {
+        super("DUPLICATE_USER", "用户邮箱已存在: " + email);
+    }
+}
+
+public class InsufficientPermissionException extends BusinessException {
+    
+    public InsufficientPermissionException(String operation) {
+        super("INSUFFICIENT_PERMISSION", "权限不足: " + operation);
+    }
+}
+
+// 3. 系统异常
+public class SystemException extends RuntimeException {
+    
+    private String code;
+    
+    public SystemException(String message) {
+        super(message);
+    }
+    
+    public SystemException(String code, String message) {
+        super(message);
+        this.code = code;
+    }
+    
+    public String getCode() {
+        return code;
+    }
+}
+```
+
+## 面试题
+
+### 1. Spring MVC的请求处理流程是怎样的？
+
+**答案：**
+1. 请求进入DispatcherServlet
+2. 通过HandlerMapping找到对应的Handler
+3. 通过HandlerAdapter执行Handler
+4. 返回ModelAndView
+5. 通过ViewResolver解析视图
+6. 渲染视图并返回响应
+
+### 2. @RequestMapping和@GetMapping有什么区别？
+
+**答案：**
+- @RequestMapping是通用注解，可以指定method属性
+- @GetMapping是@RequestMapping(method = RequestMethod.GET)的简写
+- @GetMapping更简洁，专门用于GET请求
+- @RequestMapping更灵活，可以处理多种HTTP方法
+
+### 3. 如何实现RESTful API？
+
+**答案：**
+- 使用@RestController注解
+- 使用@GetMapping、@PostMapping等注解
+- 返回ResponseEntity对象
+- 使用@PathVariable处理路径参数
+- 使用@RequestBody处理请求体
+- 遵循REST设计原则
+
+### 4. Spring MVC的拦截器有什么作用？
+
+**答案：**
+- 日志记录
+- 权限验证
+- 性能监控
+- 事务管理
+- 跨域处理
+- 请求预处理和后处理
+
+### 5. 如何实现全局异常处理？
+
+**答案：**
+- 使用@ControllerAdvice注解
+- 使用@ExceptionHandler处理特定异常
+- 返回统一的错误响应格式
+- 记录异常日志
+- 区分业务异常和系统异常 

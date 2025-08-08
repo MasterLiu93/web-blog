@@ -1,0 +1,572 @@
+---
+sidebar_position: 2
+title: "高级类型"
+description: "TypeScript高级类型和类型操作"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 高级类型
+
+TypeScript提供了强大的类型系统，包括高级类型操作和类型编程能力。
+
+## 交叉类型
+
+### 基本交叉类型
+```typescript
+// 交叉类型
+interface Person {
+  name: string;
+  age: number;
+}
+
+interface Employee {
+  id: number;
+  department: string;
+}
+
+type PersonEmployee = Person & Employee;
+
+const person: PersonEmployee = {
+  name: "John",
+  age: 30,
+  id: 1,
+  department: "Engineering"
+};
+```
+
+### 函数交叉类型
+```typescript
+// 函数交叉类型
+type Function1 = (x: number) => number;
+type Function2 = (x: string) => string;
+
+type CombinedFunction = Function1 & Function2;
+
+// 注意：这种交叉类型在实际使用中可能没有意义
+// 因为一个函数不能同时接受number和string参数
+```
+
+## 联合类型
+
+### 基本联合类型
+```typescript
+// 联合类型
+type StringOrNumber = string | number;
+
+function processValue(value: StringOrNumber): string {
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  } else {
+    return value.toString();
+  }
+}
+
+// 联合类型数组
+type StringOrNumberArray = (string | number)[];
+
+const mixedArray: StringOrNumberArray = ["hello", 42, "world", 100];
+```
+
+### 字面量联合类型
+```typescript
+// 字面量联合类型
+type Status = "pending" | "success" | "error";
+
+function handleStatus(status: Status): string {
+  switch (status) {
+    case "pending":
+      return "Processing...";
+    case "success":
+      return "Completed successfully";
+    case "error":
+      return "An error occurred";
+  }
+}
+
+// 数字字面量联合类型
+type DiceRoll = 1 | 2 | 3 | 4 | 5 | 6;
+
+function rollDice(): DiceRoll {
+  return Math.floor(Math.random() * 6) + 1 as DiceRoll;
+}
+```
+
+## 类型守卫
+
+### typeof类型守卫
+```typescript
+// typeof类型守卫
+function processValue(value: string | number): string {
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  } else {
+    return value.toString();
+  }
+}
+
+// 更复杂的typeof守卫
+function formatValue(value: string | number | boolean): string {
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  } else if (typeof value === "number") {
+    return value.toFixed(2);
+  } else {
+    return value ? "true" : "false";
+  }
+}
+```
+
+### instanceof类型守卫
+```typescript
+// instanceof类型守卫
+class Animal {
+  name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+class Dog extends Animal {
+  bark(): string {
+    return "Woof!";
+  }
+}
+
+class Cat extends Animal {
+  meow(): string {
+    return "Meow!";
+  }
+}
+
+function makeSound(animal: Animal): string {
+  if (animal instanceof Dog) {
+    return animal.bark();
+  } else if (animal instanceof Cat) {
+    return animal.meow();
+  } else {
+    return "Unknown animal sound";
+  }
+}
+```
+
+### 自定义类型守卫
+```typescript
+// 自定义类型守卫
+interface Bird {
+  fly(): void;
+  layEggs(): void;
+}
+
+interface Fish {
+  swim(): void;
+  layEggs(): void;
+}
+
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+
+function move(pet: Fish | Bird) {
+  if (isFish(pet)) {
+    pet.swim();
+  } else {
+    pet.fly();
+  }
+}
+
+// 使用in操作符的类型守卫
+function move2(pet: Fish | Bird) {
+  if ("swim" in pet) {
+    pet.swim();
+  } else {
+    pet.fly();
+  }
+}
+```
+
+## 条件类型
+
+### 基本条件类型
+```typescript
+// 条件类型
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+// 使用条件类型
+type T0 = NonNullable<string | number | null>; // string | number
+type T1 = NonNullable<string[] | null | undefined>; // string[]
+
+// 条件类型与联合类型
+type Diff<T, U> = T extends U ? never : T;
+type Filter<T, U> = T extends U ? T : never;
+
+type T2 = Diff<"a" | "b" | "c" | "d", "a" | "c" | "f">; // "b" | "d"
+type T3 = Filter<"a" | "b" | "c" | "d", "a" | "c" | "f">; // "a" | "c"
+```
+
+### 分布式条件类型
+```typescript
+// 分布式条件类型
+type ToArray<T> = T extends any ? T[] : never;
+
+type T4 = ToArray<string | number>; // string[] | number[]
+
+// 非分布式条件类型
+type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;
+
+type T5 = ToArrayNonDist<string | number>; // (string | number)[]
+```
+
+### 条件类型推断
+```typescript
+// 条件类型推断
+type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+
+// 使用ReturnType
+function getUser() {
+  return { name: "John", age: 30 };
+}
+
+type User = ReturnType<typeof getUser>; // { name: string; age: number; }
+
+// 更复杂的条件类型推断
+type FirstIfString<T> = T extends [infer S, ...unknown[]]
+  ? S extends string
+    ? S
+    : never
+  : never;
+
+type T6 = FirstIfString<[string, number, boolean]>; // string
+type T7 = FirstIfString<[number, string, boolean]>; // never
+```
+
+## 映射类型
+
+### 基本映射类型
+```typescript
+// 基本映射类型
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
+};
+
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
+
+// 使用映射类型
+interface User {
+  id: number;
+  name: string;
+  email?: string;
+}
+
+type ReadonlyUser = Readonly<User>;
+type PartialUser = Partial<User>;
+type RequiredUser = Required<User>;
+```
+
+### 键重映射
+```typescript
+// 键重映射
+type Getters<T> = {
+  [P in keyof T as `get${Capitalize<string & P>}`]: () => T[P];
+};
+
+type UserGetters = Getters<User>;
+// 等价于：
+// {
+//   getId: () => number;
+//   getName: () => string;
+//   getEmail: () => string | undefined;
+// }
+
+// 过滤键
+type RemoveKindField<T> = {
+  [P in keyof T as Exclude<P, "kind">]: T[P];
+};
+
+interface Circle {
+  kind: "circle";
+  radius: number;
+}
+
+type KindlessCircle = RemoveKindField<Circle>; // { radius: number; }
+```
+
+### 条件映射类型
+```typescript
+// 条件映射类型
+type EventConfig<T extends string> = {
+  [K in T]: { event: K; data: any };
+};
+
+type UserEvents = "click" | "hover" | "submit";
+type UserEventConfig = EventConfig<UserEvents>;
+
+// 等价于：
+// {
+//   click: { event: "click"; data: any };
+//   hover: { event: "hover"; data: any };
+//   submit: { event: "submit"; data: any };
+// }
+```
+
+## 模板字面量类型
+
+### 基本模板字面量类型
+```typescript
+// 模板字面量类型
+type EmailLocaleIDs = "welcome_email" | "email_heading";
+type FooterLocaleIDs = "footer_title" | "footer_sendoff";
+
+type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
+
+// 等价于：
+// "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
+
+// 模板字面量类型推断
+type PropEventSource<T> = {
+  on(eventName: `${string & keyof T}Changed`, callback: (newValue: any) => void): void;
+};
+
+declare function makeWatchedObject<T>(obj: T): T & PropEventSource<T>;
+
+const person = makeWatchedObject({
+  firstName: "Saoirse",
+  lastName: "Ronan",
+  age: 26
+});
+
+person.on("firstNameChanged", (newValue) => {
+  console.log(`firstName was changed to ${newValue}!`);
+});
+```
+
+### 模板字面量类型操作
+```typescript
+// 模板字面量类型操作
+type Uppercase<S extends string> = intrinsic;
+type Lowercase<S extends string> = intrinsic;
+type Capitalize<S extends string> = intrinsic;
+type Uncapitalize<S extends string> = intrinsic;
+
+// 使用这些内置类型
+type T8 = Uppercase<"hello">; // "HELLO"
+type T9 = Lowercase<"WORLD">; // "world"
+type T10 = Capitalize<"hello">; // "Hello"
+type T11 = Uncapitalize<"Hello">; // "hello"
+```
+
+## 实用工具类型
+
+### 内置工具类型
+```typescript
+// Partial<T>
+interface Todo {
+  title: string;
+  description: string;
+}
+
+type PartialTodo = Partial<Todo>;
+// 等价于：
+// {
+//   title?: string;
+//   description?: string;
+// }
+
+// Required<T>
+type RequiredTodo = Required<Todo>;
+// 等价于：
+// {
+//   title: string;
+//   description: string;
+// }
+
+// Readonly<T>
+type ReadonlyTodo = Readonly<Todo>;
+// 等价于：
+// {
+//   readonly title: string;
+//   readonly description: string;
+// }
+
+// Pick<T, K>
+type TodoPreview = Pick<Todo, "title">;
+// 等价于：
+// {
+//   title: string;
+// }
+
+// Omit<T, K>
+type TodoInfo = Omit<Todo, "completed" | "createdAt">;
+// 等价于：
+// {
+//   title: string;
+//   description: string;
+// }
+```
+
+### 条件工具类型
+```typescript
+// Exclude<T, U>
+type T0 = Exclude<"a" | "b" | "c", "a">; // "b" | "c"
+type T1 = Exclude<string | number | (() => void), Function>; // string | number
+
+// Extract<T, U>
+type T2 = Extract<"a" | "b" | "c", "a" | "f">; // "a"
+type T3 = Extract<string | number | (() => void), Function>; // () => void
+
+// NonNullable<T>
+type T4 = NonNullable<string | number | null | undefined>; // string | number
+
+// ReturnType<T>
+type T5 = ReturnType<() => string>; // string
+type T6 = ReturnType<(s: string) => void>; // void
+type T7 = ReturnType<<T>() => T>; // unknown
+
+// InstanceType<T>
+class C {
+  x = 0;
+  y = 0;
+}
+
+type T8 = InstanceType<typeof C>; // C
+type T9 = InstanceType<any>; // any
+type T10 = InstanceType<never>; // never
+```
+
+### 高级工具类型
+```typescript
+// ThisType<T>
+interface ObjectDescriptor<D, M> {
+  data?: D;
+  methods?: M & ThisType<D & M>;
+}
+
+declare function makeObject<D, M>(desc: ObjectDescriptor<D, M>): D & M;
+
+let obj = makeObject({
+  data: { x: 0, y: 0 },
+  methods: {
+    moveBy(dx: number, dy: number) {
+      this.x += dx; // 强类型化
+      this.y += dy; // 强类型化
+    }
+  }
+});
+
+// ThisParameterType<T>
+function toHex(this: Number) {
+  return this.toString(16);
+}
+
+type T11 = ThisParameterType<typeof toHex>; // Number
+
+// OmitThisParameter<T>
+type T12 = OmitThisParameter<typeof toHex>; // () => string
+```
+
+## 类型推断
+
+### 类型推断基础
+```typescript
+// 类型推断
+let x = 3; // 推断为 number
+let y = "hello"; // 推断为 string
+let z = [1, 2, 3]; // 推断为 number[]
+
+// 上下文类型推断
+window.onmousedown = function(mouseEvent) {
+  console.log(mouseEvent.button); // 正确
+};
+
+// 最佳公共类型推断
+let x2 = [0, 1, null]; // 推断为 (number | null)[]
+let x3 = [0, 1, null, "hello"]; // 推断为 (number | null | string)[]
+```
+
+### 类型推断和泛型
+```typescript
+// 泛型类型推断
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+let output = identity("myString"); // 推断为 string
+let output2 = identity(123); // 推断为 number
+
+// 约束类型推断
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key]; // 推断返回类型为 T[K]
+}
+
+let x = { a: 1, b: 2, c: 3, d: 4 };
+getProperty(x, "a"); // 推断为 number
+getProperty(x, "m"); // 错误！
+```
+
+## 类型编程
+
+### 递归类型
+```typescript
+// 递归类型
+type JsonValue = 
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+// 递归条件类型
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object
+    ? T[P] extends Function
+      ? T[P]
+      : DeepReadonly<T[P]>
+    : T[P];
+};
+
+interface NestedObject {
+  a: number;
+  b: {
+    c: string;
+    d: {
+      e: boolean;
+    };
+  };
+}
+
+type DeepReadonlyNested = DeepReadonly<NestedObject>;
+```
+
+### 类型级编程
+```typescript
+// 类型级编程 - 数字运算
+type Length<T extends readonly any[]> = T["length"];
+
+type T13 = Length<[1, 2, 3]>; // 3
+
+// 类型级编程 - 字符串操作
+type StringLength<S extends string> = S extends `${infer First}${infer Rest}`
+  ? StringLength<Rest> extends infer Length
+    ? Length extends number
+      ? [First, ...(Length extends 0 ? [] : [Length])]
+      : never
+    : never
+  : [];
+
+type T14 = StringLength<"hello">; // ["h", "e", "l", "l", "o"]
+
+// 类型级编程 - 条件逻辑
+type If<C extends boolean, T, F> = C extends true ? T : F;
+
+type T15 = If<true, "yes", "no">; // "yes"
+type T16 = If<false, "yes", "no">; // "no"
+``` 

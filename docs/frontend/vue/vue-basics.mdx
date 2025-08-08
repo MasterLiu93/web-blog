@@ -1,0 +1,618 @@
+---
+sidebar_position: 1
+title: "Vue基础"
+description: "Vue.js核心概念和基础语法"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Vue基础
+
+Vue.js是一个渐进式JavaScript框架，用于构建用户界面。它采用MVVM架构模式，提供了响应式数据绑定和组件化开发。
+
+## 基本概念
+
+### Vue实例
+```javascript
+// 创建Vue实例
+const app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  },
+  methods: {
+    reverseMessage() {
+      this.message = this.message.split('').reverse().join('');
+    }
+  }
+});
+```
+
+```html
+<!-- 模板 -->
+<div id="app">
+  <p>{{ message }}</p>
+  <button @click="reverseMessage">Reverse Message</button>
+</div>
+```
+
+### 生命周期
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  },
+  beforeCreate() {
+    console.log('beforeCreate: 实例刚被创建');
+  },
+  created() {
+    console.log('created: 实例创建完成');
+  },
+  beforeMount() {
+    console.log('beforeMount: 挂载开始之前');
+  },
+  mounted() {
+    console.log('mounted: 挂载完成');
+  },
+  beforeUpdate() {
+    console.log('beforeUpdate: 数据更新时调用');
+  },
+  updated() {
+    console.log('updated: 数据更新完成');
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy: 实例销毁之前');
+  },
+  destroyed() {
+    console.log('destroyed: 实例销毁完成');
+  }
+});
+```
+
+## 模板语法
+
+### 插值
+```html
+<!-- 文本插值 -->
+<div>{{ message }}</div>
+
+<!-- 原始HTML -->
+<div v-html="rawHtml"></div>
+
+<!-- 属性绑定 -->
+<img v-bind:src="imageSrc" :alt="imageAlt">
+
+<!-- JavaScript表达式 -->
+<div>{{ message.split('').reverse().join('') }}</div>
+<div>{{ isVisible ? 'Visible' : 'Hidden' }}</div>
+```
+
+### 指令
+```html
+<!-- v-if 条件渲染 -->
+<div v-if="isVisible">This is visible</div>
+<div v-else-if="isPartiallyVisible">This is partially visible</div>
+<div v-else>This is hidden</div>
+
+<!-- v-show 条件显示 -->
+<div v-show="isVisible">This is shown</div>
+
+<!-- v-for 列表渲染 -->
+<ul>
+  <li v-for="(item, index) in items" :key="item.id">
+    {{ index }}: {{ item.name }}
+  </li>
+</ul>
+
+<!-- v-on 事件处理 -->
+<button v-on:click="handleClick">Click me</button>
+<button @click="handleClick">Click me</button>
+
+<!-- v-model 双向绑定 -->
+<input v-model="message" placeholder="Edit me">
+<textarea v-model="message" placeholder="Add multiple lines"></textarea>
+```
+
+### 修饰符
+```html
+<!-- 事件修饰符 -->
+<form @submit.prevent="onSubmit">
+  <input @keyup.enter="onEnter">
+  <button @click.stop="onClick">Click</button>
+</form>
+
+<!-- 按键修饰符 -->
+<input @keyup.enter="onEnter">
+<input @keyup.ctrl.enter="onCtrlEnter">
+
+<!-- v-model修饰符 -->
+<input v-model.trim="message">
+<input v-model.number="age">
+<input v-model.lazy="message">
+```
+
+## 计算属性和侦听器
+
+### 计算属性
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    firstName: 'John',
+    lastName: 'Doe',
+    items: [
+      { id: 1, name: 'Apple', price: 1.99 },
+      { id: 2, name: 'Banana', price: 0.99 },
+      { id: 3, name: 'Orange', price: 2.99 }
+    ]
+  },
+  computed: {
+    // 基本计算属性
+    fullName() {
+      return this.firstName + ' ' + this.lastName;
+    },
+    
+    // 带getter和setter的计算属性
+    fullNameWithSetter: {
+      get() {
+        return this.firstName + ' ' + this.lastName;
+      },
+      set(newValue) {
+        const names = newValue.split(' ');
+        this.firstName = names[0];
+        this.lastName = names[names.length - 1];
+      }
+    },
+    
+    // 过滤计算属性
+    expensiveItems() {
+      return this.items.filter(item => item.price > 2);
+    },
+    
+    // 排序计算属性
+    sortedItems() {
+      return this.items.slice().sort((a, b) => a.price - b.price);
+    }
+  }
+});
+```
+
+### 侦听器
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    question: '',
+    answer: 'I cannot give you an answer until you ask a question!',
+    firstName: 'John',
+    lastName: 'Doe'
+  },
+  watch: {
+    // 基本侦听器
+    question(newQuestion, oldQuestion) {
+      this.answer = 'Waiting for you to stop typing...';
+      this.debouncedGetAnswer();
+    },
+    
+    // 深度侦听器
+    items: {
+      handler(newItems, oldItems) {
+        console.log('Items changed:', newItems);
+      },
+      deep: true
+    },
+    
+    // 立即执行的侦听器
+    firstName: {
+      handler(newVal, oldVal) {
+        console.log('First name changed from', oldVal, 'to', newVal);
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    debouncedGetAnswer: _.debounce(function() {
+      if (this.question.indexOf('?') === -1) {
+        this.answer = 'Questions usually contain a question mark. ;-)';
+        return;
+      }
+      this.answer = 'Thinking...';
+      const vm = this;
+      axios.get('https://yesno.wtf/api')
+        .then(function(response) {
+          vm.answer = _.capitalize(response.data.answer);
+        })
+        .catch(function(error) {
+          vm.answer = 'Error! Could not reach the API. ' + error;
+        });
+    }, 500)
+  }
+});
+```
+
+## 组件基础
+
+### 组件注册
+```javascript
+// 全局组件
+Vue.component('my-component', {
+  props: ['title'],
+  template: '<div><h3>{{ title }}</h3></div>'
+});
+
+// 局部组件
+const ChildComponent = {
+  props: ['message'],
+  template: '<div>{{ message }}</div>'
+};
+
+new Vue({
+  el: '#app',
+  components: {
+    'child-component': ChildComponent
+  }
+});
+```
+
+### 组件通信
+```javascript
+// 父组件
+new Vue({
+  el: '#app',
+  data: {
+    parentMessage: 'Hello from parent'
+  },
+  methods: {
+    handleChildEvent(message) {
+      console.log('Received from child:', message);
+    }
+  }
+});
+```
+
+```html
+<!-- 父组件模板 -->
+<div id="app">
+  <child-component 
+    :message="parentMessage"
+    @child-event="handleChildEvent">
+  </child-component>
+</div>
+```
+
+```javascript
+// 子组件
+Vue.component('child-component', {
+  props: {
+    message: {
+      type: String,
+      required: true,
+      default: 'Default message'
+    }
+  },
+  template: `
+    <div>
+      <p>{{ message }}</p>
+      <button @click="sendToParent">Send to Parent</button>
+    </div>
+  `,
+  methods: {
+    sendToParent() {
+      this.$emit('child-event', 'Hello from child!');
+    }
+  }
+});
+```
+
+### 插槽
+```javascript
+// 带插槽的组件
+Vue.component('alert-box', {
+  template: `
+    <div class="alert-box">
+      <strong>Error!</strong>
+      <slot></slot>
+    </div>
+  `
+});
+```
+
+```html
+<!-- 使用插槽 -->
+<alert-box>
+  Something bad happened.
+</alert-box>
+```
+
+### 具名插槽
+```javascript
+Vue.component('base-layout', {
+  template: `
+    <div class="container">
+      <header>
+        <slot name="header"></slot>
+      </header>
+      <main>
+        <slot></slot>
+      </main>
+      <footer>
+        <slot name="footer"></slot>
+      </footer>
+    </div>
+  `
+});
+```
+
+```html
+<!-- 使用具名插槽 -->
+<base-layout>
+  <template v-slot:header>
+    <h1>Here might be a page title</h1>
+  </template>
+  
+  <p>A paragraph for the main content.</p>
+  <p>And another one.</p>
+  
+  <template v-slot:footer>
+    <p>Here's some contact info</p>
+  </template>
+</base-layout>
+```
+
+## 表单处理
+
+### 基础表单
+```html
+<form @submit.prevent="onSubmit">
+  <div>
+    <label for="name">Name:</label>
+    <input 
+      id="name"
+      v-model="form.name"
+      type="text"
+      required>
+  </div>
+  
+  <div>
+    <label for="email">Email:</label>
+    <input 
+      id="email"
+      v-model="form.email"
+      type="email"
+      required>
+  </div>
+  
+  <div>
+    <label for="message">Message:</label>
+    <textarea 
+      id="message"
+      v-model="form.message"
+      rows="4">
+    </textarea>
+  </div>
+  
+  <div>
+    <label>
+      <input 
+        type="checkbox"
+        v-model="form.newsletter">
+      Subscribe to newsletter
+    </label>
+  </div>
+  
+  <div>
+    <label>Gender:</label>
+    <label>
+      <input 
+        type="radio"
+        v-model="form.gender"
+        value="male">
+      Male
+    </label>
+    <label>
+      <input 
+        type="radio"
+        v-model="form.gender"
+        value="female">
+      Female
+    </label>
+  </div>
+  
+  <div>
+    <label for="country">Country:</label>
+    <select id="country" v-model="form.country">
+      <option value="">Select a country</option>
+      <option value="us">United States</option>
+      <option value="ca">Canada</option>
+      <option value="uk">United Kingdom</option>
+    </select>
+  </div>
+  
+  <button type="submit">Submit</button>
+</form>
+```
+
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    form: {
+      name: '',
+      email: '',
+      message: '',
+      newsletter: false,
+      gender: '',
+      country: ''
+    }
+  },
+  methods: {
+    onSubmit() {
+      console.log('Form submitted:', this.form);
+      // 发送到服务器
+    }
+  }
+});
+```
+
+### 表单验证
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    form: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+    errors: {}
+  },
+  computed: {
+    isValid() {
+      return Object.keys(this.errors).length === 0;
+    }
+  },
+  methods: {
+    validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    },
+    
+    validateForm() {
+      this.errors = {};
+      
+      if (!this.form.email) {
+        this.errors.email = 'Email is required';
+      } else if (!this.validateEmail(this.form.email)) {
+        this.errors.email = 'Please enter a valid email';
+      }
+      
+      if (!this.form.password) {
+        this.errors.password = 'Password is required';
+      } else if (this.form.password.length < 6) {
+        this.errors.password = 'Password must be at least 6 characters';
+      }
+      
+      if (this.form.password !== this.form.confirmPassword) {
+        this.errors.confirmPassword = 'Passwords do not match';
+      }
+      
+      return this.isValid;
+    },
+    
+    onSubmit() {
+      if (this.validateForm()) {
+        console.log('Form is valid, submitting...');
+        // 提交表单
+      }
+    }
+  }
+});
+```
+
+## 过渡和动画
+
+### CSS过渡
+```html
+<div id="app">
+  <button @click="show = !show">Toggle</button>
+  <transition name="fade">
+    <p v-if="show">Hello</p>
+  </transition>
+</div>
+```
+
+```css
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+```
+
+### CSS动画
+```html
+<div id="app">
+  <button @click="show = !show">Toggle</button>
+  <transition name="bounce">
+    <p v-if="show">Hello</p>
+  </transition>
+</div>
+```
+
+```css
+.bounce-enter-active {
+  animation: bounce-in .5s;
+}
+.bounce-leave-active {
+  animation: bounce-in .5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+```
+
+### JavaScript钩子
+```html
+<div id="app">
+  <button @click="show = !show">Toggle</button>
+  <transition
+    @before-enter="beforeEnter"
+    @enter="enter"
+    @after-enter="afterEnter"
+    @enter-cancelled="enterCancelled"
+    @before-leave="beforeLeave"
+    @leave="leave"
+    @after-leave="afterLeave"
+    @leave-cancelled="leaveCancelled">
+    <p v-if="show">Hello</p>
+  </transition>
+</div>
+```
+
+```javascript
+new Vue({
+  el: '#app',
+  data: {
+    show: false
+  },
+  methods: {
+    beforeEnter(el) {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(30px)';
+    },
+    enter(el, done) {
+      Velocity(el, { opacity: 1, translateY: 0 }, { duration: 300, complete: done });
+    },
+    afterEnter(el) {
+      console.log('Enter animation completed');
+    },
+    enterCancelled(el) {
+      console.log('Enter animation cancelled');
+    },
+    beforeLeave(el) {
+      el.style.opacity = 1;
+    },
+    leave(el, done) {
+      Velocity(el, { opacity: 0, translateY: 30px }, { duration: 300, complete: done });
+    },
+    afterLeave(el) {
+      console.log('Leave animation completed');
+    },
+    leaveCancelled(el) {
+      console.log('Leave animation cancelled');
+    }
+  }
+});
+``` 

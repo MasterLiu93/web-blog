@@ -1,0 +1,894 @@
+---
+sidebar_position: 4
+title: "Queue集合"
+description: "Java Queue接口及其实现类"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Queue集合
+
+## Queue接口概述
+
+Queue是Java集合框架中用于存储元素的队列，它继承自Collection接口，是一个先进先出(FIFO)的数据结构。
+
+### Queue接口特点
+
+```java
+// Queue接口的主要特点
+1. 先进先出：元素按照插入顺序处理
+2. 继承自Collection：具有Collection的所有方法
+3. 支持阻塞操作：某些实现类支持阻塞操作
+4. 线程安全：某些实现类是线程安全的
+```
+
+### Queue接口方法
+
+```java
+// Queue接口的核心方法
+public interface Queue<E> extends Collection<E> {
+    // 添加元素
+    boolean add(E e);                    // 添加元素，失败时抛出异常
+    boolean offer(E e);                  // 添加元素，失败时返回false
+    
+    // 删除元素
+    E remove();                          // 删除并返回头部元素，失败时抛出异常
+    E poll();                           // 删除并返回头部元素，失败时返回null
+    
+    // 查看元素
+    E element();                        // 查看头部元素，失败时抛出异常
+    E peek();                          // 查看头部元素，失败时返回null
+}
+```
+
+## LinkedList
+
+### LinkedList概述
+
+LinkedList实现了Queue接口，可以作为队列使用。
+
+```java
+// LinkedList作为Queue的特点
+1. 基于双向链表实现
+2. 支持队列操作
+3. 线程不安全
+4. 插入删除性能好 O(1)
+5. 随机访问性能差 O(n)
+```
+
+### LinkedList队列操作
+
+```java
+// LinkedList队列操作示例
+public class LinkedListQueueExample {
+    public static void main(String[] args) {
+        Queue<String> queue = new LinkedList<>();
+        
+        // 添加元素
+        queue.offer("Java");
+        queue.offer("Python");
+        queue.offer("C++");
+        
+        // 查看头部元素
+        String head = queue.peek();
+        System.out.println("头部元素: " + head);
+        
+        // 删除并返回头部元素
+        String removed = queue.poll();
+        System.out.println("删除的元素: " + removed);
+        
+        // 遍历队列
+        while (!queue.isEmpty()) {
+            System.out.println(queue.poll());
+        }
+        
+        // 作为双端队列使用
+        Deque<String> deque = new LinkedList<>();
+        deque.addFirst("First");
+        deque.addLast("Last");
+        deque.offerFirst("OfferFirst");
+        deque.offerLast("OfferLast");
+        
+        System.out.println("双端队列: " + deque);
+    }
+}
+```
+
+## PriorityQueue
+
+### PriorityQueue概述
+
+PriorityQueue是基于优先级堆的无界队列，元素按照自然顺序或自定义比较器排序。
+
+```java
+// PriorityQueue的特点
+1. 基于优先级堆实现
+2. 元素按优先级排序
+3. 不允许null元素
+4. 线程不安全
+5. 插入删除性能 O(log n)
+```
+
+### PriorityQueue源码分析
+
+```java
+public class PriorityQueue<E> extends AbstractQueue<E>
+    implements java.io.Serializable {
+    
+    // 默认初始容量
+    private static final int DEFAULT_INITIAL_CAPACITY = 11;
+    
+    // 存储元素的数组
+    transient Object[] queue;
+    
+    // 元素个数
+    private int size = 0;
+    
+    // 比较器
+    private final Comparator<? super E> comparator;
+    
+    // 修改次数
+    transient int modCount = 0;
+    
+    // 构造方法
+    public PriorityQueue() {
+        this(DEFAULT_INITIAL_CAPACITY, null);
+    }
+    
+    public PriorityQueue(int initialCapacity) {
+        this(initialCapacity, null);
+    }
+    
+    public PriorityQueue(Comparator<? super E> comparator) {
+        this(DEFAULT_INITIAL_CAPACITY, comparator);
+    }
+}
+```
+
+### PriorityQueue使用示例
+
+```java
+// PriorityQueue基本使用
+public class PriorityQueueExample {
+    public static void main(String[] args) {
+        // 自然顺序优先级队列
+        Queue<Integer> naturalOrderQueue = new PriorityQueue<>();
+        naturalOrderQueue.offer(5);
+        naturalOrderQueue.offer(2);
+        naturalOrderQueue.offer(8);
+        naturalOrderQueue.offer(1);
+        
+        System.out.println("自然顺序优先级队列:");
+        while (!naturalOrderQueue.isEmpty()) {
+            System.out.println(naturalOrderQueue.poll());
+        }
+        
+        // 自定义比较器优先级队列
+        Queue<Integer> customOrderQueue = new PriorityQueue<>((a, b) -> b - a);
+        customOrderQueue.offer(5);
+        customOrderQueue.offer(2);
+        customOrderQueue.offer(8);
+        customOrderQueue.offer(1);
+        
+        System.out.println("自定义顺序优先级队列:");
+        while (!customOrderQueue.isEmpty()) {
+            System.out.println(customOrderQueue.poll());
+        }
+        
+        // 字符串优先级队列
+        Queue<String> stringQueue = new PriorityQueue<>();
+        stringQueue.offer("Java");
+        stringQueue.offer("Python");
+        stringQueue.offer("C++");
+        stringQueue.offer("JavaScript");
+        
+        System.out.println("字符串优先级队列:");
+        while (!stringQueue.isEmpty()) {
+            System.out.println(stringQueue.poll());
+        }
+    }
+}
+```
+
+### PriorityQueue堆操作
+
+```java
+// 堆操作示例
+public class HeapOperationsExample {
+    
+    // 上浮操作
+    private void siftUp(int k, E x) {
+        if (comparator != null)
+            siftUpUsingComparator(k, x);
+        else
+            siftUpComparable(k, x);
+    }
+    
+    // 下沉操作
+    private void siftDown(int k, E x) {
+        if (comparator != null)
+            siftDownUsingComparator(k, x);
+        else
+            siftDownComparable(k, x);
+    }
+    
+    // 添加元素
+    public boolean offer(E e) {
+        if (e == null)
+            throw new NullPointerException();
+        modCount++;
+        int i = size;
+        if (i >= queue.length)
+            grow(i + 1);
+        size = i + 1;
+        if (i == 0)
+            queue[0] = e;
+        else
+            siftUp(i, e);
+        return true;
+    }
+    
+    // 删除元素
+    public E poll() {
+        if (size == 0)
+            return null;
+        int s = --size;
+        modCount++;
+        E result = (E) queue[0];
+        E x = (E) queue[s];
+        queue[s] = null;
+        if (s != 0)
+            siftDown(0, x);
+        return result;
+    }
+}
+```
+
+## ArrayBlockingQueue
+
+### ArrayBlockingQueue概述
+
+ArrayBlockingQueue是基于数组的有界阻塞队列，线程安全。
+
+```java
+// ArrayBlockingQueue的特点
+1. 基于数组实现
+2. 有界队列
+3. 线程安全
+4. 支持阻塞操作
+5. FIFO顺序
+```
+
+### ArrayBlockingQueue源码分析
+
+```java
+public class ArrayBlockingQueue<E> extends AbstractQueue<E>
+        implements BlockingQueue<E>, java.io.Serializable {
+    
+    // 存储元素的数组
+    final Object[] items;
+    
+    // 下一个要取元素的位置
+    int takeIndex;
+    
+    // 下一个要放元素的位置
+    int putIndex;
+    
+    // 元素个数
+    int count;
+    
+    // 锁
+    final ReentrantLock lock;
+    
+    // 非空条件
+    private final Condition notEmpty;
+    
+    // 非满条件
+    private final Condition notFull;
+    
+    // 构造方法
+    public ArrayBlockingQueue(int capacity) {
+        this(capacity, false);
+    }
+    
+    public ArrayBlockingQueue(int capacity, boolean fair) {
+        if (capacity <= 0)
+            throw new IllegalArgumentException();
+        this.items = new Object[capacity];
+        lock = new ReentrantLock(fair);
+        notEmpty = lock.newCondition();
+        notFull = lock.newCondition();
+    }
+}
+```
+
+### ArrayBlockingQueue使用示例
+
+```java
+// ArrayBlockingQueue基本使用
+public class ArrayBlockingQueueExample {
+    public static void main(String[] args) {
+        BlockingQueue<String> queue = new ArrayBlockingQueue<>(3);
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            try {
+                queue.put("Java");
+                System.out.println("添加: Java");
+                queue.put("Python");
+                System.out.println("添加: Python");
+                queue.put("C++");
+                System.out.println("添加: C++");
+                queue.put("JavaScript"); // 阻塞等待
+                System.out.println("添加: JavaScript");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                Thread.sleep(2000); // 延迟消费
+                while (!queue.isEmpty()) {
+                    String item = queue.take();
+                    System.out.println("消费: " + item);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+        
+        try {
+            producer.join();
+            consumer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## LinkedBlockingQueue
+
+### LinkedBlockingQueue概述
+
+LinkedBlockingQueue是基于链表的有界或无界阻塞队列，线程安全。
+
+```java
+// LinkedBlockingQueue的特点
+1. 基于链表实现
+2. 可选有界或无界
+3. 线程安全
+4. 支持阻塞操作
+5. FIFO顺序
+```
+
+### LinkedBlockingQueue使用示例
+
+```java
+// LinkedBlockingQueue基本使用
+public class LinkedBlockingQueueExample {
+    public static void main(String[] args) {
+        // 无界队列
+        BlockingQueue<String> unboundedQueue = new LinkedBlockingQueue<>();
+        
+        // 有界队列
+        BlockingQueue<String> boundedQueue = new LinkedBlockingQueue<>(100);
+        
+        // 生产者-消费者模式
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>(5);
+        
+        // 生产者
+        Thread producer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String item = "Item-" + i;
+                    queue.put(item);
+                    System.out.println("生产: " + item);
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 消费者
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    String item = queue.take();
+                    System.out.println("消费: " + item);
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        producer.start();
+        consumer.start();
+        
+        try {
+            producer.join();
+            consumer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## SynchronousQueue
+
+### SynchronousQueue概述
+
+SynchronousQueue是一个不存储元素的阻塞队列，每个插入操作必须等待另一个线程的移除操作。
+
+```java
+// SynchronousQueue的特点
+1. 不存储元素
+2. 线程安全
+3. 支持阻塞操作
+4. 适合线程间直接传递数据
+5. 性能较高
+```
+
+### SynchronousQueue使用示例
+
+```java
+// SynchronousQueue基本使用
+public class SynchronousQueueExample {
+    public static void main(String[] args) {
+        BlockingQueue<String> queue = new SynchronousQueue<>();
+        
+        // 生产者线程
+        Thread producer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    String item = "Item-" + i;
+                    queue.put(item);
+                    System.out.println("生产: " + item);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    String item = queue.take();
+                    System.out.println("消费: " + item);
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        consumer.start(); // 消费者先启动
+        Thread.sleep(100);
+        producer.start(); // 生产者后启动
+        
+        try {
+            producer.join();
+            consumer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## DelayQueue
+
+### DelayQueue概述
+
+DelayQueue是一个无界阻塞队列，只有在延迟期满时才能从中提取元素。
+
+```java
+// DelayQueue的特点
+1. 基于PriorityQueue实现
+2. 元素必须实现Delayed接口
+3. 线程安全
+4. 支持延迟获取元素
+5. 适合定时任务
+```
+
+### DelayQueue使用示例
+
+```java
+// DelayQueue基本使用
+public class DelayQueueExample {
+    
+    // 延迟元素
+    static class DelayedElement implements Delayed {
+        private String name;
+        private long startTime;
+        
+        public DelayedElement(String name, long delay) {
+            this.name = name;
+            this.startTime = System.currentTimeMillis() + delay;
+        }
+        
+        @Override
+        public long getDelay(TimeUnit unit) {
+            long diff = startTime - System.currentTimeMillis();
+            return unit.convert(diff, TimeUnit.MILLISECONDS);
+        }
+        
+        @Override
+        public int compareTo(Delayed o) {
+            return Long.compare(this.startTime, ((DelayedElement) o).startTime);
+        }
+        
+        @Override
+        public String toString() {
+            return name + " - " + startTime;
+        }
+    }
+    
+    public static void main(String[] args) {
+        DelayQueue<DelayedElement> queue = new DelayQueue<>();
+        
+        // 添加延迟元素
+        queue.put(new DelayedElement("Task1", 2000));
+        queue.put(new DelayedElement("Task2", 1000));
+        queue.put(new DelayedElement("Task3", 3000));
+        
+        // 消费者线程
+        Thread consumer = new Thread(() -> {
+            try {
+                while (!queue.isEmpty()) {
+                    DelayedElement element = queue.take();
+                    System.out.println("执行: " + element);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        consumer.start();
+        
+        try {
+            consumer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## Queue使用最佳实践
+
+### 选择合适的Queue实现
+
+```java
+// Queue选择指南
+public class QueueSelectionGuide {
+    
+    // 场景1：一般用途
+    public void generalPurposeScenario() {
+        `Queue<String> queue = new LinkedList<>();` // 推荐
+    }
+    
+    // 场景2：优先级队列
+    public void priorityScenario() {
+        `Queue<String> queue = new PriorityQueue<>();` // 推荐
+    }
+    
+    // 场景3：生产者-消费者模式
+    public void producerConsumerScenario() {
+        `BlockingQueue<String> queue = new ArrayBlockingQueue<>(100);` // 推荐
+    }
+    
+    // 场景4：线程间直接传递
+    public void directTransferScenario() {
+        `BlockingQueue<String> queue = new SynchronousQueue<>();` // 推荐
+    }
+    
+    // 场景5：定时任务
+    public void scheduledTaskScenario() {
+        `DelayQueue<DelayedElement> queue = new DelayQueue<>();` // 推荐
+    }
+}
+```
+
+### 性能优化技巧
+
+```java
+// Queue性能优化
+public class QueueOptimization {
+    
+    // 1. 预分配容量
+    public void preAllocateCapacity() {
+        `Queue<String> queue = new LinkedList<>();` // LinkedList不需要预分配
+        `BlockingQueue<String> queue = new ArrayBlockingQueue<>(1000);` // 有界队列需要指定容量
+    }
+    
+    // 2. 选择合适的阻塞方法
+    public void blockingMethodSelection() {
+        BlockingQueue<String> queue = new ArrayBlockingQueue<>(10);
+        
+        // 非阻塞方法
+        boolean offered = queue.offer("item"); // 不阻塞
+        String polled = queue.poll(); // 不阻塞
+        
+        // 阻塞方法
+        try {
+            queue.put("item"); // 阻塞直到有空间
+            String taken = queue.take(); // 阻塞直到有元素
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // 3. 批量操作
+    public void batchOperation() {
+        Queue<String> queue = new LinkedList<>();
+        Collection<String> items = Arrays.asList("a", "b", "c");
+        
+        // 批量添加
+        queue.addAll(items);
+        
+        // 批量处理
+        while (!queue.isEmpty()) {
+            String item = queue.poll();
+            // 处理元素
+        }
+    }
+}
+```
+
+## Queue应用场景
+
+### 生产者-消费者模式
+
+```java
+// 生产者-消费者模式
+public class ProducerConsumerExample {
+    private static final int QUEUE_SIZE = 10;
+    private static final BlockingQueue<String> queue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+    
+    // 生产者
+    static class Producer implements Runnable {
+        private String name;
+        
+        public Producer(String name) {
+            this.name = name;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    String item = name + "-Item-" + i;
+                    queue.put(item);
+                    System.out.println(name + " 生产: " + item);
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    // 消费者
+    static class Consumer implements Runnable {
+        private String name;
+        
+        public Consumer(String name) {
+            this.name = name;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                for (int i = 0; i < 5; i++) {
+                    String item = queue.take();
+                    System.out.println(name + " 消费: " + item);
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        Thread producer1 = new Thread(new Producer("Producer1"));
+        Thread producer2 = new Thread(new Producer("Producer2"));
+        Thread consumer1 = new Thread(new Consumer("Consumer1"));
+        Thread consumer2 = new Thread(new Consumer("Consumer2"));
+        
+        producer1.start();
+        producer2.start();
+        consumer1.start();
+        consumer2.start();
+        
+        try {
+            producer1.join();
+            producer2.join();
+            consumer1.join();
+            consumer2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### 任务调度
+
+```java
+// 任务调度
+public class TaskSchedulerExample {
+    private static final DelayQueue<DelayedTask> taskQueue = new DelayQueue<>();
+    
+    static class DelayedTask implements Delayed {
+        private String taskName;
+        private long executeTime;
+        
+        public DelayedTask(String taskName, long delay) {
+            this.taskName = taskName;
+            this.executeTime = System.currentTimeMillis() + delay;
+        }
+        
+        @Override
+        public long getDelay(TimeUnit unit) {
+            return unit.convert(executeTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        }
+        
+        @Override
+        public int compareTo(Delayed o) {
+            return Long.compare(this.executeTime, ((DelayedTask) o).executeTime);
+        }
+        
+        public void execute() {
+            System.out.println("执行任务: " + taskName + " 时间: " + new Date());
+        }
+    }
+    
+    public static void main(String[] args) {
+        // 添加定时任务
+        taskQueue.put(new DelayedTask("Task1", 2000));
+        taskQueue.put(new DelayedTask("Task2", 1000));
+        taskQueue.put(new DelayedTask("Task3", 3000));
+        
+        // 任务执行器
+        Thread executor = new Thread(() -> {
+            try {
+                while (true) {
+                    DelayedTask task = taskQueue.take();
+                    task.execute();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        executor.start();
+        
+        try {
+            Thread.sleep(5000);
+            executor.interrupt();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## 面试题
+
+### 1. Queue和Stack的区别？
+
+**Queue**：
+- 先进先出(FIFO)
+- 继承自Collection
+- 支持阻塞操作
+
+**Stack**：
+- 后进先出(LIFO)
+- 继承自Vector
+- 不支持阻塞操作
+
+### 2. PriorityQueue的工作原理？
+
+1. **基于堆实现**：使用数组实现最小堆
+2. **上浮操作**：插入元素时向上调整
+3. **下沉操作**：删除元素时向下调整
+4. **优先级排序**：按自然顺序或自定义比较器排序
+
+### 3. BlockingQueue的特点？
+
+1. **线程安全**：所有操作都是线程安全的
+2. **阻塞操作**：支持put/take等阻塞方法
+3. **有界队列**：某些实现类是有界的
+4. **生产者-消费者**：适合生产者-消费者模式
+
+### 4. ArrayBlockingQueue和LinkedBlockingQueue的区别？
+
+**ArrayBlockingQueue**：
+- 基于数组实现
+- 有界队列
+- 使用ReentrantLock
+
+**LinkedBlockingQueue**：
+- 基于链表实现
+- 可选有界或无界
+- 使用两个ReentrantLock
+
+### 5. SynchronousQueue的特点？
+
+1. **不存储元素**：每个插入操作必须等待移除操作
+2. **直接传递**：适合线程间直接传递数据
+3. **性能较高**：避免了数据复制
+4. **公平性**：支持公平和非公平模式
+
+### 6. Queue的遍历方式有哪些？
+
+```java
+// 1. 使用poll()方法
+while (!queue.isEmpty()) {
+    String item = queue.poll();
+    System.out.println(item);
+}
+
+// 2. 使用迭代器
+Iterator<String> iterator = queue.iterator();
+while (iterator.hasNext()) {
+    String item = iterator.next();
+    System.out.println(item);
+}
+
+// 3. 使用forEach方法
+queue.forEach(System.out::println);
+```
+
+### 7. 如何选择合适的Queue实现？
+
+- **一般用途**：LinkedList
+- **优先级队列**：PriorityQueue
+- **生产者-消费者**：ArrayBlockingQueue/LinkedBlockingQueue
+- **线程间传递**：SynchronousQueue
+- **定时任务**：DelayQueue
+
+### 8. Queue的线程安全问题？
+
+- **LinkedList**：线程不安全
+- **PriorityQueue**：线程不安全
+- **ArrayBlockingQueue**：线程安全
+- **LinkedBlockingQueue**：线程安全
+- **SynchronousQueue**：线程安全
+- **DelayQueue**：线程安全
+
+### 9. BlockingQueue的常用方法？
+
+```java
+// 添加元素
+queue.put(element);     // 阻塞添加
+queue.offer(element);   // 非阻塞添加
+
+// 删除元素
+queue.take();          // 阻塞删除
+queue.poll();          // 非阻塞删除
+
+// 查看元素
+queue.peek();          // 查看头部元素
+```
+
+### 10. Queue的性能特点？
+
+- **LinkedList**：插入删除O(1)，随机访问O(n)
+- **PriorityQueue**：插入删除O(log n)
+- **ArrayBlockingQueue**：插入删除O(1)
+- **LinkedBlockingQueue**：插入删除O(1)
+- **SynchronousQueue**：插入删除O(1)

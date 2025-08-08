@@ -1,0 +1,790 @@
+---
+sidebar_position: 8
+title: "原子类"
+description: "Java原子类详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 原子类
+
+## 原子类概述
+
+原子类是Java并发包中提供的一组线程安全的工具类，它们基于CAS（Compare-And-Swap）操作实现，无需使用synchronized关键字。
+
+### 原子类特点
+
+```java
+// 原子类的主要特点
+1. 线程安全：基于CAS操作，无需同步
+2. 高性能：避免了锁的开销
+3. 无阻塞：不会导致线程阻塞
+4. 适用场景：计数器、标志位、对象引用等
+```
+
+### 原子类分类
+
+```java
+// 原子类的分类
+1. 基本类型原子类：
+   - AtomicInteger：原子整型
+   - AtomicLong：原子长整型
+   - AtomicBoolean：原子布尔型
+
+2. 引用类型原子类：
+   - AtomicReference：原子引用
+   - AtomicStampedReference：带版本号的原子引用
+   - AtomicMarkableReference：带标记的原子引用
+
+3. 数组原子类：
+   - AtomicIntegerArray：原子整型数组
+   - AtomicLongArray：原子长整型数组
+   - AtomicReferenceArray：原子引用数组
+
+4. 字段更新器：
+   - AtomicIntegerFieldUpdater：整型字段更新器
+   - AtomicLongFieldUpdater：长整型字段更新器
+   - AtomicReferenceFieldUpdater：引用字段更新器
+```
+
+## AtomicInteger
+
+### AtomicInteger基本使用
+
+```java
+// AtomicInteger基本使用示例
+public class AtomicIntegerExample {
+    
+    // 原子计数器
+    private static AtomicInteger counter = new AtomicInteger(0);
+    
+    public static void main(String[] args) {
+        // 基本操作
+        System.out.println("初始值: " + counter.get());
+        
+        // 设置值
+        counter.set(10);
+        System.out.println("设置后: " + counter.get());
+        
+        // 获取并递增
+        int oldValue = counter.getAndIncrement();
+        System.out.println("递增前: " + oldValue + ", 递增后: " + counter.get());
+        
+        // 获取并递减
+        oldValue = counter.getAndDecrement();
+        System.out.println("递减前: " + oldValue + ", 递减后: " + counter.get());
+        
+        // 获取并设置
+        oldValue = counter.getAndSet(20);
+        System.out.println("设置前: " + oldValue + ", 设置后: " + counter.get());
+        
+        // 比较并设置
+        boolean success = counter.compareAndSet(20, 30);
+        System.out.println("CAS操作: " + success + ", 当前值: " + counter.get());
+        
+        // 递增并获取
+        int newValue = counter.incrementAndGet();
+        System.out.println("递增后: " + newValue);
+        
+        // 递减并获取
+        newValue = counter.decrementAndGet();
+        System.out.println("递减后: " + newValue);
+        
+        // 添加并获取
+        newValue = counter.addAndGet(5);
+        System.out.println("添加后: " + newValue);
+    }
+}
+```
+
+### AtomicInteger源码分析
+
+```java
+public class AtomicInteger extends Number implements java.io.Serializable {
+    
+    // 使用Unsafe进行CAS操作
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    
+    // value字段的偏移量
+    private static final long valueOffset;
+    
+    static {
+        try {
+            valueOffset = unsafe.objectFieldOffset(AtomicInteger.class.getDeclaredField("value"));
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+    
+    // 当前值
+    private volatile int value;
+    
+    // 构造方法
+    public AtomicInteger(int initialValue) {
+        value = initialValue;
+    }
+    
+    // 获取当前值
+    public final int get() {
+        return value;
+    }
+    
+    // 设置值
+    public final void set(int newValue) {
+        value = newValue;
+    }
+    
+    // 比较并设置
+    public final boolean compareAndSet(int expect, int update) {
+        return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+    }
+    
+    // 获取并递增
+    public final int getAndIncrement() {
+        return unsafe.getAndAddInt(this, valueOffset, 1);
+    }
+    
+    // 获取并递减
+    public final int getAndDecrement() {
+        return unsafe.getAndAddInt(this, valueOffset, -1);
+    }
+    
+    // 获取并设置
+    public final int getAndSet(int newValue) {
+        return unsafe.getAndSetInt(this, valueOffset, newValue);
+    }
+    
+    // 递增并获取
+    public final int incrementAndGet() {
+        return unsafe.getAndAddInt(this, valueOffset, 1) + 1;
+    }
+    
+    // 递减并获取
+    public final int decrementAndGet() {
+        return unsafe.getAndAddInt(this, valueOffset, -1) - 1;
+    }
+    
+    // 添加并获取
+    public final int addAndGet(int delta) {
+        return unsafe.getAndAddInt(this, valueOffset, delta) + delta;
+    }
+}
+```
+
+### AtomicInteger性能测试
+
+```java
+// AtomicInteger性能测试
+public class AtomicIntegerPerformanceTest {
+    
+    private static AtomicInteger atomicCounter = new AtomicInteger(0);
+    private static int synchronizedCounter = 0;
+    private static final Object lock = new Object();
+    
+    public static void main(String[] args) {
+        int threadCount = 10;
+        int incrementCount = 100000;
+        
+        // 测试AtomicInteger性能
+        long atomicStart = System.currentTimeMillis();
+        testAtomicInteger(threadCount, incrementCount);
+        long atomicEnd = System.currentTimeMillis();
+        System.out.println("AtomicInteger耗时: " + (atomicEnd - atomicStart) + "ms");
+        System.out.println("AtomicInteger最终值: " + atomicCounter.get());
+        
+        // 测试synchronized性能
+        long syncStart = System.currentTimeMillis();
+        testSynchronized(threadCount, incrementCount);
+        long syncEnd = System.currentTimeMillis();
+        System.out.println("synchronized耗时: " + (syncEnd - syncStart) + "ms");
+        System.out.println("synchronized最终值: " + synchronizedCounter);
+    }
+    
+    // 测试AtomicInteger
+    private static void testAtomicInteger(int threadCount, int incrementCount) {
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        
+        for (int i = 0; i < threadCount; i++) {
+            Thread thread = new Thread(() -> {
+                for (int j = 0; j < incrementCount; j++) {
+                    atomicCounter.incrementAndGet();
+                }
+                latch.countDown();
+            });
+            thread.start();
+        }
+        
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // 测试synchronized
+    private static void testSynchronized(int threadCount, int incrementCount) {
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        
+        for (int i = 0; i < threadCount; i++) {
+            Thread thread = new Thread(() -> {
+                for (int j = 0; j < incrementCount; j++) {
+                    synchronized (lock) {
+                        synchronizedCounter++;
+                    }
+                }
+                latch.countDown();
+            });
+            thread.start();
+        }
+        
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## AtomicReference
+
+### AtomicReference基本使用
+
+```java
+// AtomicReference基本使用示例
+public class AtomicReferenceExample {
+    
+    // 用户类
+    public static class User {
+        private String name;
+        private int age;
+        
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+        
+        public String getName() { return name; }
+        public int getAge() { return age; }
+        
+        @Override
+        public String toString() {
+            return "User{name='" + name + "', age=" + age + "}";
+        }
+    }
+    
+    // 原子引用
+    private static AtomicReference<User> userRef = new AtomicReference<>();
+    
+    public static void main(String[] args) {
+        // 初始值
+        User initialUser = new User("Alice", 25);
+        userRef.set(initialUser);
+        System.out.println("初始用户: " + userRef.get());
+        
+        // 比较并设置
+        User newUser = new User("Bob", 30);
+        boolean success = userRef.compareAndSet(initialUser, newUser);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("当前用户: " + userRef.get());
+        
+        // 获取并设置
+        User oldUser = userRef.getAndSet(new User("Charlie", 35));
+        System.out.println("原用户: " + oldUser);
+        System.out.println("新用户: " + userRef.get());
+        
+        // 更新操作
+        userRef.updateAndGet(user -> new User(user.getName(), user.getAge() + 1));
+        System.out.println("更新后: " + userRef.get());
+        
+        // 累积操作
+        userRef.accumulateAndGet(new User("David", 40), (oldUser, newUser) -> 
+            new User(newUser.getName(), oldUser.getAge() + newUser.getAge()));
+        System.out.println("累积后: " + userRef.get());
+    }
+}
+```
+
+### AtomicReference源码分析
+
+```java
+public class AtomicReference<V> implements java.io.Serializable {
+    
+    // 使用Unsafe进行CAS操作
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    
+    // value字段的偏移量
+    private static final long valueOffset;
+    
+    static {
+        try {
+            valueOffset = unsafe.objectFieldOffset(AtomicReference.class.getDeclaredField("value"));
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+    
+    // 当前值
+    private volatile V value;
+    
+    // 构造方法
+    public AtomicReference(V initialValue) {
+        value = initialValue;
+    }
+    
+    // 获取当前值
+    public final V get() {
+        return value;
+    }
+    
+    // 设置值
+    public final void set(V newValue) {
+        value = newValue;
+    }
+    
+    // 比较并设置
+    public final boolean compareAndSet(V expect, V update) {
+        return unsafe.compareAndSwapObject(this, valueOffset, expect, update);
+    }
+    
+    // 获取并设置
+    public final V getAndSet(V newValue) {
+        return (V)unsafe.getAndSetObject(this, valueOffset, newValue);
+    }
+    
+    // 更新并获取
+    public final V updateAndGet(UnaryOperator<V> updateFunction) {
+        V prev, next;
+        do {
+            prev = get();
+            next = updateFunction.apply(prev);
+        } while (!compareAndSet(prev, next));
+        return next;
+    }
+    
+    // 累积并获取
+    public final V accumulateAndGet(V x, BinaryOperator<V> accumulatorFunction) {
+        V prev, next;
+        do {
+            prev = get();
+            next = accumulatorFunction.apply(prev, x);
+        } while (!compareAndSet(prev, next));
+        return next;
+    }
+}
+```
+
+## AtomicStampedReference
+
+### AtomicStampedReference基本使用
+
+```java
+// AtomicStampedReference基本使用示例
+public class AtomicStampedReferenceExample {
+    
+    // 带版本号的原子引用
+    private static AtomicStampedReference<String> ref = new AtomicStampedReference<>("A", 1);
+    
+    public static void main(String[] args) {
+        // 获取当前值和版本号
+        String value = ref.getReference();
+        int stamp = ref.getStamp();
+        System.out.println("当前值: " + value + ", 版本号: " + stamp);
+        
+        // 比较并设置（需要版本号匹配）
+        boolean success = ref.compareAndSet("A", "B", 1, 2);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("当前值: " + ref.getReference() + ", 版本号: " + ref.getStamp());
+        
+        // 版本号不匹配，操作失败
+        success = ref.compareAndSet("B", "C", 1, 3);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("当前值: " + ref.getReference() + ", 版本号: " + ref.getStamp());
+        
+        // 版本号匹配，操作成功
+        success = ref.compareAndSet("B", "C", 2, 3);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("当前值: " + ref.getReference() + ", 版本号: " + ref.getStamp());
+        
+        // 获取并设置
+        String oldValue = ref.getAndSet("D", 4);
+        System.out.println("原值: " + oldValue);
+        System.out.println("当前值: " + ref.getReference() + ", 版本号: " + ref.getStamp());
+    }
+}
+```
+
+### ABA问题解决
+
+```java
+// ABA问题示例和解决
+public class ABAProblemExample {
+    
+    // 普通AtomicReference，可能遇到ABA问题
+    private static AtomicReference<String> ref = new AtomicReference<>("A");
+    
+    // 带版本号的AtomicStampedReference，可以避免ABA问题
+    private static AtomicStampedReference<String> stampedRef = new AtomicStampedReference<>("A", 1);
+    
+    public static void main(String[] args) {
+        // 演示ABA问题
+        demonstrateABAProblem();
+        
+        // 使用AtomicStampedReference解决ABA问题
+        solveABAProblem();
+    }
+    
+    // 演示ABA问题
+    private static void demonstrateABAProblem() {
+        System.out.println("=== ABA问题演示 ===");
+        
+        // 线程1：期望将A改为C
+        Thread thread1 = new Thread(() -> {
+            try {
+                Thread.sleep(100); // 让线程2先执行
+                boolean success = ref.compareAndSet("A", "C");
+                System.out.println("线程1 CAS操作成功: " + success);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 线程2：将A改为B，再改回A
+        Thread thread2 = new Thread(() -> {
+            ref.compareAndSet("A", "B");
+            System.out.println("线程2: A -> B");
+            ref.compareAndSet("B", "A");
+            System.out.println("线程2: B -> A");
+        });
+        
+        thread1.start();
+        thread2.start();
+        
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("最终值: " + ref.get());
+    }
+    
+    // 使用AtomicStampedReference解决ABA问题
+    private static void solveABAProblem() {
+        System.out.println("\n=== 使用AtomicStampedReference解决ABA问题 ===");
+        
+        // 线程1：期望将A改为C
+        Thread thread1 = new Thread(() -> {
+            try {
+                Thread.sleep(100); // 让线程2先执行
+                boolean success = stampedRef.compareAndSet("A", "C", 1, 3);
+                System.out.println("线程1 CAS操作成功: " + success);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        // 线程2：将A改为B，再改回A
+        Thread thread2 = new Thread(() -> {
+            stampedRef.compareAndSet("A", "B", 1, 2);
+            System.out.println("线程2: A -> B (版本号: 1->2)");
+            stampedRef.compareAndSet("B", "A", 2, 3);
+            System.out.println("线程2: B -> A (版本号: 2->3)");
+        });
+        
+        thread1.start();
+        thread2.start();
+        
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("最终值: " + stampedRef.getReference() + ", 版本号: " + stampedRef.getStamp());
+    }
+}
+```
+
+## 原子数组
+
+### AtomicIntegerArray基本使用
+
+```java
+// AtomicIntegerArray基本使用示例
+public class AtomicIntegerArrayExample {
+    
+    // 原子整型数组
+    private static AtomicIntegerArray array = new AtomicIntegerArray(5);
+    
+    public static void main(String[] args) {
+        // 初始化数组
+        for (int i = 0; i < array.length(); i++) {
+            array.set(i, i * 10);
+        }
+        
+        System.out.println("初始数组: " + Arrays.toString(arrayToIntArray()));
+        
+        // 获取和设置
+        int oldValue = array.getAndSet(0, 100);
+        System.out.println("索引0原值: " + oldValue + ", 新值: " + array.get(0));
+        
+        // 比较并设置
+        boolean success = array.compareAndSet(1, 10, 200);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("索引1的值: " + array.get(1));
+        
+        // 获取并递增
+        oldValue = array.getAndIncrement(2);
+        System.out.println("索引2递增前: " + oldValue + ", 递增后: " + array.get(2));
+        
+        // 获取并递减
+        oldValue = array.getAndDecrement(3);
+        System.out.println("索引3递减前: " + oldValue + ", 递减后: " + array.get(3));
+        
+        // 添加并获取
+        int newValue = array.addAndGet(4, 50);
+        System.out.println("索引4添加后: " + newValue);
+        
+        System.out.println("最终数组: " + Arrays.toString(arrayToIntArray()));
+    }
+    
+    // 将AtomicIntegerArray转换为普通数组
+    private static int[] arrayToIntArray() {
+        int[] result = new int[array.length()];
+        for (int i = 0; i < array.length(); i++) {
+            result[i] = array.get(i);
+        }
+        return result;
+    }
+}
+```
+
+## 字段更新器
+
+### AtomicIntegerFieldUpdater基本使用
+
+```java
+// AtomicIntegerFieldUpdater基本使用示例
+public class AtomicIntegerFieldUpdaterExample {
+    
+    // 用户类
+    public static class User {
+        // 必须是volatile字段
+        volatile int age;
+        private String name;
+        
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+        
+        public String getName() { return name; }
+        public int getAge() { return age; }
+        
+        @Override
+        public String toString() {
+            return "User{name='" + name + "', age=" + age + "}";
+        }
+    }
+    
+    // 创建字段更新器
+    private static AtomicIntegerFieldUpdater<User> ageUpdater = 
+        AtomicIntegerFieldUpdater.newUpdater(User.class, "age");
+    
+    public static void main(String[] args) {
+        User user = new User("Alice", 25);
+        System.out.println("初始用户: " + user);
+        
+        // 比较并设置
+        boolean success = ageUpdater.compareAndSet(user, 25, 26);
+        System.out.println("CAS操作成功: " + success);
+        System.out.println("更新后: " + user);
+        
+        // 获取并递增
+        int oldAge = ageUpdater.getAndIncrement(user);
+        System.out.println("递增前年龄: " + oldAge + ", 递增后: " + user.getAge());
+        
+        // 获取并设置
+        oldAge = ageUpdater.getAndSet(user, 30);
+        System.out.println("设置前年龄: " + oldAge + ", 设置后: " + user.getAge());
+        
+        // 递增并获取
+        int newAge = ageUpdater.incrementAndGet(user);
+        System.out.println("递增后年龄: " + newAge);
+        
+        // 添加并获取
+        newAge = ageUpdater.addAndGet(user, 5);
+        System.out.println("添加后年龄: " + newAge);
+    }
+}
+```
+
+## 原子类最佳实践
+
+### 1. 选择合适的原子类
+
+```java
+// 原子类选择指南
+public class AtomicClassSelectionGuide {
+    
+    // 场景1：计数器
+    public void counterScenario() {
+        `AtomicInteger counter = new AtomicInteger(0);` // 推荐
+        // 用于统计、ID生成等
+    }
+    
+    // 场景2：标志位
+    public void flagScenario() {
+        `AtomicBoolean flag = new AtomicBoolean(false);` // 推荐
+        // 用于开关控制、状态标记等
+    }
+    
+    // 场景3：对象引用
+    public void referenceScenario() {
+        `AtomicReference<User> userRef = new AtomicReference<>();` // 推荐
+        // 用于对象引用的原子更新
+    }
+    
+    // 场景4：避免ABA问题
+    public void abaScenario() {
+        `AtomicStampedReference<String> ref = new AtomicStampedReference<>("A", 1);` // 推荐
+        // 用于需要版本控制的场景
+    }
+    
+    // 场景5：数组操作
+    public void arrayScenario() {
+        `AtomicIntegerArray array = new AtomicIntegerArray(10);` // 推荐
+        // 用于数组元素的原子操作
+    }
+}
+```
+
+### 2. 性能优化技巧
+
+```java
+// 原子类性能优化
+public class AtomicClassOptimization {
+    
+    // 1. 避免频繁的CAS操作
+    public void avoidFrequentCAS() {
+        AtomicInteger counter = new AtomicInteger(0);
+        
+        // 不好的做法：频繁CAS
+        for (int i = 0; i < 1000; i++) {
+            counter.incrementAndGet();
+        }
+        
+        // 好的做法：批量更新
+        counter.addAndGet(1000);
+    }
+    
+    // 2. 使用合适的原子类
+    public void useAppropriateAtomicClass() {
+        // 对于简单的布尔标志，使用AtomicBoolean
+        AtomicBoolean flag = new AtomicBoolean(false);
+        
+        // 对于计数器，使用AtomicInteger
+        AtomicInteger counter = new AtomicInteger(0);
+        
+        // 对于对象引用，使用AtomicReference
+        AtomicReference<String> ref = new AtomicReference<>("initial");
+    }
+    
+    // 3. 避免ABA问题
+    public void avoidABAProblem() {
+        // 使用AtomicStampedReference
+        AtomicStampedReference<String> ref = new AtomicStampedReference<>("A", 1);
+        
+        // 或者使用AtomicMarkableReference
+        AtomicMarkableReference<String> markableRef = new AtomicMarkableReference<>("A", false);
+    }
+}
+```
+
+## 面试题
+
+### 1. 原子类的作用是什么？
+
+原子类提供了一组线程安全的工具类，基于CAS操作实现，无需使用synchronized关键字，性能更好。
+
+### 2. CAS操作的原理是什么？
+
+CAS（Compare-And-Swap）操作包含三个操作数：
+- 内存位置V
+- 期望值A
+- 新值B
+
+只有当V的值等于A时，才会将V的值设置为B，否则不做任何操作。
+
+### 3. 原子类的优缺点？
+
+**优点**：
+- 线程安全，无需同步
+- 性能高，无阻塞
+- 使用简单
+
+**缺点**：
+- 只能保证单个变量的原子性
+- 可能出现ABA问题
+- 自旋等待可能消耗CPU
+
+### 4. ABA问题是什么？如何解决？
+
+**ABA问题**：
+- 线程1读取值为A
+- 线程2将A改为B，再改回A
+- 线程1的CAS操作成功，但值可能已经发生了变化
+
+**解决方案**：
+- 使用AtomicStampedReference（版本号）
+- 使用AtomicMarkableReference（标记位）
+
+### 5. 原子类和synchronized的区别？
+
+**原子类**：
+- 基于CAS操作
+- 无阻塞，性能好
+- 只能保证单个变量原子性
+
+**synchronized**：
+- 基于锁机制
+- 可能阻塞线程
+- 可以保证代码块原子性
+
+### 6. 常用的原子类有哪些？
+
+1. **基本类型**：AtomicInteger、AtomicLong、AtomicBoolean
+2. **引用类型**：AtomicReference、AtomicStampedReference
+3. **数组类型**：AtomicIntegerArray、AtomicLongArray
+4. **字段更新器**：AtomicIntegerFieldUpdater等
+
+### 7. 原子类的性能特点？
+
+- **高并发**：CAS操作性能优于锁
+- **无阻塞**：不会导致线程阻塞
+- **自旋等待**：失败时可能自旋重试
+- **CPU消耗**：高竞争时可能消耗CPU
+
+### 8. 如何选择合适的原子类？
+
+- **计数器**：AtomicInteger
+- **标志位**：AtomicBoolean
+- **对象引用**：AtomicReference
+- **避免ABA**：AtomicStampedReference
+- **数组操作**：AtomicIntegerArray
+
+### 9. 原子类的使用场景？
+
+1. **计数器**：访问统计、ID生成
+2. **标志位**：开关控制、状态标记
+3. **对象引用**：缓存更新、配置管理
+4. **数组操作**：并发数组修改
+
+### 10. 原子类的最佳实践？
+
+1. **选择合适的原子类**：根据数据类型选择
+2. **避免ABA问题**：使用带版本号的原子类
+3. **减少CAS操作**：批量更新而不是频繁CAS
+4. **注意性能**：高竞争时考虑其他方案
+5. **正确使用**：理解CAS操作的语义

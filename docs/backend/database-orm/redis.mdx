@@ -1,0 +1,714 @@
+---
+sidebar_position: 3
+title: "Redis"
+description: "Redis缓存数据库应用"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Redis
+
+Redis是一个开源的内存数据结构存储系统，可以用作数据库、缓存和消息中间件。它支持多种数据结构，具有高性能、高可用性和丰富的功能特性。
+
+## 数据类型
+
+### 1. String（字符串）
+
+```bash
+# 基本操作
+SET key value
+GET key
+DEL key
+EXISTS key
+
+# 示例
+SET user:1 "John Doe"
+GET user:1
+SET counter 0
+INCR counter
+DECR counter
+
+# 批量操作
+MSET key1 value1 key2 value2
+MGET key1 key2
+
+# 过期时间
+SETEX key 60 value  # 60秒后过期
+TTL key  # 查看剩余时间
+```
+
+### 2. Hash（哈希）
+
+```bash
+# 基本操作
+HSET user:1 name "John"
+HSET user:1 age 25
+HSET user:1 email "john@example.com"
+
+HGET user:1 name
+HGETALL user:1
+HDEL user:1 age
+
+# 批量操作
+HMSET user:1 name "John" age 25 email "john@example.com"
+HMGET user:1 name age email
+
+# 检查字段是否存在
+HEXISTS user:1 name
+
+# 获取所有字段名或值
+HKEYS user:1
+HVALS user:1
+```
+
+### 3. List（列表）
+
+```bash
+# 基本操作
+LPUSH mylist "item1"
+RPUSH mylist "item2"
+LPOP mylist
+RPOP mylist
+
+# 获取列表元素
+LRANGE mylist 0 -1  # 获取所有元素
+LINDEX mylist 0     # 获取第一个元素
+LLEN mylist         # 获取列表长度
+
+# 插入和删除
+LINSERT mylist BEFORE "item2" "newitem"
+LREM mylist 1 "item1"  # 删除1个"item1"
+
+# 阻塞操作
+BLPOP mylist 10  # 阻塞10秒等待左端弹出
+BRPOP mylist 10  # 阻塞10秒等待右端弹出
+```
+
+### 4. Set（集合）
+
+```bash
+# 基本操作
+SADD myset "member1"
+SADD myset "member2" "member3"
+SMEMBERS myset
+SISMEMBER myset "member1"
+
+# 集合运算
+SADD set1 "a" "b" "c"
+SADD set2 "b" "c" "d"
+SINTER set1 set2      # 交集
+SUNION set1 set2      # 并集
+SDIFF set1 set2       # 差集
+
+# 删除和计数
+SREM myset "member1"
+SCARD myset  # 获取集合大小
+```
+
+### 5. Sorted Set（有序集合）
+
+```bash
+# 基本操作
+ZADD leaderboard 100 "player1"
+ZADD leaderboard 200 "player2" 150 "player3"
+ZRANGE leaderboard 0 -1 WITHSCORES
+ZREVRANGE leaderboard 0 -1 WITHSCORES
+
+# 按分数范围查询
+ZRANGEBYSCORE leaderboard 100 200
+ZREVRANGEBYSCORE leaderboard 200 100
+
+# 排名和分数
+ZRANK leaderboard "player1"      # 正序排名
+ZREVRANK leaderboard "player1"   # 倒序排名
+ZSCORE leaderboard "player1"     # 获取分数
+
+# 删除和计数
+ZREM leaderboard "player1"
+ZCARD leaderboard  # 获取集合大小
+```
+
+### 6. 其他数据类型
+
+```bash
+# Bitmap（位图）
+SETBIT user:1:online 0 1
+GETBIT user:1:online 0
+BITCOUNT user:1:online
+
+# HyperLogLog（基数统计）
+PFADD hll "user1" "user2" "user3"
+PFCOUNT hll
+PFMERGE hll1 hll2 hll3
+
+# Stream（流）
+XADD mystream * field1 value1 field2 value2
+XREAD COUNT 10 STREAMS mystream 0
+XRANGE mystream - +
+```
+
+## 持久化
+
+### 1. RDB（Redis Database）
+
+```bash
+# 配置RDB
+# redis.conf
+save 900 1      # 900秒内至少1个key变化
+save 300 10     # 300秒内至少10个key变化
+save 60 10000   # 60秒内至少10000个key变化
+
+# 手动触发RDB
+BGSAVE  # 后台保存
+SAVE    # 同步保存（阻塞）
+
+# 配置RDB文件
+dbfilename dump.rdb
+dir /var/lib/redis/
+```
+
+### 2. AOF（Append Only File）
+
+```bash
+# 配置AOF
+# redis.conf
+appendonly yes
+appendfilename "appendonly.aof"
+
+# AOF重写策略
+appendfsync always    # 每次写入都同步
+appendfsync everysec  # 每秒同步一次
+appendfsync no        # 由操作系统决定
+
+# 手动触发AOF重写
+BGREWRITEAOF
+```
+
+### 3. 混合持久化
+
+```bash
+# 启用混合持久化
+aof-use-rdb-preamble yes
+
+# 配置AOF重写触发条件
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+```
+
+## 集群模式
+
+### 1. 主从复制
+
+```bash
+# 主节点配置
+# redis.conf (master)
+bind 127.0.0.1
+port 6379
+
+# 从节点配置
+# redis.conf (slave)
+bind 127.0.0.1
+port 6380
+slaveof 127.0.0.1 6379
+
+# 动态设置主从
+SLAVEOF 127.0.0.1 6379
+SLAVEOF NO ONE  # 取消主从关系
+```
+
+### 2. Sentinel（哨兵）
+
+```bash
+# Sentinel配置
+# sentinel.conf
+port 26379
+sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 10000
+sentinel parallel-syncs mymaster 1
+
+# 启动Sentinel
+redis-sentinel sentinel.conf
+```
+
+### 3. Cluster（集群）
+
+```bash
+# 集群节点配置
+# redis.conf
+port 7000
+cluster-enabled yes
+cluster-config-file nodes-7000.conf
+cluster-node-timeout 5000
+
+# 创建集群
+redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 \
+127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 --cluster-replicas 1
+
+# 集群操作
+redis-cli -c -p 7000
+CLUSTER INFO
+CLUSTER NODES
+CLUSTER SLOTS
+```
+
+## 缓存策略
+
+### 1. 缓存更新策略
+
+```java
+// 1. Cache-Aside（旁路缓存）
+@Service
+public class UserService {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private RedisTemplate<String, User> redisTemplate;
+    
+    public User getUserById(Long id) {
+        // 先查缓存
+        String key = "user:" + id;
+        User user = redisTemplate.opsForValue().get(key);
+        
+        if (user != null) {
+            return user;
+        }
+        
+        // 缓存未命中，查数据库
+        user = userRepository.findById(id).orElse(null);
+        
+        if (user != null) {
+            // 写入缓存
+            redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+        }
+        
+        return user;
+    }
+    
+    public void updateUser(User user) {
+        // 先更新数据库
+        userRepository.save(user);
+        
+        // 删除缓存
+        String key = "user:" + user.getId();
+        redisTemplate.delete(key);
+    }
+}
+
+// 2. Write-Through（直写）
+@Service
+public class UserService {
+    
+    public void updateUser(User user) {
+        // 同时更新数据库和缓存
+        userRepository.save(user);
+        
+        String key = "user:" + user.getId();
+        redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+    }
+}
+
+// 3. Write-Behind（异步写入）
+@Service
+public class UserService {
+    
+    @Async
+    public void updateUserAsync(User user) {
+        // 先更新缓存
+        String key = "user:" + user.getId();
+        redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+        
+        // 异步更新数据库
+        userRepository.save(user);
+    }
+}
+```
+
+### 2. 缓存穿透、击穿、雪崩
+
+```java
+// 1. 缓存穿透解决方案
+@Service
+public class UserService {
+    
+    public User getUserById(Long id) {
+        String key = "user:" + id;
+        User user = redisTemplate.opsForValue().get(key);
+        
+        if (user != null) {
+            return user;
+        }
+        
+        // 布隆过滤器检查
+        if (!bloomFilter.mightContain(id)) {
+            return null;
+        }
+        
+        // 查询数据库
+        user = userRepository.findById(id).orElse(null);
+        
+        if (user != null) {
+            redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+        } else {
+            // 缓存空值，防止缓存穿透
+            redisTemplate.opsForValue().set(key, null, Duration.ofMinutes(5));
+        }
+        
+        return user;
+    }
+}
+
+// 2. 缓存击穿解决方案
+@Service
+public class UserService {
+    
+    private final Map<String, ReentrantLock> locks = new ConcurrentHashMap<>();
+    
+    public User getUserById(Long id) {
+        String key = "user:" + id;
+        User user = redisTemplate.opsForValue().get(key);
+        
+        if (user != null) {
+            return user;
+        }
+        
+        // 获取锁
+        ReentrantLock lock = locks.computeIfAbsent(key, k -> new ReentrantLock());
+        lock.lock();
+        
+        try {
+            // 双重检查
+            user = redisTemplate.opsForValue().get(key);
+            if (user != null) {
+                return user;
+            }
+            
+            // 查询数据库
+            user = userRepository.findById(id).orElse(null);
+            
+            if (user != null) {
+                redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+            }
+            
+            return user;
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+// 3. 缓存雪崩解决方案
+@Service
+public class UserService {
+    
+    public User getUserById(Long id) {
+        String key = "user:" + id;
+        User user = redisTemplate.opsForValue().get(key);
+        
+        if (user != null) {
+            return user;
+        }
+        
+        // 查询数据库
+        user = userRepository.findById(id).orElse(null);
+        
+        if (user != null) {
+            // 随机过期时间，避免同时过期
+            long expireTime = Duration.ofMinutes(30).toSeconds() + 
+                            new Random().nextInt(300); // 随机增加0-5分钟
+            redisTemplate.opsForValue().set(key, user, Duration.ofSeconds(expireTime));
+        }
+        
+        return user;
+    }
+}
+```
+
+### 3. 缓存预热和降级
+
+```java
+// 1. 缓存预热
+@Component
+public class CacheWarmUp {
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private RedisTemplate<String, User> redisTemplate;
+    
+    @PostConstruct
+    public void warmUp() {
+        // 系统启动时预热热点数据
+        List<User> hotUsers = userService.getHotUsers();
+        
+        for (User user : hotUsers) {
+            String key = "user:" + user.getId();
+            redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+        }
+    }
+}
+
+// 2. 缓存降级
+@Service
+public class UserService {
+    
+    @HystrixCommand(fallbackMethod = "getUserByIdFallback")
+    public User getUserById(Long id) {
+        String key = "user:" + id;
+        User user = redisTemplate.opsForValue().get(key);
+        
+        if (user != null) {
+            return user;
+        }
+        
+        // 查询数据库
+        user = userRepository.findById(id).orElse(null);
+        
+        if (user != null) {
+            redisTemplate.opsForValue().set(key, user, Duration.ofMinutes(30));
+        }
+        
+        return user;
+    }
+    
+    public User getUserByIdFallback(Long id) {
+        // 降级策略：返回默认用户或从本地缓存获取
+        return new User();
+    }
+}
+```
+
+## 分布式锁
+
+### 1. 基于Redis的分布式锁
+
+```java
+// 1. 简单分布式锁
+@Service
+public class DistributedLockService {
+    
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    
+    public boolean tryLock(String key, String value, long expireTime) {
+        Boolean result = redisTemplate.opsForValue()
+                .setIfAbsent(key, value, Duration.ofSeconds(expireTime));
+        return Boolean.TRUE.equals(result);
+    }
+    
+    public boolean releaseLock(String key, String value) {
+        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+                       "return redis.call('del', KEYS[1]) " +
+                       "else return 0 end";
+        
+        Long result = redisTemplate.execute(
+            new DefaultRedisScript<>(script, Long.class),
+            Collections.singletonList(key),
+            value
+        );
+        
+        return Long.valueOf(1).equals(result);
+    }
+}
+
+// 2. Redisson分布式锁
+@Service
+public class RedissonLockService {
+    
+    @Autowired
+    private RedissonClient redissonClient;
+    
+    public void executeWithLock(String lockKey, Runnable task) {
+        RLock lock = redissonClient.getLock(lockKey);
+        
+        try {
+            // 尝试获取锁，等待10秒，锁过期时间30秒
+            if (lock.tryLock(10, 30, TimeUnit.SECONDS)) {
+                try {
+                    task.run();
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                throw new RuntimeException("获取锁失败");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("获取锁被中断", e);
+        }
+    }
+}
+
+// 3. 分布式锁工具类
+@Component
+public class DistributedLockUtil {
+    
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    
+    public <T> T executeWithLock(String lockKey, long expireTime, Supplier<T> supplier) {
+        String lockValue = UUID.randomUUID().toString();
+        
+        try {
+            if (tryLock(lockKey, lockValue, expireTime)) {
+                return supplier.get();
+            } else {
+                throw new RuntimeException("获取分布式锁失败");
+            }
+        } finally {
+            releaseLock(lockKey, lockValue);
+        }
+    }
+    
+    private boolean tryLock(String key, String value, long expireTime) {
+        Boolean result = redisTemplate.opsForValue()
+                .setIfAbsent(key, value, Duration.ofSeconds(expireTime));
+        return Boolean.TRUE.equals(result);
+    }
+    
+    private boolean releaseLock(String key, String value) {
+        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+                       "return redis.call('del', KEYS[1]) " +
+                       "else return 0 end";
+        
+        Long result = redisTemplate.execute(
+            new DefaultRedisScript<>(script, Long.class),
+            Collections.singletonList(key),
+            value
+        );
+        
+        return Long.valueOf(1).equals(result);
+    }
+}
+```
+
+### 2. 分布式锁应用场景
+
+```java
+// 1. 库存扣减
+@Service
+public class InventoryService {
+    
+    @Autowired
+    private DistributedLockUtil lockUtil;
+    
+    public boolean deductStock(Long productId, int quantity) {
+        String lockKey = "inventory:lock:" + productId;
+        
+        return lockUtil.executeWithLock(lockKey, 30, () -> {
+            // 查询库存
+            Integer stock = getStock(productId);
+            
+            if (stock >= quantity) {
+                // 扣减库存
+                updateStock(productId, stock - quantity);
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
+}
+
+// 2. 秒杀系统
+@Service
+public class SeckillService {
+    
+    @Autowired
+    private DistributedLockUtil lockUtil;
+    
+    public boolean seckill(Long productId, Long userId) {
+        String lockKey = "seckill:lock:" + productId;
+        
+        return lockUtil.executeWithLock(lockKey, 10, () -> {
+            // 检查是否已购买
+            if (hasPurchased(productId, userId)) {
+                return false;
+            }
+            
+            // 检查库存
+            if (getStock(productId) <= 0) {
+                return false;
+            }
+            
+            // 执行秒杀
+            deductStock(productId, 1);
+            recordPurchase(productId, userId);
+            
+            return true;
+        });
+    }
+}
+
+// 3. 分布式计数器
+@Service
+public class CounterService {
+    
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    
+    public long increment(String counterKey) {
+        String lockKey = "counter:lock:" + counterKey;
+        
+        return lockUtil.executeWithLock(lockKey, 5, () -> {
+            String value = redisTemplate.opsForValue().get(counterKey);
+            long currentValue = value == null ? 0 : Long.parseLong(value);
+            long newValue = currentValue + 1;
+            
+            redisTemplate.opsForValue().set(counterKey, String.valueOf(newValue));
+            return newValue;
+        });
+    }
+}
+```
+
+## 面试题
+
+### 1. Redis的数据类型有哪些？
+
+**答案：**
+- String：字符串，可以存储文本、数字、二进制数据
+- Hash：哈希表，适合存储对象
+- List：列表，支持双向操作
+- Set：集合，无序且不重复
+- Sorted Set：有序集合，支持排序
+- Bitmap：位图，适合统计
+- HyperLogLog：基数统计
+- Stream：流，适合消息队列
+
+### 2. Redis的持久化方式有哪些？
+
+**答案：**
+- RDB：快照持久化，定期将内存数据保存到文件
+- AOF：追加日志，记录每个写操作
+- 混合持久化：结合RDB和AOF的优点
+- RDB适合备份和恢复，AOF适合数据安全性
+
+### 3. Redis集群模式有哪些？
+
+**答案：**
+- 主从复制：一主多从，读写分离
+- Sentinel：哨兵模式，自动故障转移
+- Cluster：集群模式，分片存储
+- 主从复制适合读写分离，Cluster适合大数据量
+
+### 4. 如何解决缓存穿透、击穿、雪崩？
+
+**答案：**
+- 缓存穿透：布隆过滤器、缓存空值
+- 缓存击穿：互斥锁、热点数据永不过期
+- 缓存雪崩：随机过期时间、多级缓存、熔断降级
+
+### 5. Redis分布式锁的实现原理？
+
+**答案：**
+- 使用SET key value NX EX seconds命令
+- 使用Lua脚本保证原子性
+- 设置过期时间防止死锁
+- 使用唯一标识防止误删锁
+- 考虑锁的续期机制 

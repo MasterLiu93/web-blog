@@ -1,0 +1,436 @@
+---
+sidebar_position: 2
+title: "类加载机制"
+description: "Java类加载机制与双亲委派模型"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# 类加载机制
+
+## 类加载过程
+
+Java类加载过程分为以下几个阶段：
+
+### 1. 加载 (Loading)
+
+将字节码文件加载到内存中，并在方法区生成Class对象：
+
+```java
+// 加载阶段的主要工作
+1. 通过类的全限定名获取字节码文件
+2. 将字节码文件转换为方法区内的运行时数据结构
+3. 在内存中生成一个代表这个类的java.lang.Class对象
+```
+
+### 2. 验证 (Verification)
+
+确保字节码文件的正确性：
+
+```java
+// 验证阶段包括
+1. 文件格式验证：魔数、版本号等
+2. 元数据验证：语义分析
+3. 字节码验证：程序逻辑验证
+4. 符号引用验证：常量池中的符号引用
+```
+
+### 3. 准备 (Preparation)
+
+为类变量分配内存并设置初始值：
+
+```java
+public class Test {
+    // 准备阶段：为静态变量分配内存，设置初始值0
+    public static int value = 123;
+    
+    // 准备阶段：为常量分配内存，设置初始值"hello"
+    public static final String CONSTANT = "hello";
+}
+```
+
+### 4. 解析 (Resolution)
+
+将符号引用转换为直接引用：
+
+```java
+// 符号引用：以符号形式表示的引用
+// 直接引用：指向目标的指针、相对偏移量等
+
+// 解析过程
+1. 类或接口的解析
+2. 字段解析
+3. 方法解析
+4. 接口方法解析
+```
+
+### 5. 初始化 (Initialization)
+
+执行类构造器`<clinit>()`方法：
+
+```java
+public class Test {
+    // 静态变量
+    public static int a = 1;
+    
+    // 静态代码块
+    static {
+        a = 2;
+        System.out.println("静态代码块执行");
+    }
+    
+    // 静态方法
+    public static void method() {
+        System.out.println("静态方法");
+    }
+}
+```
+
+### 6. 使用 (Using)
+
+创建对象，调用方法等：
+
+```java
+// 使用阶段
+Test test = new Test();  // 创建对象
+Test.method();           // 调用静态方法
+```
+
+### 7. 卸载 (Unloading)
+
+当类不再被使用时，从内存中卸载：
+
+```java
+// 卸载条件
+1. 该类的所有实例都已被回收
+2. 加载该类的ClassLoader已被回收
+3. 该类对应的Class对象没有在任何地方被引用
+```
+
+## 类加载器
+
+### 启动类加载器 (Bootstrap ClassLoader)
+
+```java
+// 启动类加载器特点
+- 加载Java核心库 (JAVA_HOME/jre/lib/rt.jar)
+- 由C++实现，是JVM的一部分
+- 无法被Java程序直接引用
+- 加载路径：sun.boot.class.path
+```
+
+### 扩展类加载器 (Extension ClassLoader)
+
+```java
+// 扩展类加载器特点
+- 加载Java扩展库 (JAVA_HOME/jre/lib/ext/*.jar)
+- 继承自URLClassLoader
+- 父加载器是启动类加载器
+- 加载路径：java.ext.dirs
+```
+
+### 应用类加载器 (Application ClassLoader)
+
+```java
+// 应用类加载器特点
+- 加载应用程序classpath下的类
+- 继承自URLClassLoader
+- 父加载器是扩展类加载器
+- 是默认的系统类加载器
+```
+
+### 自定义类加载器
+
+```java
+public class CustomClassLoader extends ClassLoader {
+    
+    private String classPath;
+    
+    public CustomClassLoader(String classPath) {
+        this.classPath = classPath;
+    }
+    
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        try {
+            // 读取字节码文件
+            byte[] classData = loadClassData(name);
+            if (classData == null) {
+                throw new ClassNotFoundException();
+            }
+            // 定义类
+            return defineClass(name, classData, 0, classData.length);
+        } catch (Exception e) {
+            throw new ClassNotFoundException();
+        }
+    }
+    
+    private byte[] loadClassData(String name) {
+        try {
+            String fileName = name.replace('.', '/') + ".class";
+            File file = new File(classPath + "/" + fileName);
+            if (!file.exists()) {
+                return null;
+            }
+            
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
+            }
+            return baos.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
+```
+
+## 双亲委派模型
+
+### 工作原理
+
+```java
+// 双亲委派模型的工作流程
+1. 类加载器收到加载请求
+2. 委托给父加载器
+3. 父加载器再委托给其父加载器
+4. 直到启动类加载器
+5. 启动类加载器检查是否能加载
+6. 不能加载则向下委托给子加载器
+7. 直到找到能加载的类加载器
+```
+
+### 实现原理
+
+```java
+public class ClassLoader {
+    
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        synchronized (getClassLoadingLock(name)) {
+            // 1. 检查是否已经加载
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                long t0 = System.nanoTime();
+                try {
+                    // 2. 委托给父加载器
+                    if (parent != null) {
+                        c = parent.loadClass(name, false);
+                    } else {
+                        // 3. 启动类加载器
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    // 父加载器无法加载
+                }
+                
+                if (c == null) {
+                    // 4. 自己尝试加载
+                    long t1 = System.nanoTime();
+                    c = findClass(name);
+                    
+                    // 记录加载时间
+                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
+                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
+                    sun.misc.PerfCounter.getFindClasses().increment();
+                }
+            }
+            
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+    }
+}
+```
+
+### 优势
+
+```java
+// 双亲委派模型的优势
+1. 避免重复加载：父加载器已加载的类，子加载器不会重复加载
+2. 安全性：防止用户自定义的java.lang.String类替换核心类
+3. 统一性：保证Java核心类库的一致性
+```
+
+## 破坏双亲委派模型
+
+### 线程上下文类加载器
+
+```java
+// 使用线程上下文类加载器
+public class ServiceLoader {
+    
+    public static <S> ServiceLoader<S> load(Class<S> service) {
+        // 获取当前线程的上下文类加载器
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return new ServiceLoader<>(service, cl);
+    }
+}
+
+// 设置线程上下文类加载器
+Thread.currentThread().setContextClassLoader(customClassLoader);
+```
+
+### 热部署实现
+
+```java
+public class HotDeployClassLoader extends ClassLoader {
+    
+    private String classPath;
+    private Map<String, Long> classTimeMap = new HashMap<>();
+    
+    public HotDeployClassLoader(String classPath) {
+        this.classPath = classPath;
+    }
+    
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        // 检查是否需要重新加载
+        if (needReload(name)) {
+            return findClass(name);
+        }
+        return super.loadClass(name, resolve);
+    }
+    
+    private boolean needReload(String className) {
+        String classFile = classPath + "/" + className.replace('.', '/') + ".class";
+        File file = new File(classFile);
+        if (!file.exists()) {
+            return false;
+        }
+        
+        long lastModified = file.lastModified();
+        Long cachedTime = classTimeMap.get(className);
+        
+        if (cachedTime == null || cachedTime < lastModified) {
+            classTimeMap.put(className, lastModified);
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+## 类加载器应用场景
+
+### 1. 插件化架构
+
+```java
+// 插件类加载器
+public class PluginClassLoader extends URLClassLoader {
+    
+    public PluginClassLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
+    }
+    
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        // 插件类优先使用自己的类加载器
+        if (name.startsWith("com.plugin.")) {
+            return findClass(name);
+        }
+        return super.loadClass(name);
+    }
+}
+```
+
+### 2. 模块化加载
+
+```java
+// 模块类加载器
+public class ModuleClassLoader extends ClassLoader {
+    
+    private Map<String, Class<?>> moduleClasses = new HashMap<>();
+    
+    public void loadModule(String moduleName, byte[] classData) {
+        try {
+            Class<?> clazz = defineClass(moduleName, classData, 0, classData.length);
+            moduleClasses.put(moduleName, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Class<?> getModuleClass(String moduleName) {
+        return moduleClasses.get(moduleName);
+    }
+}
+```
+
+## 面试题
+
+### 1. 什么是类加载机制？
+
+类加载机制是JVM将字节码文件加载到内存中，并生成Class对象的过程。
+
+### 2. 类加载过程包括哪些阶段？
+
+1. **加载**：将字节码文件加载到内存
+2. **验证**：确保字节码文件的正确性
+3. **准备**：为类变量分配内存并设置初始值
+4. **解析**：将符号引用转换为直接引用
+5. **初始化**：执行类构造器方法
+6. **使用**：创建对象，调用方法
+7. **卸载**：从内存中卸载不再使用的类
+
+### 3. 什么是双亲委派模型？
+
+双亲委派模型是类加载器的工作机制，类加载器收到加载请求时，先委托给父加载器，只有当父加载器无法加载时，才由自己加载。
+
+### 4. 双亲委派模型的优势？
+
+- 避免重复加载
+- 保证安全性
+- 保证Java核心类库的一致性
+
+### 5. 如何破坏双亲委派模型？
+
+- 重写loadClass方法
+- 使用线程上下文类加载器
+- 实现热部署
+
+### 6. 类加载器的种类？
+
+- **启动类加载器**：加载Java核心库
+- **扩展类加载器**：加载Java扩展库
+- **应用类加载器**：加载应用程序classpath下的类
+- **自定义类加载器**：用户自定义的类加载器
+
+### 7. 如何实现自定义类加载器？
+
+继承ClassLoader类，重写findClass方法：
+
+```java
+public class CustomClassLoader extends ClassLoader {
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        // 读取字节码文件
+        byte[] classData = loadClassData(name);
+        // 定义类
+        return defineClass(name, classData, 0, classData.length);
+    }
+}
+```
+
+### 8. 什么情况下会触发类初始化？
+
+- 创建类的实例
+- 访问类的静态变量
+- 调用类的静态方法
+- 反射调用
+- 初始化子类时
+- 包含main方法的类
+
+### 9. 类加载器的隔离性？
+
+不同的类加载器加载的类之间是隔离的，即使类名相同，也会被认为是不同的类。
+
+### 10. 如何实现热部署？
+
+通过自定义类加载器，监控类文件的变化，当文件发生变化时重新加载类。 

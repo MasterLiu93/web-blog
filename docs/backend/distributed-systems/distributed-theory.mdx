@@ -1,0 +1,189 @@
+---
+sidebar_position: 1
+title: "分布式理论"
+description: "分布式系统理论基础与工程取舍"
+authors: [Laby]
+last_update:
+  date: 2025-08-08
+  author: Laby
+---
+
+# 分布式理论
+
+本章系统梳理分布式系统的核心理论与工程取舍，帮助你在设计与落地时做出可解释的权衡。整体结构对齐 `@/java-basics` 的风格：概念 → 原理 → 实战 → 最佳实践 → 常见坑 → 面试题。
+
+## 1. 基本概念与目标
+
+- 可伸缩性（Scalability）：水平扩展节点以获得吞吐与容量增长
+- 高可用（Availability）：故障时服务可继续提供（降级/有限能力）
+- 一致性（Consistency）：副本在读写上的可见性与顺序保证
+- 容错性（Fault tolerance）：网络分区、节点宕机后的继续运行能力
+
+工程上常见目标组合：
+- 写强一致 + 中等可用（CP系）
+- 最终一致 + 高可用（AP系）
+
+## 2. CAP 定理与工程解读
+
+- C（Consistency 一致性）：同一数据在任意副本读取到相同值
+- A（Availability 可用性）：每个请求都能在有限时间内返回（不一定是最新）
+- P（Partition tolerance 分区容错）：出现网络分区时系统仍能对外服务
+
+结论：分区一旦发生（P 必选），只能在 C 与 A 之间二选一。
+
+工程案例：
+- CP：ZooKeeper/Etcd（强一致、Leader 写入、线性一致读）
+- AP：Cassandra/Dynamo 风格（可用优先、最终一致、冲突合并）
+
+实践建议：
+- 数据强约束（如账户余额）选 CP；内容类/统计类选 AP
+- 可按域/边界上下文拆分为“强一致核”与“最终一致边缘”
+
+## 3. BASE 理论与一致性模型
+
+- Basically Available：基本可用（降级、限流、故障转移）
+- Soft state：允许短暂不一致
+- Eventual consistency：最终一致
+
+一致性模型（从强到弱）：
+- 线性一致（Linearizability）：看起来像单机顺序执行
+- 顺序一致（Sequential）：所有操作可重排为同一顺序，单客户端程序次序保留
+- 因果一致（Causal）：尊重因果先后（可用 Vector Clock 表达）
+- 会话一致（Session）：同会话内读到自己的写
+- 最终一致（Eventual）：足够长时间后收敛到同一状态
+
+## 4. 副本、Quorum 与冲突解决
+
+- 多副本提升可用与读吞吐，但引入一致性与冲突问题
+- Quorum 读写：设副本数 N，读 R，写 W，若 R + W > N 则可保证读到最新提交（在单分区前提）
+- 冲突解决：
+  - Last-Write-Wins（需单调时钟，易误判）
+  - 向量时钟（Vector Clock）保留并发写元信息
+  - CRDT（无冲突可复制数据类型）实现自然收敛
+
+```text
+举例（N=3）：
+- 强读：W=2, R=2 ⇒ R+W=4>3，读必覆盖写
+- 偏可用：W=1, R=1 ⇒ 写快，但读可能是旧值
+```
+
+## 5. 共识算法（Paxos / Raft / ZAB）
+
+- Paxos：角色（Proposer/Acceptor/Learner），保证多数派接受即可提交，理论强但工程复杂
+- Raft：通过 Leader 选举、日志复制与提交索引达成强一致，易工程化（Etcd、Consul）
+- ZAB：ZooKeeper 的原子广播协议，崩溃恢复 + 顺序保证
+
+关键机制：
+- 多数派（N/2+1）投票
+- Leader 串行化写，Follower 复制日志
+- 提交索引（commitIndex）与快照（snapshot）避免日志无限增长
+
+## 6. 时间与 ID：单调性与唯一性
+
+- 逻辑时钟：Lamport/Vector（解决部分时序判断）
+- 物理时钟：NTP 可能回拨，避免依赖绝对时刻做强顺序
+- 全局唯一 ID：
+  - 数据库自增（单点）
+  - 号段缓存（批量分配）
+  - Snowflake（时间戳+机房+机器+序列）
+
+```java
+// Snowflake 简化实现（仅示意，注释详尽，注意时钟回拨处理）
+public final class SnowflakeIdGenerator {
+    // 起始纪元（可自定义），31位差不多可覆盖多年
+    private static final long EPOCH = 1577836800000L; // 2020-01-01
+    // 机房ID与机器ID位宽（示例：5+5），序列12位
+    private static final int DATACENTER_BITS = 5;
+    private static final int WORKER_BITS = 5;
+    private static final int SEQUENCE_BITS = 12;
+
+    private static final long MAX_DATACENTER = (1L << DATACENTER_BITS) - 1;
+    private static final long MAX_WORKER = (1L << WORKER_BITS) - 1;
+    private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
+
+    private static final int WORKER_SHIFT = SEQUENCE_BITS;
+    private static final int DATACENTER_SHIFT = SEQUENCE_BITS + WORKER_BITS;
+    private static final int TIMESTAMP_SHIFT = SEQUENCE_BITS + WORKER_BITS + DATACENTER_BITS;
+
+    private final long datacenterId; // 机房ID
+    private final long workerId;     // 机器ID
+
+    private long lastTimestamp = -1L; // 上次生成ID的时间戳
+    private long sequence = 0L;       // 当前毫秒内的序列
+
+    public SnowflakeIdGenerator(long datacenterId, long workerId) {
+        if (datacenterId < 0 || datacenterId > MAX_DATACENTER) {
+            throw new IllegalArgumentException("bad datacenterId");
+        }
+        if (workerId < 0 || workerId > MAX_WORKER) {
+            throw new IllegalArgumentException("bad workerId");
+        }
+        this.datacenterId = datacenterId;
+        this.workerId = workerId;
+    }
+
+    // 线程安全：方法级同步，或使用CAS与自旋保证并发下正确性
+    public synchronized long nextId() {
+        long now = System.currentTimeMillis();
+        if (now < lastTimestamp) {
+            // 时钟回拨：可阻塞等待、抛错或使用回拨窗口序列
+            long offset = lastTimestamp - now;
+            if (offset > 5) { // 超过容忍窗口
+                throw new IllegalStateException("clock moved backwards: " + offset + "ms");
+            }
+            // 退避等待到 lastTimestamp
+            try { Thread.sleep(offset); } catch (InterruptedException ignored) {}
+            now = System.currentTimeMillis();
+        }
+        if (now == lastTimestamp) {
+            // 同一毫秒内自增序列
+            sequence = (sequence + 1) & MAX_SEQUENCE;
+            if (sequence == 0) {
+                // 序列溢出，自旋到下一毫秒
+                do { now = System.currentTimeMillis(); } while (now <= lastTimestamp);
+            }
+        } else {
+            // 新毫秒重置序列
+            sequence = 0L;
+        }
+        lastTimestamp = now;
+        // 组装ID：时间戳高位 + 机房 + 机器 + 序列
+        return ((now - EPOCH) << TIMESTAMP_SHIFT)
+                | (datacenterId << DATACENTER_SHIFT)
+                | (workerId << WORKER_SHIFT)
+                | sequence;
+    }
+}
+```
+
+## 7. 可靠通信与重试（交付语义）
+
+- 至少一次（At-least-once）：可能重复，需幂等与去重
+- 至多一次（At-most-once）：可能丢失，不重复
+- 恰好一次（Exactly-once）：通常依赖事务/幂等键/去重表/事务外盒
+- 重试：指数退避 + 抖动；设置最大尝试次数与超时
+
+## 8. 设计与落地清单（Best Practices）
+
+- 明确一致性需求：强一致/会话一致/最终一致
+- 合理副本数与读写 Quorum，避免 R+W ≤ N
+- Leader 选举超时动态调整，避免“脑裂”与抖动
+- 引入观测：延迟分布（P95/P99）、错误率、饱和度，链路追踪
+- 设计幂等：幂等键、去重表、天然幂等（如PUT覆盖）
+- 规划限流与熔断，避免级联故障
+
+## 9. 常见坑位（Pitfalls）
+
+- 过度依赖物理时钟做顺序：时钟漂移/回拨导致错误
+- 不考虑网络分区：单测 OK，上线即遭遇 CAP 抉择
+- 写扩散与放大：跨分片写导致热点与放大
+- 副本回滚（split brain 后）导致读到旧值
+- 未对幂等/去重做统一抽象，业务散落实现
+
+## 10. 面试题
+
+1. 请解释 CAP，举 CP 与 AP 系统的实际案例，并说明取舍理由
+2. Quorum 条件 R+W>N 能保证什么？在网络分区下有哪些限制
+3. Raft 如何保证日志的一致复制与提交索引的安全性
+4. 何时选择 CRDT？与向量时钟的关系与局限
+5. 设计一个全局唯一 ID 方案，如何处理时钟回拨与热点分配

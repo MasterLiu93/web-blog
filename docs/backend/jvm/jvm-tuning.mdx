@@ -1,0 +1,446 @@
+---
+sidebar_position: 5
+title: "JVM调优"
+description: "JVM性能调优与监控"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# JVM调优
+
+## 调优目标
+
+### 性能指标
+
+```java
+// JVM调优的主要目标
+1. 吞吐量 (Throughput)
+   - 单位时间内处理请求的数量
+   - 目标：最大化吞吐量
+
+2. 响应时间 (Response Time)
+   - 请求从发出到响应的时间
+   - 目标：最小化响应时间
+
+3. 停顿时间 (Pause Time)
+   - GC导致的程序暂停时间
+   - 目标：最小化停顿时间
+
+4. 内存使用率 (Memory Usage)
+   - 堆内存的使用情况
+   - 目标：合理使用内存，避免内存泄漏
+```
+
+### 调优原则
+
+```java
+// JVM调优的基本原则
+1. 先分析，后调优
+   - 使用监控工具分析性能瓶颈
+   - 确定调优目标
+
+2. 逐步调优
+   - 每次只调整一个参数
+   - 观察效果后再调整下一个
+
+3. 监控验证
+   - 调优后要持续监控
+   - 验证调优效果
+
+4. 回归测试
+   - 确保调优不影响功能
+   - 进行压力测试验证
+```
+
+## 调优参数
+
+### 堆内存参数
+
+```bash
+# 堆内存大小设置
+-Xms4g          # 初始堆大小
+-Xmx4g          # 最大堆大小
+
+# 新生代大小设置
+-Xmn1g          # 新生代大小
+-XX:NewRatio=3  # 老年代与新生代比例
+
+# Eden与Survivor比例
+-XX:SurvivorRatio=8  # Eden与Survivor比例
+
+# 大对象阈值
+-XX:PretenureSizeThreshold=1m  # 大于此值的对象直接进入老年代
+```
+
+### 垃圾收集器参数
+
+```bash
+# G1收集器参数
+-XX:+UseG1GC                    # 使用G1收集器
+-XX:MaxGCPauseMillis=200        # 最大停顿时间目标
+-XX:G1HeapRegionSize=16m        # Region大小
+-XX:G1NewSizePercent=30         # 新生代最小比例
+-XX:G1MaxNewSizePercent=60      # 新生代最大比例
+
+# CMS收集器参数
+-XX:+UseConcMarkSweepGC         # 使用CMS收集器
+-XX:CMSInitiatingOccupancyFraction=70  # 触发CMS的阈值
+-XX:+UseCMSInitiatingOccupancyOnly     # 仅使用阈值触发
+-XX:+CMSScavengeBeforeRemark           # 重新标记前进行Young GC
+
+# Parallel收集器参数
+-XX:+UseParallelGC              # 使用Parallel收集器
+-XX:ParallelGCThreads=8         # 并行GC线程数
+-XX:MaxGCPauseMillis=200        # 最大停顿时间目标
+```
+
+### GC日志参数
+
+```bash
+# 开启GC日志
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+-XX:+PrintGCDateStamps
+-Xloggc:gc.log
+
+# 统一日志格式 (Java 9+)
+-Xlog:gc*:file=gc.log:time,uptime:filecount=5,filesize=100M
+
+# GC日志分析
+-XX:+PrintTenuringDistribution  # 打印对象年龄分布
+-XX:+PrintGCApplicationStoppedTime  # 打印应用停顿时间
+```
+
+### 其他调优参数
+
+```bash
+# 线程相关
+-XX:ThreadStackSize=256k        # 线程栈大小
+
+# 直接内存
+-XX:MaxDirectMemorySize=1g      # 直接内存大小
+
+# 元空间
+-XX:MetaspaceSize=256m          # 初始元空间大小
+-XX:MaxMetaspaceSize=512m       # 最大元空间大小
+
+# 字符串去重
+-XX:+UseStringDeduplication     # 开启字符串去重
+
+# 逃逸分析
+-XX:+DoEscapeAnalysis          # 开启逃逸分析
+-XX:+EliminateAllocations      # 开启标量替换
+```
+
+## 监控工具
+
+### JVM自带工具
+
+```bash
+# jps - 查看Java进程
+jps -l
+
+# jstat - 查看JVM统计信息
+jstat -gc <pid> 1000 10        # 每秒输出一次GC统计，共10次
+jstat -gcutil <pid> 1000       # 实时监控GC使用情况
+
+# jmap - 生成堆转储文件
+jmap -dump:format=b,file=heap.hprof <pid>
+jmap -histo <pid>               # 查看堆内存对象统计
+
+# jstack - 生成线程转储
+jstack <pid> > thread.txt
+jstack -F <pid>                 # 强制生成线程转储
+
+# jinfo - 查看和修改JVM参数
+jinfo -flag MaxHeapSize <pid>
+jinfo -flag +PrintGCDetails <pid>
+```
+
+### 可视化工具
+
+```java
+// JVisualVM
+// 功能：内存分析、线程分析、CPU分析
+// 启动：jvisualvm
+
+// JConsole
+// 功能：JMX监控、MBean管理
+// 启动：jconsole
+
+// JProfiler
+// 功能：商业级性能分析工具
+// 特点：CPU分析、内存分析、线程分析
+```
+
+### 第三方工具
+
+```bash
+# MAT (Memory Analyzer Tool)
+# 功能：堆内存分析
+# 下载：https://www.eclipse.org/mat/
+
+# GCViewer
+# 功能：GC日志可视化分析
+# 下载：https://github.com/chewiebug/GCViewer
+
+# GCPlot
+# 功能：在线GC日志分析
+# 网址：https://gcplot.com/
+```
+
+## 调优案例
+
+### 案例1：高并发Web应用
+
+```java
+// 应用场景：高并发Web应用，响应时间要求高
+// 调优目标：降低响应时间，减少GC停顿
+
+// JVM参数配置
+-server
+-Xms4g -Xmx4g
+-Xmn1g
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=100
+-XX:G1HeapRegionSize=16m
+-XX:G1NewSizePercent=30
+-XX:G1MaxNewSizePercent=60
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+-Xloggc:gc.log
+-XX:+UseGCLogFileRotation
+-XX:NumberOfGCLogFiles=5
+-XX:GCLogFileSize=100M
+```
+
+### 案例2：大数据处理应用
+
+```java
+// 应用场景：大数据批处理，吞吐量要求高
+// 调优目标：提高吞吐量，允许较长停顿时间
+
+// JVM参数配置
+-server
+-Xms8g -Xmx8g
+-Xmn2g
+-XX:+UseParallelGC
+-XX:ParallelGCThreads=8
+-XX:MaxGCPauseMillis=500
+-XX:GCTimeRatio=99
+-XX:+PrintGCDetails
+-XX:+PrintGCTimeStamps
+-Xloggc:gc.log
+```
+
+### 案例3：内存密集型应用
+
+```java
+// 应用场景：内存密集型应用，内存使用率高
+// 调优目标：优化内存使用，避免OOM
+
+// JVM参数配置
+-server
+-Xms16g -Xmx16g
+-Xmn4g
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:G1HeapRegionSize=32m
+-XX:+PrintGCDetails
+-XX:+PrintTenuringDistribution
+-XX:+PrintGCApplicationStoppedTime
+-Xloggc:gc.log
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=./heapdump.hprof
+```
+
+## 性能分析
+
+### GC分析
+
+```java
+// GC日志分析要点
+1. GC频率
+   - Young GC频率是否过高
+   - Full GC频率是否过高
+
+2. GC停顿时间
+   - 平均停顿时间
+   - 最大停顿时间
+
+3. 内存使用情况
+   - 堆内存使用率
+   - 老年代使用率
+
+4. 对象分配情况
+   - 对象分配速率
+   - 对象存活时间
+```
+
+### 内存泄漏分析
+
+```java
+// 内存泄漏排查步骤
+1. 使用jmap生成堆转储文件
+   jmap -dump:format=b,file=heap.hprof <pid>
+
+2. 使用MAT分析堆转储文件
+   - 查看大对象
+   - 分析对象引用关系
+   - 查找内存泄漏点
+
+3. 常见内存泄漏原因
+   - 静态集合持有对象引用
+   - 监听器未正确移除
+   - 数据库连接未关闭
+   - 内部类持有外部类引用
+```
+
+### 线程分析
+
+```java
+// 线程问题分析
+1. 使用jstack生成线程转储
+   jstack <pid> > thread.txt
+
+2. 分析线程状态
+   - RUNNABLE：运行中
+   - BLOCKED：阻塞
+   - WAITING：等待
+   - TIMED_WAITING：超时等待
+
+3. 常见线程问题
+   - 死锁
+   - 线程饥饿
+   - 线程过多
+```
+
+## 调优最佳实践
+
+### 调优流程
+
+```java
+// 标准调优流程
+1. 性能测试
+   - 确定基准性能
+   - 识别性能瓶颈
+
+2. 监控分析
+   - 使用监控工具收集数据
+   - 分析性能瓶颈原因
+
+3. 参数调优
+   - 根据分析结果调整参数
+   - 逐步优化
+
+4. 验证测试
+   - 验证调优效果
+   - 回归测试确保功能正常
+
+5. 持续监控
+   - 生产环境持续监控
+   - 及时发现性能问题
+```
+
+### 常见问题解决
+
+```java
+// 问题1：频繁Young GC
+// 原因：新生代太小
+// 解决：增加新生代大小
+-XX:NewSize=1g
+-XX:MaxNewSize=1g
+
+// 问题2：频繁Full GC
+// 原因：老年代太小或内存泄漏
+// 解决：增加老年代大小或排查内存泄漏
+-XX:OldSize=3g
+
+// 问题3：GC停顿时间过长
+// 原因：堆内存太大或收集器不合适
+// 解决：使用G1收集器或调整堆大小
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+
+// 问题4：内存使用率过高
+// 原因：内存泄漏或堆内存不足
+// 解决：排查内存泄漏或增加堆内存
+```
+
+## 面试题
+
+### 1. JVM调优的目标是什么？
+
+- **吞吐量**：单位时间内处理请求的数量
+- **响应时间**：请求从发出到响应的时间
+- **停顿时间**：GC导致的程序暂停时间
+- **内存使用率**：合理使用内存，避免内存泄漏
+
+### 2. 如何选择垃圾收集器？
+
+- **响应时间要求高**：G1、ZGC
+- **吞吐量要求高**：Parallel Scavenge + Parallel Old
+- **内存较小**：Serial收集器
+- **内存较大**：G1、ZGC
+
+### 3. 如何分析GC日志？
+
+1. **查看GC频率**：Young GC和Full GC的频率
+2. **分析停顿时间**：平均停顿时间和最大停顿时间
+3. **检查内存使用**：堆内存使用率和老年代使用率
+4. **观察对象分配**：对象分配速率和存活时间
+
+### 4. 如何排查内存泄漏？
+
+1. **使用jmap生成堆转储文件**
+2. **使用MAT分析堆转储文件**
+3. **查看大对象和对象引用关系**
+4. **常见原因**：静态集合、监听器、数据库连接、内部类
+
+### 5. 如何设置堆内存大小？
+
+- **初始堆大小**：-Xms，建议与最大堆大小相同
+- **最大堆大小**：-Xmx，根据应用需求设置
+- **新生代大小**：-Xmn，通常为堆大小的1/4到1/3
+
+### 6. G1收集器的调优参数？
+
+```bash
+-XX:+UseG1GC                    # 使用G1收集器
+-XX:MaxGCPauseMillis=200        # 最大停顿时间目标
+-XX:G1HeapRegionSize=16m        # Region大小
+-XX:G1NewSizePercent=30         # 新生代最小比例
+-XX:G1MaxNewSizePercent=60      # 新生代最大比例
+```
+
+### 7. 如何监控JVM性能？
+
+- **jstat**：查看GC统计信息
+- **jmap**：生成堆转储文件
+- **jstack**：生成线程转储
+- **JVisualVM**：可视化监控工具
+- **JProfiler**：商业级性能分析工具
+
+### 8. 常见的JVM调优误区？
+
+1. **盲目增加堆内存**：可能导致GC停顿时间过长
+2. **过度优化**：可能影响系统稳定性
+3. **忽略监控**：调优后不持续监控
+4. **参数照搬**：不同应用场景需要不同参数
+
+### 9. 如何评估调优效果？
+
+1. **性能测试**：对比调优前后的性能指标
+2. **监控验证**：持续监控系统运行状态
+3. **回归测试**：确保功能正常
+4. **压力测试**：验证系统稳定性
+
+### 10. 生产环境调优注意事项？
+
+1. **逐步调优**：每次只调整一个参数
+2. **备份配置**：保留原始配置
+3. **监控告警**：设置性能监控告警
+4. **回滚方案**：准备回滚方案
+5. **文档记录**：记录调优过程和效果 

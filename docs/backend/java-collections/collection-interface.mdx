@@ -1,0 +1,618 @@
+---
+sidebar_position: 5
+title: "Collection接口"
+description: "Java Collection接口详解"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# Collection接口
+
+## Collection接口概述
+
+Collection是Java集合框架的根接口，它定义了集合的基本操作。所有的集合类都实现了这个接口。
+
+### Collection接口特点
+
+```java
+// Collection接口的主要特点
+1. 根接口：所有集合类的父接口
+2. 基本操作：定义了集合的基本操作方法
+3. 泛型支持：支持泛型，保证类型安全
+4. 迭代支持：提供了迭代器支持
+```
+
+### Collection接口方法
+
+```java
+// Collection接口的核心方法
+public interface Collection<E> extends Iterable<E> {
+    // 基本操作
+    boolean add(E e);                          // 添加元素
+    boolean remove(Object o);                  // 删除元素
+    boolean contains(Object o);                // 是否包含指定元素
+    
+    // 批量操作
+    boolean addAll(Collection<? extends E> c); // 添加集合
+    boolean removeAll(Collection<?> c);        // 删除集合
+    boolean retainAll(Collection<?> c);        // 保留集合
+    void clear();                              // 清空集合
+    
+    // 查询操作
+    int size();                                // 获取元素个数
+    boolean isEmpty();                         // 判断是否为空
+    
+    // 迭代器
+    Iterator<E> iterator();                    // 获取迭代器
+    
+    // 数组转换
+    Object[] toArray();                        // 转换为Object数组
+    <T> T[] toArray(T[] a);                   // 转换为指定类型数组
+}
+```
+
+## Collection接口实现类
+
+### 主要实现类
+
+```java
+// Collection接口的主要实现类
+1. List接口实现类：
+   - ArrayList：基于动态数组
+   - LinkedList：基于双向链表
+   - Vector：线程安全的动态数组
+   - Stack：后进先出的栈
+
+2. Set接口实现类：
+   - HashSet：基于哈希表
+   - LinkedHashSet：保持插入顺序的HashSet
+   - TreeSet：基于红黑树的有序Set
+   - EnumSet：专门用于枚举的Set
+
+3. Queue接口实现类：
+   - LinkedList：可以作为队列使用
+   - PriorityQueue：优先级队列
+   - ArrayBlockingQueue：有界阻塞队列
+   - LinkedBlockingQueue：链表阻塞队列
+```
+
+### Collection接口使用示例
+
+```java
+// Collection基本使用
+public class CollectionExample {
+    public static void main(String[] args) {
+        // 创建Collection
+        Collection<String> collection = new ArrayList<>();
+        
+        // 添加元素
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+        
+        // 检查元素
+        boolean contains = collection.contains("Java");
+        System.out.println("是否包含Java: " + contains);
+        
+        // 删除元素
+        boolean removed = collection.remove("C++");
+        System.out.println("是否删除成功: " + removed);
+        
+        // 获取大小
+        int size = collection.size();
+        System.out.println("集合大小: " + size);
+        
+        // 判断是否为空
+        boolean isEmpty = collection.isEmpty();
+        System.out.println("是否为空: " + isEmpty);
+        
+        // 遍历集合
+        for (String item : collection) {
+            System.out.println(item);
+        }
+        
+        // 转换为数组
+        Object[] array = collection.toArray();
+        String[] stringArray = collection.toArray(new String[0]);
+        
+        // 清空集合
+        collection.clear();
+        System.out.println("清空后大小: " + collection.size());
+    }
+}
+```
+
+## 批量操作
+
+### 批量操作方法
+
+```java
+// 批量操作示例
+public class BatchOperationsExample {
+    public static void main(String[] args) {
+        Collection<String> collection1 = new ArrayList<>();
+        collection1.add("Java");
+        collection1.add("Python");
+        collection1.add("C++");
+        
+        Collection<String> collection2 = new ArrayList<>();
+        collection2.add("JavaScript");
+        collection2.add("Go");
+        collection2.add("Java");
+        
+        // 批量添加
+        boolean added = collection1.addAll(collection2);
+        System.out.println("批量添加结果: " + added);
+        System.out.println("添加后: " + collection1);
+        
+        // 批量删除
+        Collection<String> toRemove = Arrays.asList("Java", "Python");
+        boolean removed = collection1.removeAll(toRemove);
+        System.out.println("批量删除结果: " + removed);
+        System.out.println("删除后: " + collection1);
+        
+        // 保留交集
+        Collection<String> toRetain = Arrays.asList("C++", "JavaScript");
+        boolean retained = collection1.retainAll(toRetain);
+        System.out.println("保留交集结果: " + retained);
+        System.out.println("保留后: " + collection1);
+    }
+}
+```
+
+### 集合运算
+
+```java
+// 集合运算示例
+public class SetOperationsExample {
+    public static void main(String[] args) {
+        Collection<String> set1 = new HashSet<>();
+        set1.add("Java");
+        set1.add("Python");
+        set1.add("C++");
+        
+        Collection<String> set2 = new HashSet<>();
+        set2.add("Python");
+        set2.add("JavaScript");
+        set2.add("Go");
+        
+        // 并集
+        Collection<String> union = new HashSet<>(set1);
+        union.addAll(set2);
+        System.out.println("并集: " + union);
+        
+        // 交集
+        Collection<String> intersection = new HashSet<>(set1);
+        intersection.retainAll(set2);
+        System.out.println("交集: " + intersection);
+        
+        // 差集
+        Collection<String> difference = new HashSet<>(set1);
+        difference.removeAll(set2);
+        System.out.println("差集: " + difference);
+    }
+}
+```
+
+## 迭代器
+
+### Iterator接口
+
+```java
+// Iterator接口方法
+public interface Iterator<E> {
+    boolean hasNext();    // 是否有下一个元素
+    E next();            // 获取下一个元素
+    void remove();       // 删除当前元素
+}
+```
+
+### 迭代器使用示例
+
+```java
+// 迭代器使用示例
+public class IteratorExample {
+    public static void main(String[] args) {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+        collection.add("JavaScript");
+        
+        // 使用迭代器遍历
+        Iterator<String> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            System.out.println(item);
+            
+            // 删除特定元素
+            if ("Python".equals(item)) {
+                iterator.remove();
+            }
+        }
+        
+        System.out.println("删除Python后: " + collection);
+        
+        // 使用for-each循环（内部使用迭代器）
+        for (String item : collection) {
+            System.out.println(item);
+        }
+        
+        // 使用forEach方法（Java 8+）
+        collection.forEach(System.out::println);
+        
+        // 使用Stream（Java 8+）
+        collection.stream().forEach(System.out::println);
+    }
+}
+```
+
+### 并发修改异常
+
+```java
+// 并发修改异常示例
+public class ConcurrentModificationExample {
+    public static void main(String[] args) {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+        
+        // 错误的删除方式（会抛出ConcurrentModificationException）
+        try {
+            for (String item : collection) {
+                if ("Python".equals(item)) {
+                    collection.remove(item); // 抛出异常
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("并发修改异常: " + e.getMessage());
+        }
+        
+        // 正确的删除方式
+        Iterator<String> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if ("Python".equals(item)) {
+                iterator.remove(); // 使用迭代器删除
+            }
+        }
+        
+        System.out.println("正确删除后: " + collection);
+    }
+}
+```
+
+## 数组转换
+
+### toArray方法
+
+```java
+// 数组转换示例
+public class ArrayConversionExample {
+    public static void main(String[] args) {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+        
+        // 转换为Object数组
+        Object[] objectArray = collection.toArray();
+        System.out.println("Object数组: " + Arrays.toString(objectArray));
+        
+        // 转换为String数组
+        String[] stringArray = collection.toArray(new String[0]);
+        System.out.println("String数组: " + Arrays.toString(stringArray));
+        
+        // 指定大小的数组
+        String[] sizedArray = collection.toArray(new String[collection.size()]);
+        System.out.println("指定大小数组: " + Arrays.toString(sizedArray));
+        
+        // 数组转Collection
+        Collection<String> fromArray = Arrays.asList(stringArray);
+        System.out.println("从数组创建: " + fromArray);
+    }
+}
+```
+
+## Collection工具类
+
+### Collections工具类
+
+```java
+// Collections工具类使用示例
+public class CollectionsExample {
+    public static void main(String[] args) {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("Java");
+        collection.add("Python");
+        collection.add("C++");
+        
+        // 排序（需要List）
+        if (collection instanceof List) {
+            Collections.sort((List<String>) collection);
+            System.out.println("排序后: " + collection);
+        }
+        
+        // 反转（需要List）
+        if (collection instanceof List) {
+            Collections.reverse((List<String>) collection);
+            System.out.println("反转后: " + collection);
+        }
+        
+        // 随机打乱（需要List）
+        if (collection instanceof List) {
+            Collections.shuffle((List<String>) collection);
+            System.out.println("打乱后: " + collection);
+        }
+        
+        // 查找最大最小值
+        String max = Collections.max(collection);
+        String min = Collections.min(collection);
+        System.out.println("最大值: " + max);
+        System.out.println("最小值: " + min);
+        
+        // 替换元素
+        Collections.replaceAll((List<String>) collection, "Java", "JavaScript");
+        System.out.println("替换后: " + collection);
+        
+        // 填充元素
+        Collections.fill((List<String>) collection, "Default");
+        System.out.println("填充后: " + collection);
+    }
+}
+```
+
+## Collection性能分析
+
+### 性能对比
+
+```java
+// Collection性能分析
+public class CollectionPerformanceExample {
+    
+    // ArrayList性能测试
+    public void arrayListPerformance() {
+        Collection<Integer> list = new ArrayList<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            list.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("ArrayList添加100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // LinkedList性能测试
+    public void linkedListPerformance() {
+        Collection<Integer> list = new LinkedList<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            list.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("LinkedList添加100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // HashSet性能测试
+    public void hashSetPerformance() {
+        Collection<Integer> set = new HashSet<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            set.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("HashSet添加100000个元素耗时: " + (end - start) + "ms");
+    }
+    
+    // TreeSet性能测试
+    public void treeSetPerformance() {
+        Collection<Integer> set = new TreeSet<>();
+        long start = System.currentTimeMillis();
+        
+        for (int i = 0; i < 100000; i++) {
+            set.add(i);
+        }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("TreeSet添加100000个元素耗时: " + (end - start) + "ms");
+    }
+}
+```
+
+## Collection最佳实践
+
+### 选择合适的Collection
+
+```java
+// Collection选择指南
+public class CollectionSelectionGuide {
+    
+    // 场景1：需要索引访问
+    public void indexedAccessScenario() {
+        `Collection<String> collection = new ArrayList<>();` // 推荐
+    }
+    
+    // 场景2：频繁插入删除
+    public void frequentModificationScenario() {
+        `Collection<String> collection = new LinkedList<>();` // 推荐
+    }
+    
+    // 场景3：需要去重
+    public void deduplicationScenario() {
+        `Collection<String> collection = new HashSet<>();` // 推荐
+    }
+    
+    // 场景4：需要排序
+    public void sortedScenario() {
+        `Collection<String> collection = new TreeSet<>();` // 推荐
+    }
+    
+    // 场景5：多线程环境
+    public void threadSafeScenario() {
+        `Collection<String> collection = Collections.synchronizedCollection(new ArrayList<>());` // 推荐
+    }
+}
+```
+
+### 性能优化技巧
+
+```java
+// Collection性能优化
+public class CollectionOptimization {
+    
+    // 1. 预分配容量
+    public void preAllocateCapacity() {
+        `Collection<String> collection = new ArrayList<>(1000);` // 预分配容量
+    }
+    
+    // 2. 批量操作
+    public void batchOperation() {
+        Collection<String> collection = new ArrayList<>();
+        Collection<String> toAdd = Arrays.asList("a", "b", "c");
+        
+        // 批量添加
+        collection.addAll(toAdd);
+        
+        // 批量删除
+        collection.removeAll(toAdd);
+    }
+    
+    // 3. 使用迭代器删除
+    public void iteratorRemove() {
+        Collection<String> collection = new ArrayList<>();
+        collection.add("a");
+        collection.add("b");
+        collection.add("c");
+        
+        // 正确的删除方式
+        Iterator<String> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if ("b".equals(item)) {
+                iterator.remove();
+            }
+        }
+    }
+    
+    // 4. 避免装箱拆箱
+    public void avoidBoxing() {
+        // 使用基本类型集合
+        `Collection<Integer> intCollection = new ArrayList<>();` // 推荐
+        // 避免频繁装箱拆箱
+    }
+}
+```
+
+## 面试题
+
+### 1. Collection和Collections的区别？
+
+**Collection**：
+- 集合接口
+- 定义了集合的基本操作
+- 是所有集合类的父接口
+
+**Collections**：
+- 工具类
+- 提供了操作集合的静态方法
+- 包含排序、查找、同步等方法
+
+### 2. Collection接口的主要方法？
+
+1. **基本操作**：add(), remove(), contains()
+2. **批量操作**：addAll(), removeAll(), retainAll()
+3. **查询操作**：size(), isEmpty()
+4. **迭代器**：iterator()
+5. **数组转换**：toArray()
+
+### 3. Collection的遍历方式有哪些？
+
+```java
+// 1. for-each循环
+for (String item : collection) {
+    System.out.println(item);
+}
+
+// 2. 迭代器
+Iterator<String> iterator = collection.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+
+// 3. forEach方法（Java 8+）
+collection.forEach(System.out::println);
+
+// 4. Stream（Java 8+）
+collection.stream().forEach(System.out::println);
+```
+
+### 4. 如何避免ConcurrentModificationException？
+
+1. **使用迭代器删除**：iterator.remove()
+2. **使用CopyOnWriteArrayList**
+3. **使用Collections.synchronizedCollection()**
+4. **在删除前复制一份**
+
+### 5. Collection的线程安全问题？
+
+- **ArrayList**：线程不安全
+- **LinkedList**：线程不安全
+- **HashSet**：线程不安全
+- **TreeSet**：线程不安全
+- **Vector**：线程安全
+- **Collections.synchronizedCollection()**：线程安全
+
+### 6. Collection的性能特点？
+
+- **ArrayList**：随机访问O(1)，插入删除O(n)
+- **LinkedList**：插入删除O(1)，随机访问O(n)
+- **HashSet**：查找插入删除O(1)
+- **TreeSet**：查找插入删除O(log n)
+
+### 7. Collection的常见应用场景？
+
+1. **数据存储**：存储和管理数据
+2. **算法实现**：实现各种算法
+3. **缓存**：简单的缓存实现
+4. **数据处理**：批量处理数据
+5. **业务逻辑**：实现业务功能
+
+### 8. Collection的优化技巧？
+
+1. **预分配容量**：避免频繁扩容
+2. **批量操作**：使用addAll(), removeAll()
+3. **选择合适的实现**：根据使用场景选择
+4. **避免装箱拆箱**：使用基本类型集合
+
+### 9. Collection的继承关系？
+
+```
+Collection<E>
+├── List<E>
+│   ├── ArrayList<E>
+│   ├── LinkedList<E>
+│   └── Vector<E>
+├── Set<E>
+│   ├── HashSet<E>
+│   ├── LinkedHashSet<E>
+│   └── TreeSet<E>
+└── Queue<E>
+    ├── LinkedList<E>
+    ├── PriorityQueue<E>
+    └── ArrayBlockingQueue<E>
+```
+
+### 10. Collection的常见陷阱？
+
+1. **并发修改**：在遍历时修改集合
+2. **类型安全**：使用泛型保证类型安全
+3. **性能问题**：选择合适的实现类
+4. **内存泄漏**：及时清理不再使用的集合 

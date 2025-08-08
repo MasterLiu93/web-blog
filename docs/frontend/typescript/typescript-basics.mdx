@@ -1,0 +1,542 @@
+---
+sidebar_position: 1
+title: "TypeScript基础"
+description: "TypeScript核心概念和基础语法"
+authors: [Laby]
+last_update:
+  date: 2025-08-07
+  author: Laby
+---
+
+# TypeScript基础
+
+TypeScript是JavaScript的超集，添加了静态类型检查，使代码更加健壮和可维护。
+
+## 基本类型
+
+### 原始类型
+```typescript
+// 数字
+let decimal: number = 6;
+let hex: number = 0xf00d;
+let binary: number = 0b1010;
+let octal: number = 0o744;
+
+// 字符串
+let color: string = "blue";
+let fullName: string = `Bob Bobbington`;
+let age: number = 37;
+let sentence: string = `Hello, my name is ${fullName}. I'll be ${age + 1} years old next month.`;
+
+// 布尔值
+let isDone: boolean = false;
+
+// 空值
+let u: undefined = undefined;
+let n: null = null;
+```
+
+### 数组类型
+```typescript
+// 数组类型声明
+let list: number[] = [1, 2, 3];
+let list2: Array<number> = [1, 2, 3];
+
+// 只读数组
+let readonlyArray: ReadonlyArray<number> = [1, 2, 3, 4];
+// readonlyArray.push(5); // 错误！
+
+// 元组
+let tuple: [string, number] = ["hello", 10];
+console.log(tuple[0]); // "hello"
+console.log(tuple[1]); // 10
+
+// 可选元组
+let optionalTuple: [string, number?] = ["hello"];
+```
+
+### 对象类型
+```typescript
+// 对象类型
+let obj: object = { x: 0 };
+
+// 接口定义对象结构
+interface User {
+  name: string;
+  age: number;
+  email?: string; // 可选属性
+  readonly id: number; // 只读属性
+}
+
+let user: User = {
+  name: "John",
+  age: 30,
+  id: 1
+};
+
+// 索引签名
+interface StringArray {
+  [index: number]: string;
+}
+
+let myArray: StringArray = ["Alice", "Bob"];
+```
+
+## 函数类型
+
+### 函数声明
+```typescript
+// 函数类型声明
+function add(x: number, y: number): number {
+  return x + y;
+}
+
+// 函数表达式
+let myAdd: (x: number, y: number) => number = function(x: number, y: number): number {
+  return x + y;
+};
+
+// 箭头函数
+let myAdd2 = (x: number, y: number): number => x + y;
+```
+
+### 可选参数和默认参数
+```typescript
+// 可选参数
+function buildName(firstName: string, lastName?: string): string {
+  if (lastName) {
+    return firstName + " " + lastName;
+  } else {
+    return firstName;
+  }
+}
+
+// 默认参数
+function buildName2(firstName: string, lastName: string = "Smith"): string {
+  return firstName + " " + lastName;
+}
+
+// 剩余参数
+function buildName3(firstName: string, ...restOfName: string[]): string {
+  return firstName + " " + restOfName.join(" ");
+}
+```
+
+### 函数重载
+```typescript
+// 函数重载
+function pickCard(x: { suit: string; card: number }[]): number;
+function pickCard(x: number): { suit: string; card: number };
+function pickCard(x: any): any {
+  if (typeof x === "object") {
+    return Math.floor(Math.random() * x.length);
+  } else if (typeof x === "number") {
+    const pickedSuit = Math.floor(x / 13);
+    return { suit: ["hearts", "spades", "clubs", "diamonds"][pickedSuit], card: x % 13 };
+  }
+}
+```
+
+## 接口
+
+### 接口定义
+```typescript
+// 基本接口
+interface LabelledValue {
+  label: string;
+}
+
+function printLabel(labelledObj: LabelledValue) {
+  console.log(labelledObj.label);
+}
+
+// 可选属性
+interface SquareConfig {
+  color?: string;
+  width?: number;
+}
+
+// 只读属性
+interface Point {
+  readonly x: number;
+  readonly y: number;
+}
+
+let p1: Point = { x: 10, y: 20 };
+// p1.x = 5; // 错误！
+```
+
+### 函数接口
+```typescript
+// 函数接口
+interface SearchFunc {
+  (source: string, subString: string): boolean;
+}
+
+let mySearch: SearchFunc = function(source: string, subString: string): boolean {
+  let result = source.search(subString);
+  return result > -1;
+};
+```
+
+### 可索引接口
+```typescript
+// 可索引接口
+interface StringArray {
+  [index: number]: string;
+}
+
+let myArray: StringArray = ["Bob", "Fred"];
+
+// 字典模式
+interface NumberDictionary {
+  [index: string]: number;
+  length: number; // 可以，length是number类型
+  name: string; // 错误，`name`的类型与索引类型返回值的类型不匹配
+}
+```
+
+## 类
+
+### 类定义
+```typescript
+// 基本类
+class Animal {
+  private name: string;
+  
+  constructor(theName: string) {
+    this.name = theName;
+  }
+  
+  move(distanceInMeters: number = 0) {
+    console.log(`${this.name} moved ${distanceInMeters}m.`);
+  }
+}
+
+// 继承
+class Snake extends Animal {
+  constructor(name: string) {
+    super(name);
+  }
+  
+  move(distanceInMeters = 5) {
+    console.log("Slithering...");
+    super.move(distanceInMeters);
+  }
+}
+```
+
+### 访问修饰符
+```typescript
+class Employee {
+  public name: string;
+  private department: string;
+  protected salary: number;
+  
+  constructor(name: string, department: string, salary: number) {
+    this.name = name;
+    this.department = department;
+    this.salary = salary;
+  }
+  
+  public getDetails(): string {
+    return `${this.name} works in ${this.department}`;
+  }
+}
+```
+
+### 抽象类
+```typescript
+abstract class Department {
+  constructor(public name: string) {}
+  
+  printName(): void {
+    console.log("Department name: " + this.name);
+  }
+  
+  abstract printMeeting(): void; // 必须在派生类中实现
+}
+
+class AccountingDepartment extends Department {
+  constructor() {
+    super("Accounting and Auditing");
+  }
+  
+  printMeeting(): void {
+    console.log("The Accounting Department meets each Monday at 10am.");
+  }
+  
+  generateReports(): void {
+    console.log("Generating accounting reports...");
+  }
+}
+```
+
+## 泛型
+
+### 泛型函数
+```typescript
+// 泛型函数
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+// 使用泛型函数
+let output = identity<string>("myString");
+let output2 = identity("myString"); // 类型推断
+
+// 泛型接口
+interface GenericIdentityFn<T> {
+  (arg: T): T;
+}
+
+let myIdentity: GenericIdentityFn<number> = identity;
+```
+
+### 泛型类
+```typescript
+// 泛型类
+class GenericNumber<T> {
+  zeroValue: T;
+  add: (x: T, y: T) => T;
+}
+
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function(x, y) { return x + y; };
+```
+
+### 泛型约束
+```typescript
+// 泛型约束
+interface Lengthwise {
+  length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+  console.log(arg.length);
+  return arg;
+}
+
+// 在泛型约束中使用类型参数
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+let x = { a: 1, b: 2, c: 3, d: 4 };
+getProperty(x, "a"); // 正确
+getProperty(x, "m"); // 错误
+```
+
+## 联合类型和类型守卫
+
+### 联合类型
+```typescript
+// 联合类型
+let value: string | number = "hello";
+value = 42; // 正确
+
+// 联合类型数组
+let array: (string | number)[] = ["hello", 42, "world"];
+
+// 联合类型函数参数
+function processValue(value: string | number): string {
+  if (typeof value === "string") {
+    return value.toUpperCase();
+  } else {
+    return value.toString();
+  }
+}
+```
+
+### 类型守卫
+```typescript
+// typeof类型守卫
+function padLeft(value: string, padding: string | number) {
+  if (typeof padding === "number") {
+    return Array(padding + 1).join(" ") + value;
+  }
+  if (typeof padding === "string") {
+    return padding + value;
+  }
+  throw new Error(`Expected string or number, got '${padding}'.`);
+}
+
+// instanceof类型守卫
+interface Padder {
+  getPaddingString(): string;
+}
+
+class SpaceRepeatingPadder implements Padder {
+  constructor(private numSpaces: number) {}
+  getPaddingString() {
+    return Array(this.numSpaces + 1).join(" ");
+  }
+}
+
+class StringPadder implements Padder {
+  constructor(private value: string) {}
+  getPaddingString() {
+    return this.value;
+  }
+}
+
+function getRandomPadder() {
+  return Math.random() < 0.5 ?
+    new SpaceRepeatingPadder(4) :
+    new StringPadder("  ");
+}
+
+let padder: Padder = getRandomPadder();
+if (padder instanceof SpaceRepeatingPadder) {
+  padder; // 类型细化为 'SpaceRepeatingPadder'
+}
+```
+
+## 枚举
+
+### 数字枚举
+```typescript
+// 数字枚举
+enum Direction {
+  Up = 1,
+  Down,
+  Left,
+  Right,
+}
+
+// 字符串枚举
+enum Direction2 {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT",
+}
+
+// 异构枚举
+enum BooleanLikeHeterogeneousEnum {
+  No = 0,
+  Yes = "YES",
+}
+```
+
+### 枚举成员
+```typescript
+// 计算的和常量成员
+enum FileAccess {
+  None,
+  Read = 1 << 1,
+  Write = 1 << 2,
+  ReadWrite = Read | Write,
+  G = "123".length,
+}
+```
+
+## 类型别名
+
+### 基本类型别名
+```typescript
+// 类型别名
+type Name = string;
+type NameResolver = () => string;
+type NameOrResolver = Name | NameResolver;
+
+function getName(n: NameOrResolver): Name {
+  if (typeof n === "string") {
+    return n;
+  } else {
+    return n();
+  }
+}
+
+// 联合类型别名
+type UnionType = string | number;
+type ArrayType = UnionType[];
+
+// 交叉类型
+type Combined = { id: number } & { name: string };
+```
+
+### 条件类型
+```typescript
+// 条件类型
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+// 映射类型
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
+};
+
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+// 实用工具类型
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+type ReadonlyUser = Readonly<User>;
+type PartialUser = Partial<User>;
+```
+
+## 模块
+
+### 导出和导入
+```typescript
+// 导出
+export interface StringValidator {
+  isValid(s: string): boolean;
+}
+
+export class ZipCodeValidator implements StringValidator {
+  isValid(s: string) {
+    return s.length === 5 && numberRegexp.test(s);
+  }
+}
+
+// 默认导出
+export default class ZipCodeValidator {
+  static numberRegexp = /^[0-9]+$/;
+  isAcceptable(s: string) {
+    return s.length === 5 && ZipCodeValidator.numberRegexp.test(s);
+  }
+}
+
+// 导入
+import { StringValidator } from "./Validation";
+import { ZipCodeValidator as ZCV } from "./ZipCodeValidator";
+import defaultValidator from "./DefaultValidator";
+```
+
+### 命名空间
+```typescript
+// 命名空间
+namespace Validation {
+  export interface StringValidator {
+    isValid(s: string): boolean;
+  }
+  
+  const lettersRegexp = /^[A-Za-z]+$/;
+  const numberRegexp = /^[0-9]+$/;
+  
+  export class LettersOnlyValidator implements StringValidator {
+    isValid(s: string) {
+      return lettersRegexp.test(s);
+    }
+  }
+  
+  export class ZipCodeValidator implements StringValidator {
+    isValid(s: string) {
+      return s.length === 5 && numberRegexp.test(s);
+    }
+  }
+}
+
+// 使用命名空间
+let validators: { [s: string]: Validation.StringValidator; } = {};
+validators["ZIP code"] = new Validation.ZipCodeValidator();
+validators["Letters only"] = new Validation.LettersOnlyValidator();
+``` 
